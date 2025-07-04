@@ -35,4 +35,4 @@
 
 - For manual installation, clone this repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/minimal-new-tab.git
+git clone https://github.com/ujain1999/minimal_newtab.git
