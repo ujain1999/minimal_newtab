@@ -116,7 +116,6 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
 chrome.bookmarks.getTree(tree => {
     const shortcuts = document.getElementById('shortcuts');
     // Common choice: bookmarks bar is tree[0].children[0].children
-    debugger;
     const bookmarksBar = tree[0].children.find(folder => folder.title === "Bookmarks Bar");
     if (bookmarksBar && bookmarksBar.children) {
         renderBookmarks(bookmarksBar.children, shortcuts);
