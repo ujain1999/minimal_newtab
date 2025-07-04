@@ -12,12 +12,12 @@
 
 ## 🚀 Features
 
-✅ Minimal, distraction-free design  
-✅ Digital clock at center  
-✅ Current weather for your geolocation (via [Open-Meteo](https://open-meteo.com/))
-✅ Bookmarks with folder structure preserved, collapsible  
-✅ Theme switcher: dark, light, system — remembers your choice  
-✅ Fully client-side, no analytics or tracking
+- Minimal, distraction-free design  
+- Digital clock at center  
+- Current weather for your geolocation (via [Open-Meteo](https://open-meteo.com/))
+- Bookmarks with folder structure preserved, collapsible  
+- Theme switcher: dark, light, system — remembers your choice  
+- Fully client-side, no analytics or tracking
 
 ---
 
