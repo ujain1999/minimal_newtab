@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Minimal New Tab",
+  "description": "A minimal, new tab page with clock, weather, and bookmarks with theme support",
+  "version": "1.0",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "permissions": [
+    "bookmarks",
+    "geolocation"
+  ],
+  "icons": {
+    "16": "favicons/favicon-16x16.png",
+    "32": "favicons/favicon-32x32.png",
+    "48": "favicons/favicon-48x48.png",
+    "128": "favicons/favicon-128x128.png"
+  }
+}

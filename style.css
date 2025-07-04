@@ -1,0 +1,165 @@
+body {
+    margin: 0;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    padding-top: 10vh;
+    font-size: 1.1rem;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+    background: #121212;
+    color: #f0f0f0;
+}
+
+body.light {
+    background: #ffffff;
+    color: #222;
+}
+
+.clock {
+    font-size: 5rem;
+    margin-bottom: 0.5rem;
+}
+
+.weather {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    color: inherit;
+}
+
+.search {
+    margin-bottom: 2rem;
+}
+
+.search input {
+    width: 350px;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 3px;
+    font-size: 1rem;
+    outline: none;
+    background: #1e1e1e;
+    color: #fff;
+    font-family: monospace;
+}
+
+body.light .search input {
+    background: #eee;
+    color: #000;
+}
+
+.shortcuts {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 800px;
+    width: 100%;
+    font-size: 1.1rem;
+    text-align: left;
+}
+
+.shortcut {
+    display: block;
+    margin: 0.2rem 0 0.4rem 0;
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.shortcut:hover {
+    color: #0077cc;
+    transform: translateX(2px);
+}
+
+.bookmark-folder {
+    font-weight: bold;
+    margin: 0.4rem 0 0.2rem 0;
+    cursor: pointer;
+    color: inherit;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.bookmark-folder:hover {
+    color: #0077cc;
+}
+
+.bookmark-children {
+    margin-left: 0.8rem;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    opacity: 1;
+}
+
+.bookmark-children.collapsed {
+    max-height: 0;
+    opacity: 0;
+}
+
+.top-right {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+    font-size: 0.95rem;
+}
+
+.top-right span {
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.top-right span:hover {
+    color: #0077cc;
+}
+
+.theme-toggle {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    direction: rtl; /* <-- flips visual order */
+}
+
+.theme-icon svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon svg {
+    transform: rotate(20deg);
+}
+
+.theme-label {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, max-width 0.3s ease;
+    font-size: 0.95rem;
+    text-decoration: underline dotted;
+    direction: ltr; /* fix text direction */
+}
+
+.theme-toggle:hover .theme-label {
+    opacity: 1;
+    max-width: 4rem;
+}
