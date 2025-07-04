@@ -29,8 +29,10 @@
 
 ---
 
-## 🧑‍💻 Installation (Unpacked)
+## Installation (CRX)
 
-1️⃣ Clone this repository:
+- 📦 [Download CRX](https://github.com/ujain1999/minimal_newtab/releases/download/v1.0.0/minimal_newtab.crx)
+
+- For manual installation, clone this repository:
 ```bash
 git clone https://github.com/YOUR_USERNAME/minimal-new-tab.git
