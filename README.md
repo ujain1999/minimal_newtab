@@ -31,7 +31,7 @@
 
 ## Installation (CRX)
 
-- 📦 [Download CRX](https://github.com/ujain1999/minimal_newtab/releases/download/v1.0.0/minimal_newtab.crx)
+- 📦 [Download CRX](https://github.com/ujain1999/minimal_newtab/releases/latest)
 
 - For manual installation, clone this repository:
 ```bash
