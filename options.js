@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById("back-link").addEventListener("click", () => {
-        location.href = "/index.html";
+        chrome.tabs.update({url: "chrome://newtab"});
     });
 
     let saveBtn = document.getElementById("save");
