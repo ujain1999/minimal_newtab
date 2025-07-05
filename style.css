@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+    margin-top: 3rem;
     font-family: monospace;
     display: flex;
     flex-direction: column;
@@ -62,6 +62,7 @@ body.light .search input {
     width: 100%;
     font-size: 1.1rem;
     text-align: left;
+    margin-left: 4rem;
 }
 
 .shortcut {
@@ -115,6 +116,7 @@ body.light .search input {
 }
 
 .top-right span {
+    text-transform: capitalize;
     text-decoration: underline dotted;
     text-underline-offset: 2px;
     cursor: pointer;
@@ -162,4 +164,62 @@ body.light .search input {
 .theme-toggle:hover .theme-label {
     opacity: 1;
     max-width: 4rem;
+}
+.customize {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    /* direction: rtl; <-- flips visual order */
+}
+
+.customize-icon svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+}
+
+/* .customize:hover .customize-icon svg {
+    transform: rotate(-20deg);
+} */
+
+.customize-label {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, max-width 0.3s ease;
+    font-size: 0.95rem;
+    text-decoration: underline dotted;
+}
+
+.customize:hover .customize-label {
+    opacity: 1;
+    max-width: 6rem;
+}
+
+body.options {
+    text-align: left;
+    width: 50%;
+    padding-top: 3em;
+}
+.options-table {
+    text-transform: capitalize;
+}
+div#back {
+    position: absolute;
+    top: 1rem;
+    left: 4rem;
+    text-decoration: none;
+    color: #f0f0f0;
+    font-size: 5em;
+}
+
+div#back:hover {
+    cursor: pointer;
 }
