@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="options">
+    <div id="back">
+        <span id="back-link">←</span>
+    </div>
+    <div id="options-wrapper">
+    <h1>New Tab Settings</h1>
+
+    <h2>Toggle Components</h2>
+    <label><input type="checkbox" id="show-clock"> Show Clock</label><br>
+    <label><input type="checkbox" id="show-weather"> Show Weather</label><br>
+    <label><input type="checkbox" id="show-bookmarks"> Show Bookmarks</label><br>
+    <label><input type="checkbox" id="show-topRight"> Show Shortcuts</label><br>
+
+    <hr>
+    <h2>Shortcut Settings Links</h2>
+    <table class="options-table" id="top-right-links">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Link</th>
+                <th>Order</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><input type="checkbox" data-key="bookmarks"></td>
+                <td>Bookmarks</td>
+                <td>
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" data-key="history"></td>
+                <td>History</td>
+                <td>
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" data-key="downloads"></td>
+                <td>Downloads</td>
+                <td>
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" data-key="settings"></td>
+                <td>Settings</td>
+                <td>
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" data-key="passwords"></td>
+                <td>Passwords</td>
+                <td>
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" data-key="extensions"></td>
+                <td>Extensions</td>
+                <td>
+                    <button class="up">↑</button>
+                    <button class="down">↓</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br><br>
+    <button id="save">Save Settings</button>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+
+</html>
