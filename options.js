@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "bookmarks", "topRight", "topRightOrder"
+        "clock", "weather", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder"
     ];
     const defaultSettings = {
         "clock": true,
         "weather": true,
         "bookmarks": true,
+        "bookmarkFolder": "Bookmarks Bar",
         "topRight": true,
         "topRightOrder": [
             { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
@@ -32,7 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     if (settings['bookmarks']) {
         document.getElementById("show-bookmarks").checked = true;
-    };
+    }
+    else {
+        document.querySelector("#bookmark-folder-selector-span select").disabled = true;
+    }
     if (settings['topRight']) {
         document.getElementById("show-topRight").checked = true;
     };
@@ -76,8 +80,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    let selectElem = document.querySelector("#bookmark-folder-selector-span select");
+    chrome.bookmarks.getTree(tree => {
+        console.log(tree);
+        tree[0].children.map((folder) => {
+            const optionElem = document.createElement("option");
+            optionElem.value = folder.title;
+            optionElem.text = folder.title;
+            if (settings['bookmarkFolder'] == folder.title) {
+                optionElem.selected = true;
+            }
+            selectElem.append(optionElem);
+        })
+    });
+
     document.getElementById("back-link").addEventListener("click", () => {
-        chrome.tabs.update({url: "chrome://newtab"});
+        chrome.tabs.update({ url: "chrome://newtab" });
     });
 
     let saveBtn = document.getElementById("save");
@@ -101,6 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 settings_obj["topRightOrder"] = orderArr;
             }
+            else if (key == "bookmarkFolder") {
+                settings_obj[key] = document.querySelector("#bookmark-folder-selector-span select").value;
+            }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
             }
@@ -108,11 +129,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         console.log(settings_obj);
         localStorage.setItem("settings", JSON.stringify(settings_obj));
+        console.log(settings_obj)
         alert("Settings Saved!");
     })
 
 });
 
+document.getElementById("show-bookmarks").onchange = (e) => {
+    if (e.target.checked) {
+        document.querySelector("#bookmark-folder-selector-span select").disabled = false;
+    }
+    else {
+        document.querySelector("#bookmark-folder-selector-span select").disabled = true;
+    }
+}
 
 
 let theme = localStorage.getItem('theme') || 'system';
