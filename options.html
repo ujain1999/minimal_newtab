@@ -13,82 +13,108 @@
         <span id="back-link">←</span>
     </div>
     <div id="options-wrapper">
-    <h1>New Tab Settings</h1>
+        <h1>New Tab Settings</h1>
 
-    <h2>Toggle Components</h2>
-    <label><input type="checkbox" id="show-clock"> Show Clock</label><br>
-    <label><input type="checkbox" id="show-weather"> Show Weather</label><br>
-    <label><input type="checkbox" id="show-bookmarks"> Show Bookmarks</label><br>
-    <span id="bookmark-folder-selector-span">
-    <label for="bookmark-folders">Select Bookmark folder</label>
-    <select id="bookmark-folders" name="bookmark-folders">
-    </select>
-    </span>
-    <br>
-    <label><input type="checkbox" id="show-topRight">Show Shortcuts</label><br>
-    <hr>
-    <h2>Shortcut Settings Links</h2>
-    <table class="options-table" id="top-right-links">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Link</th>
-                <th>Order</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><input type="checkbox" data-key="bookmarks"></td>
-                <td>Bookmarks</td>
-                <td>
-                    <button class="up">↑</button>
-                    <button class="down">↓</button>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" data-key="history"></td>
-                <td>History</td>
-                <td>
-                    <button class="up">↑</button>
-                    <button class="down">↓</button>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" data-key="downloads"></td>
-                <td>Downloads</td>
-                <td>
-                    <button class="up">↑</button>
-                    <button class="down">↓</button>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" data-key="settings"></td>
-                <td>Settings</td>
-                <td>
-                    <button class="up">↑</button>
-                    <button class="down">↓</button>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" data-key="passwords"></td>
-                <td>Passwords</td>
-                <td>
-                    <button class="up">↑</button>
-                    <button class="down">↓</button>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="checkbox" data-key="extensions"></td>
-                <td>Extensions</td>
-                <td>
-                    <button class="up">↑</button>
-                    <button class="down">↓</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <br><br>
-    <button id="save">Save Settings</button>
+        <h2>Toggle Components</h2>
+        <label><input type="checkbox" id="show-clock"> Show Clock</label><br>
+        <label><input type="checkbox" id="show-weather"> Show Weather</label><br>
+        <label><input type="checkbox" id="show-bookmarks"> Show Bookmarks</label><br>
+        <span id="bookmark-folder-selector-span" class="sub-settings">
+            <label for="bookmark-folders">Select Bookmark folder</label>
+            <select id="bookmark-folders" name="bookmark-folders">
+            </select>
+        </span>
+        <br><br>
+        <label><input type="checkbox" id="show-topRight">Show Shortcuts</label><br>
+        <div id="shortcuts-links" class="sub-settings">
+            <p>Shortcut Settings Links</p>
+            <table class="options-table" id="top-right-links">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Link</th>
+                        <th>Order</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" data-key="bookmarks"></td>
+                        <td>Bookmarks</td>
+                        <td>
+                            <button class="up">↑</button>
+                            <button class="down">↓</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-key="history"></td>
+                        <td>History</td>
+                        <td>
+                            <button class="up">↑</button>
+                            <button class="down">↓</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-key="downloads"></td>
+                        <td>Downloads</td>
+                        <td>
+                            <button class="up">↑</button>
+                            <button class="down">↓</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-key="settings"></td>
+                        <td>Settings</td>
+                        <td>
+                            <button class="up">↑</button>
+                            <button class="down">↓</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-key="passwords"></td>
+                        <td>Passwords</td>
+                        <td>
+                            <button class="up">↑</button>
+                            <button class="down">↓</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" data-key="extensions"></td>
+                        <td>Extensions</td>
+                        <td>
+                            <button class="up">↑</button>
+                            <button class="down">↓</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <label><input type="checkbox" id="show-pixelArt">Show Pixel Art</label><br>
+        <div id="pixel-art-select-div" class="sub-settings">
+            <label for="pixel-art-select">Select Pixel Art</label>
+            <select id="pixel-art-select" name="pixel-art-select">
+                <option value="flowers">Flowers</option>
+                <option value="hearts">Hearts</option>
+                <option value="stars">Stars</option>
+                <option value="kitty">Kitty</option>
+                <option value="leaves">Leaves</option>
+                <option value="custom">Custom</option>
+            </select>
+            <br>
+            <div id="custom-svg-input-div">
+                <label for="custom-svg-input">Custom SVG</label><br>
+                <textarea id="custom-svg-input" name="custom-svg-input" rows="4" cols="50"
+                    placeholder="Paste your SVG code here..."></textarea>
+            </div>
+            <label>Pixel Art Opacity<input type="number" id="pixelArtOpacity" min="0" max="100" step="1"></label><br>
+            <label>Pixel Art Density<input type="number" id="pixelArtDensity" min="0" max="100" step="1"></label><br>
+            <label>Pixel Art Color (Dark Theme)<input type="color" id="pixelArtColorDark"></label><br>
+            <label>Pixel Art Color (Light Theme)<input type="color" id="pixelArtColorLight"></label><br>
+        </div>
+        <br><br>
+
+        <button id="save">Save Settings</button>
+        <button id="restore-defaults">Restore Defaults</button>
     </div>
 
     <script src="options.js"></script>

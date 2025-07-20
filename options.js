@@ -1,22 +1,31 @@
+const defaultSettings = {
+    "clock": true,
+    "weather": true,
+    "bookmarks": true,
+    "bookmarkFolder": "Bookmarks Bar",
+    "topRight": true,
+    "topRightOrder": [
+        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
+        { id: "downloads", displayBool: true, url: "chrome://downloads" },
+        { id: "history", displayBool: true, url: "chrome://history" },
+        { id: "extensions", displayBool: true, url: "chrome://extensions" },
+        { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
+        { id: "settings", displayBool: true, url: "chrome://settings" }
+    ],
+    "pixelArt": true,
+    "selectedPixelArt": "flowers",
+    "customSVG": "",
+    "pixelArtOpacity": 40,
+    "pixelArtDensity": 20,
+    "pixelArtColorDark": "#cccccc",
+    "pixelArtColorLight": "#b04288"
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder"
+        "clock", "weather", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
+        "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"
     ];
-    const defaultSettings = {
-        "clock": true,
-        "weather": true,
-        "bookmarks": true,
-        "bookmarkFolder": "Bookmarks Bar",
-        "topRight": true,
-        "topRightOrder": [
-            { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
-            { id: "downloads", displayBool: true, url: "chrome://downloads" },
-            { id: "history", displayBool: true, url: "chrome://history" },
-            { id: "extensions", displayBool: true, url: "chrome://extensions" },
-            { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
-            { id: "settings", displayBool: true, url: "chrome://settings" }
-        ]
-    }
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
     let settings = JSON.parse(settingsJsonStr);
@@ -39,11 +48,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (settings['topRight']) {
         document.getElementById("show-topRight").checked = true;
-    };
+    }
+    else {
+        document.querySelector("#shortcuts-links").style.display = "none";
+    }
+    if (settings['pixelArt']) {
+        document.getElementById("show-pixelArt").checked = true;
+    }
+    if (settings['selectedPixelArt']) {
+        document.getElementById("pixel-art-select").value = settings['selectedPixelArt'];
+        if (settings['selectedPixelArt'] == "custom") {
+            document.getElementById("custom-svg-input-div").style.display = "block";
+            document.getElementById("custom-svg-input").value = settings['customSVG'];
+        }
+        else {
+            document.getElementById("custom-svg-input-div").style.display = "none";
+        }
+    }
+    if (settings['pixelArtOpacity']) {
+        document.getElementById("pixelArtOpacity").value = settings['pixelArtOpacity'];
+    }
+    if (settings['pixelArtDensity']) {
+        document.getElementById("pixelArtDensity").value = settings['pixelArtDensity'];
+    }
+    if (settings['pixelArtColorDark']) {
+        document.getElementById("pixelArtColorDark").value = settings['pixelArtColorDark'];
+    }
+    if (settings['pixelArtColorLight']) {
+        document.getElementById("pixelArtColorLight").value = settings['pixelArtColorLight'];
+    }
     if (settings['topRightOrder']) {
         let tbody = document.querySelector("table#top-right-links tbody");
         tbody.innerHTML = "";
-        console.log(settings);
         settings['topRightOrder'].map(item => {
             let tr = document.createElement("tr");
             let td1 = document.createElement("td");
@@ -82,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let selectElem = document.querySelector("#bookmark-folder-selector-span select");
     chrome.bookmarks.getTree(tree => {
-        console.log(tree);
         tree[0].children.map((folder) => {
             const optionElem = document.createElement("option");
             optionElem.value = folder.title;
@@ -104,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
         settings_keys.map((key) => {
             if (key == "topRightOrder") {
                 let orderArr = []
-                debugger;
                 const tbody = document.querySelector("table#top-right-links tbody");
                 let trs = tbody.children;
                 for (var i = 0; i < trs.length; i++) {
@@ -122,17 +156,32 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (key == "bookmarkFolder") {
                 settings_obj[key] = document.querySelector("#bookmark-folder-selector-span select").value;
             }
+            else if (key == "selectedPixelArt") {
+                settings_obj[key] = document.querySelector("#pixel-art-select").value;
+            }
+            else if (key == "customSVG") {
+                settings_obj[key] = document.querySelector("#custom-svg-input").value;
+            }
+            else if (["pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"].includes(key)) {
+                settings_obj[key] = document.getElementById(key).value;
+            }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
             }
 
         });
-        console.log(settings_obj);
         localStorage.setItem("settings", JSON.stringify(settings_obj));
-        console.log(settings_obj)
         alert("Settings Saved!");
+        location.reload();
     })
 
+});
+
+document.getElementById("restore-defaults").addEventListener("click", () => {
+    localStorage.removeItem("settings");
+    localStorage.setItem("settings", JSON.stringify(defaultSettings));
+    alert("Settings Restored to Defaults!");
+    location.reload();
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {
@@ -141,6 +190,34 @@ document.getElementById("show-bookmarks").onchange = (e) => {
     }
     else {
         document.querySelector("#bookmark-folder-selector-span select").disabled = true;
+    }
+}
+
+document.getElementById("show-topRight").onchange = (e) => {
+    if (e.target.checked) {
+        document.querySelector("#shortcuts-links").style.display = "block";
+    }
+    else {
+        document.querySelector("#shortcuts-links").style.display = "none";
+    }
+}
+
+document.getElementById("show-pixelArt").onchange = (e) => {
+    if (e.target.checked) {
+        document.querySelector("#pixel-art-select-div").style.display = "block";
+    }
+    else {
+        document.querySelector("#pixel-art-select-div").style.display = "none";
+    }
+}
+
+document.getElementById("pixel-art-select").onchange = (e) => {
+    let selectedPixelArt = e.target.value;
+    if (selectedPixelArt == "custom") {
+        document.getElementById("custom-svg-input-div").style.display = "block";
+    }
+    else {
+        document.getElementById("custom-svg-input-div").style.display = "none";
     }
 }
 
