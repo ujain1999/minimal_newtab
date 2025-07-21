@@ -136,7 +136,7 @@ body.light .search input {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    direction: rtl; /* <-- flips visual order */
+    direction: rtl;
 }
 
 .theme-icon svg {
@@ -158,13 +158,14 @@ body.light .search input {
     transition: opacity 0.3s ease, max-width 0.3s ease;
     font-size: 0.95rem;
     text-decoration: underline dotted;
-    direction: ltr; /* fix text direction */
+    direction: ltr;
 }
 
 .theme-toggle:hover .theme-label {
     opacity: 1;
     max-width: 4rem;
 }
+
 .customize {
     position: absolute;
     bottom: 1rem;
@@ -174,7 +175,6 @@ body.light .search input {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    /* direction: rtl; <-- flips visual order */
 }
 
 .customize-icon svg {
@@ -183,10 +183,6 @@ body.light .search input {
     vertical-align: middle;
     transition: transform 0.3s ease;
 }
-
-/* .customize:hover .customize-icon svg {
-    transform: rotate(-20deg);
-} */
 
 .customize-label {
     opacity: 0;
@@ -207,10 +203,13 @@ body.options {
     text-align: left;
     width: 50%;
     padding-top: 3em;
+    margin-left : 10em;
 }
+
 .options-table {
     text-transform: capitalize;
 }
+
 div#back {
     position: absolute;
     top: 1rem;
@@ -221,4 +220,41 @@ div#back {
 
 div#back:hover {
     cursor: pointer;
+}
+
+:root {
+    --color-accent: #ccc;
+}
+
+body.light {
+    --color-accent: #b04288;
+}
+
+.art-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.art-cell {
+    position: relative;
+}
+
+.art-cell svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    fill: var(--color-accent);
+    opacity: 0.4;
+    transform: translate(-50%, -50%) rotate(var(--rotate, 0deg));
+}
+
+.sub-settings {
+    margin-left: 2em;
 }

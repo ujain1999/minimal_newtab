@@ -59,20 +59,20 @@ function applyTheme(theme) {
     const label = document.querySelector('.theme-label');
     iconContainer.innerHTML = icons[theme];
     label.textContent = theme[0].toUpperCase() + theme.slice(1);
-    
+
     const customizeContainer = document.querySelector('.customize-icon');
-    if (theme=='system'){
-        if(window.matchMedia("(prefers-color-scheme: dark)").matches){
+    if (theme == 'system') {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
             customizeContainer.innerHTML = customizeIcon["dark"];
         }
-        else{
+        else {
             customizeContainer.innerHTML = customizeIcon["light"];
         }
     }
-    else{
+    else {
         customizeContainer.innerHTML = customizeIcon[theme];
     }
-    
+
 }
 
 function renderBookmarks(nodes, container, level = 0, path = "") {
@@ -154,7 +154,7 @@ const defaultSettings = {
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
 
-if (settings.clock){
+if (settings.clock) {
     setInterval(updateClock, 1000);
     updateClock();
 }
@@ -179,7 +179,10 @@ else {
 if (settings.bookmarks) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
-        const bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === "bookmarks bar");
+        let bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === "bookmarks bar");
+        if (settings.bookmarkFolder) {
+            bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase());
+        }
         if (bookmarksBar && bookmarksBar.children) {
             renderBookmarks(bookmarksBar.children, shortcuts);
         } else {
@@ -187,7 +190,7 @@ if (settings.bookmarks) {
         }
     });
 }
-else{
+else {
     document.getElementById("shortcuts").style.display = 'none';
 }
 
@@ -196,19 +199,19 @@ if (settings.topRight) {
     let container = document.getElementById("top-right");
     container.innerHTML = "";
     topRightOrder.map((item) => {
-        if (item.displayBool){
+        if (item.displayBool) {
             let itemElem = document.createElement("span");
             itemElem.id = "open-" + item["id"];
             itemElem.innerHTML = item["id"];
             itemElem.addEventListener('click', () => {
-                chrome.tabs.create({url : item['url']});
+                chrome.tabs.create({ url: item['url'] });
             })
             container.append(itemElem);
         }
-        
+
     })
 }
-else{
+else {
     document.getElementById('top-right').style.display = 'none';
 }
 
@@ -219,8 +222,8 @@ const icons = {
 };
 
 const customizeIcon = {
-    "dark" : `<svg fill="white" width="32px" height="32px" viewBox="-1 0 44 44"><path id="_45.Settings" data-name="45.Settings" d="M35,22H13A10,10,0,0,1,13,2H35a10,10,0,0,1,0,20ZM35,4H13a8,8,0,0,0,0,16H35A8,8,0,0,0,35,4ZM13,18a6,6,0,1,1,6-6A6,6,0,0,1,13,18ZM13,8a4,4,0,1,0,4,4A4,4,0,0,0,13,8Zm0,18H35a10,10,0,0,1,0,20H13a10,10,0,0,1,0-20Zm0,18H35a8,8,0,0,0,0-16H13a8,8,0,0,0,0,16ZM35,30a6,6,0,1,1-6,6A6,6,0,0,1,35,30Zm0,10a4,4,0,1,0-4-4A4,4,0,0,0,35,40Z" transform="translate(-3 -2)" fill-rule="evenodd"/></svg>`,
-    "light" : `<svg fill="black" width="32px" height="32px" viewBox="-1 0 44 44"><path id="_45.Settings" data-name="45.Settings" d="M35,22H13A10,10,0,0,1,13,2H35a10,10,0,0,1,0,20ZM35,4H13a8,8,0,0,0,0,16H35A8,8,0,0,0,35,4ZM13,18a6,6,0,1,1,6-6A6,6,0,0,1,13,18ZM13,8a4,4,0,1,0,4,4A4,4,0,0,0,13,8Zm0,18H35a10,10,0,0,1,0,20H13a10,10,0,0,1,0-20Zm0,18H35a8,8,0,0,0,0-16H13a8,8,0,0,0,0,16ZM35,30a6,6,0,1,1-6,6A6,6,0,0,1,35,30Zm0,10a4,4,0,1,0-4-4A4,4,0,0,0,35,40Z" transform="translate(-3 -2)" fill-rule="evenodd"/></svg>`
+    "dark": `<svg fill="white" width="32px" height="32px" viewBox="-1 0 44 44"><path id="_45.Settings" data-name="45.Settings" d="M35,22H13A10,10,0,0,1,13,2H35a10,10,0,0,1,0,20ZM35,4H13a8,8,0,0,0,0,16H35A8,8,0,0,0,35,4ZM13,18a6,6,0,1,1,6-6A6,6,0,0,1,13,18ZM13,8a4,4,0,1,0,4,4A4,4,0,0,0,13,8Zm0,18H35a10,10,0,0,1,0,20H13a10,10,0,0,1,0-20Zm0,18H35a8,8,0,0,0,0-16H13a8,8,0,0,0,0,16ZM35,30a6,6,0,1,1-6,6A6,6,0,0,1,35,30Zm0,10a4,4,0,1,0-4-4A4,4,0,0,0,35,40Z" transform="translate(-3 -2)" fill-rule="evenodd"/></svg>`,
+    "light": `<svg fill="black" width="32px" height="32px" viewBox="-1 0 44 44"><path id="_45.Settings" data-name="45.Settings" d="M35,22H13A10,10,0,0,1,13,2H35a10,10,0,0,1,0,20ZM35,4H13a8,8,0,0,0,0,16H35A8,8,0,0,0,35,4ZM13,18a6,6,0,1,1,6-6A6,6,0,0,1,13,18ZM13,8a4,4,0,1,0,4,4A4,4,0,0,0,13,8Zm0,18H35a10,10,0,0,1,0,20H13a10,10,0,0,1,0-20Zm0,18H35a8,8,0,0,0,0-16H13a8,8,0,0,0,0,16ZM35,30a6,6,0,1,1-6,6A6,6,0,0,1,35,30Zm0,10a4,4,0,1,0-4-4A4,4,0,0,0,35,40Z" transform="translate(-3 -2)" fill-rule="evenodd"/></svg>`
 }
 
 document.getElementById("customize").addEventListener("click", () => {
