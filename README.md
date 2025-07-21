@@ -25,7 +25,7 @@
 
 |           Dark Theme          |         Light Theme             |               Options               |
 |-------------------------------|---------------------------------|-------------------------------------|
-| ![Dark](screenshots/dark.png) | ![Light](screenshots/light.png) | ![Options](screenshots/options.png) |
+| ![Dark](screenshots/dark_new.png) | ![Light](screenshots/light_new.png) | ![Options](screenshots/options.png) |
 
 
 
