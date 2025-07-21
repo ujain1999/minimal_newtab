@@ -105,6 +105,18 @@
                 <label for="custom-svg-input">Custom SVG</label><br>
                 <textarea id="custom-svg-input" name="custom-svg-input" rows="4" cols="50"
                     placeholder="Paste your SVG code here..."></textarea>
+                <br>
+                <ul>
+                    <li>For your SVG to work well, make sure that it has:
+                    
+                        <ol>
+                            <li>viewBox="0 0 512 512"</li>
+                            <li>The fill attribute doesn't have a fill attribute, unless you want to override the extension settings.</li>
+                        </ol>
+                    </li>
+                    <li>To convert PNG, JPG, etc to SVGs, use any of the several online tools such as <a href="https://svgco.de/">SVGcode</a></li>
+                    <li>To convert SVG images to pastable HTML code, use any of the several online tools such as <a href="https://nikitahl.github.io/svg-2-code/">SVG to Code</a></li>
+                </ul>
             </div>
             <label>Pixel Art Opacity<input type="number" id="pixelArtOpacity" min="0" max="100" step="1"></label><br>
             <label>Pixel Art Density<input type="number" id="pixelArtDensity" min="0" max="100" step="1"></label><br>
