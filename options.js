@@ -1,6 +1,7 @@
 const defaultSettings = {
     "clock": true,
     "weather": true,
+    "customCity": "",
     "bookmarks": true,
     "bookmarkFolder": "Bookmarks Bar",
     "topRight": true,
@@ -23,7 +24,7 @@ const defaultSettings = {
 
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
+        "clock", "weather", "customCity", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"
     ];
 
@@ -165,9 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (["pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"].includes(key)) {
                 settings_obj[key] = document.getElementById(key).value;
             }
+            else if (key == "customCity") {
+                settings_obj[key] = document.getElementById("custom-city").value;
+            }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
             }
+
 
         });
         localStorage.setItem("settings", JSON.stringify(settings_obj));
