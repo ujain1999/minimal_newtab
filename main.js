@@ -211,8 +211,9 @@ else {
 }
 
 if (settings.weather) {
-    const customCity = settings.customCity;
-    if (customCity) {
+    const useCustomCity = settings.useCustomCity;
+    if (useCustomCity && settings.customCity) {
+        const customCity = settings.customCity;
         fetchWeatherByCity(customCity);
     } else {
         if (navigator.geolocation) {
