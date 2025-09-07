@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settings['weather']) {
         document.getElementById("show-weather").checked = true;
     };
+    if (settings['customCity']) {
+        document.getElementById("custom-city").value = settings['customCity'];
+    }
     if (settings['bookmarks']) {
         document.getElementById("show-bookmarks").checked = true;
     }
@@ -168,6 +171,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             else if (key == "customCity") {
                 settings_obj[key] = document.getElementById("custom-city").value;
+                if (document.getElementById("custom-city").value) {
+                    localStorage.removeItem('weatherData');
+                }
             }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
