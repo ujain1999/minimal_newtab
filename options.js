@@ -1,6 +1,8 @@
 const defaultSettings = {
     "clock": true,
     "weather": true,
+    "customCity": "",
+    "useCustomCity": false,
     "bookmarks": true,
     "bookmarkFolder": "Bookmarks Bar",
     "topRight": true,
@@ -21,9 +23,50 @@ const defaultSettings = {
     "pixelArtColorLight": "#b04288"
 }
 
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+}
+
+async function fetchCitySuggestions(query) {
+    if (query.length < 3) {
+        document.getElementById('city-suggestions').style.display = 'none';
+        return;
+    }
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&featuretype=city&limit=5`);
+        const data = await response.json();
+        return data.map(place => place.display_name);
+    } catch (error) {
+        console.error("Error fetching city suggestions:", error);
+        return [];
+    }
+}
+
+function showNotification(message, duration = 2000, type = 'success') {
+    const notification = document.getElementById('notification');
+    notification.textContent = message;
+    notification.className = 'hidden'; // Reset classes
+    notification.classList.add(type);
+    notification.classList.remove('hidden');
+    notification.classList.add('show');
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.classList.add('hidden');
+            location.reload();
+        }, 500); // Wait for fade out before reloading
+    }, duration);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
+        "clock", "weather", "useCustomCity", "customCity", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"
     ];
 
@@ -39,7 +82,18 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     if (settings['weather']) {
         document.getElementById("show-weather").checked = true;
+    } else {
+        document.getElementById("weather-options").style.display = "none";
+    }
+    if (settings['useCustomCity']) {
+        document.getElementById("use-custom-city").checked = true;
+        document.getElementById("custom-city-container").style.display = 'block';
+    } else {
+        document.getElementById("custom-city-container").style.display = 'none';
     };
+    if (settings['customCity']) {
+        document.getElementById("custom-city").value = settings['customCity'];
+    }
     if (settings['bookmarks']) {
         document.getElementById("show-bookmarks").checked = true;
     }
@@ -83,11 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
         settings['topRightOrder'].map(item => {
             let tr = document.createElement("tr");
             let td1 = document.createElement("td");
+            let td1label = document.createElement("label");
+            td1label.className = "checkbox-label";
             let td1check = document.createElement("input")
             td1check.type = "checkbox";
             td1check.setAttribute("data-key", item.id);
             td1check.checked = item.displayBool;
-            td1.append(td1check);
+            td1label.innerHTML = '<span class="custom-checkbox"></span>';
+            td1label.prepend(td1check);
+            td1.append(td1label);
             let td2 = document.createElement("td");
             td2.innerHTML = item.id;
             let td3 = document.createElement("td");
@@ -165,23 +223,84 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (["pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"].includes(key)) {
                 settings_obj[key] = document.getElementById(key).value;
             }
+            else if (key == "customCity") {
+                settings_obj[key] = document.getElementById("custom-city").value;
+                if (document.getElementById("custom-city").value) {
+                    localStorage.removeItem('weatherData');
+                }
+            } else if (key == "useCustomCity") {
+                settings_obj[key] = document.getElementById("use-custom-city").checked;
+                if (settings_obj[key] !== settings.useCustomCity || settings_obj.customCity !== settings.customCity) {
+                    localStorage.removeItem('weatherData');
+                }
+            }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
             }
 
+
         });
         localStorage.setItem("settings", JSON.stringify(settings_obj));
-        alert("Settings Saved!");
-        location.reload();
+        showNotification("Settings Saved!", 2000, 'success');
     })
 
+    const cityInput = document.getElementById('custom-city');
+    const suggestionsContainer = document.getElementById('city-suggestions');
+
+    const onCityInput = debounce(async (e) => {
+        const query = e.target.value;
+        const suggestions = await fetchCitySuggestions(query);
+        suggestionsContainer.innerHTML = '';
+        if (suggestions && suggestions.length > 0) {
+            suggestions.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.textContent = suggestion;
+                div.addEventListener('click', () => {
+                    cityInput.value = suggestion;
+                    suggestionsContainer.style.display = 'none';
+                    suggestionsContainer.innerHTML = '';
+                });
+                suggestionsContainer.appendChild(div);
+            });
+            suggestionsContainer.style.display = 'block';
+        } else {
+            suggestionsContainer.style.display = 'none';
+        }
+    }, 300);
+
+    cityInput.addEventListener('input', onCityInput);
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!document.getElementById('city-search-container').contains(e.target)) {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+
 });
+
+document.getElementById("show-weather").addEventListener('change', (e) => {
+    document.getElementById('weather-options').style.display = e.target.checked ? 'block' : 'none';
+});
+
+document.getElementById("use-custom-city").addEventListener('change', (e) => {
+    document.getElementById('custom-city-container').style.display = e.target.checked ? 'block' : 'none';
+    if (!e.target.checked) {
+        // Clear custom city value when unchecked to revert to geolocation
+        document.getElementById('custom-city').value = '';
+    }
+});
+
+document.getElementById("custom-city").addEventListener('input', () => {
+    // When user types, invalidate weather cache
+    localStorage.removeItem('weatherData');
+});
+
 
 document.getElementById("restore-defaults").addEventListener("click", () => {
     localStorage.removeItem("settings");
     localStorage.setItem("settings", JSON.stringify(defaultSettings));
-    alert("Settings Restored to Defaults!");
-    location.reload();
+    showNotification("Settings restored to defaults!", 2000, 'restore');
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {

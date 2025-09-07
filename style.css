@@ -33,6 +33,7 @@ body.light {
     color: inherit;
 }
 
+
 .search {
     margin-bottom: 2rem;
 }
@@ -45,7 +46,7 @@ body.light {
     font-size: 1rem;
     outline: none;
     background: #1e1e1e;
-    color: #fff;
+    color: #fff;    
     font-family: monospace;
 }
 
@@ -200,14 +201,11 @@ body.light .search input {
 }
 
 body.options {
+    align-items: center;
+    justify-content: flex-start;
     text-align: left;
-    width: 50%;
-    padding-top: 3em;
-    margin-left : 10em;
-}
-
-.options-table {
-    text-transform: capitalize;
+    padding: 3rem 1rem;
+    margin: 0;
 }
 
 div#back {
@@ -221,6 +219,186 @@ div#back {
 div#back:hover {
     cursor: pointer;
 }
+
+#options-wrapper {
+    max-width: 700px;
+    width: 100%;
+    padding: 2rem;
+    background: rgba(128, 128, 128, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+body.dark #options-wrapper {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+#options-wrapper h1 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+    padding-bottom: 0.5em;
+}
+
+#options-wrapper h2 {
+    margin-top: 2em;
+    margin-bottom: 1em;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    padding-bottom: 0.3em;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.options-table .checkbox-label {
+    margin-bottom: 0; /* Override default margin for table rows */
+    justify-content: center;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-bottom: 1em;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.checkbox-label input {
+    display: none; /* Hide the default checkbox */
+}
+
+.checkbox-label .custom-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #888;
+    border-radius: 3px;
+    margin-right: 0.75em;
+    display: inline-block;
+    position: relative;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.checkbox-label input:checked + .custom-checkbox {
+    background-color: #ccc;
+    border-color: #ccc;
+}
+
+.checkbox-label {
+    display: block;
+    margin-bottom: 1em;
+    font-size: 1.1em;
+}
+
+#options-wrapper input[type="text"],
+#options-wrapper input[type="number"],
+#options-wrapper select,
+#options-wrapper textarea {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #333;
+    color: #f0f0f0;
+    font-family: monospace;
+    margin-top: 0.5em;
+    box-sizing: border-box;
+}
+
+#options-wrapper input[type="text"],
+#options-wrapper textarea {
+    width: 100%;
+}
+
+#options-wrapper select {
+    width: auto;
+    min-width: 200px;
+}
+
+body.light #options-wrapper input[type="text"],
+body.light #options-wrapper input[type="number"],
+body.light #options-wrapper select,
+body.light #options-wrapper textarea {
+    background: #f0f0f0;
+    color: #222;
+    border-color: #ccc;
+}
+
+/* Slider Styles */
+#options-wrapper input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 200px;
+    height: 8px;
+    background: #555;
+    border-radius: 5px;
+    outline: none;
+    margin-left: 1em;
+}
+
+body.light #options-wrapper input[type="range"] {
+    background: #ddd;
+}
+
+#options-wrapper input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #f0f0f0;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+#options-wrapper input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #f0f0f0;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+.options-table {
+    width: 100%;
+    text-transform: capitalize;
+    border-collapse: collapse;
+    margin-top: 1em;
+}
+
+.options-table th, .options-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.options-table button {
+    margin: 0 2px;
+    padding: 2px 6px;
+}
+
+.button-group {
+    margin-top: 2.5em;
+    border-top: 1px solid rgba(128, 128, 128, 0.3);
+    padding-top: 1.5em;
+}
+
+#options-wrapper button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 1em;
+    margin-right: 10px;
+}
+
+#save { background-color: #4CAF50; color: white; }
+#restore-defaults { background-color: #f44336; color: white; }
 
 :root {
     --color-accent: #ccc;
@@ -257,4 +435,58 @@ body.light {
 
 .sub-settings {
     margin-left: 2em;
+}
+
+#city-search-container {
+    position: relative;
+    display: inline-block;
+}
+
+#city-suggestions {
+    display: none;
+    position: absolute;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    width: 100%;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+#city-suggestions div {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #333;
+}
+
+#city-suggestions div:hover {
+    background-color: #eee;
+}
+
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#notification.success {
+    background-color: #4CAF50; /* Green */
+}
+
+#notification.restore {
+    background-color: #f44336; /* Red */
+}
+
+#notification.show {
+    opacity: 1;
+}
+
+#notification.hidden {
+    display: none;
 }

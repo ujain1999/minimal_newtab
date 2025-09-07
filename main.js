@@ -16,7 +16,18 @@ const weatherCodes = {
 };
 
 function fetchWeatherAndCity(lat, lon) {
-    // Fetches Weather and location 
+    const now = new Date();
+    const cachedWeather = localStorage.getItem('weatherData');
+    
+    if (cachedWeather) {
+        const weatherData = JSON.parse(cachedWeather);
+        // Check if cache is less than 30 minutes old
+        if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
+            document.getElementById('weather').textContent = weatherData.text;
+            return;
+        }
+    }
+
     fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
         .then(res => res.json())
         .then(data => {
@@ -29,7 +40,14 @@ function fetchWeatherAndCity(lat, lon) {
                 .then(res => res.json())
                 .then(location => {
                     const city = location.address.city || location.address.town || location.address.village || location.address.county || "your area";
-                    document.getElementById('weather').textContent = `${city}: ${weatherText}`;
+                    const weatherString = `${city}: ${weatherText}`;
+                    document.getElementById('weather').textContent = weatherString;
+                    
+                    // Cache the weather data
+                    localStorage.setItem('weatherData', JSON.stringify({
+                        text: weatherString,
+                        timestamp: now.toISOString()
+                    }));
                 })
                 .catch(() => {
                     document.getElementById('weather').textContent = weatherText;
@@ -39,6 +57,36 @@ function fetchWeatherAndCity(lat, lon) {
             document.getElementById('weather').textContent = "Unable to fetch weather.";
         });
 }
+
+function fetchWeatherByCity(city) {
+    const now = new Date();
+    const cachedWeather = localStorage.getItem('weatherData');
+    
+    if (cachedWeather) {
+        const weatherData = JSON.parse(cachedWeather);
+        // Check if cache is less than 30 minutes old
+        if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
+            document.getElementById('weather').textContent = weatherData.text;
+            return;
+        }
+    }
+
+    // First get coordinates for the city
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.length > 0) {
+                const { lat, lon } = data[0];
+                fetchWeatherAndCity(lat, lon);
+            } else {
+                document.getElementById('weather').textContent = "City not found";
+            }
+        })
+        .catch(() => {
+            document.getElementById('weather').textContent = "Unable to fetch weather";
+        });
+}
+
 
 function applyTheme(theme) {
     // Applies theme - dark, light, system 
@@ -163,16 +211,21 @@ else {
 }
 
 if (settings.weather) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude),
-            () => { document.getElementById('weather').textContent = "Location access denied."; }
-        );
+    const useCustomCity = settings.useCustomCity;
+    if (useCustomCity && settings.customCity) {
+        const customCity = settings.customCity;
+        fetchWeatherByCity(customCity);
     } else {
-        document.getElementById('weather').textContent = "Geolocation not supported.";
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude),
+                () => { document.getElementById('weather').textContent = "Location access denied."; }
+            );
+        } else {
+            document.getElementById('weather').textContent = "Geolocation not supported.";
+        }
     }
-}
-else {
+} else {
     document.getElementById('weather').style.display = 'none';
 }
 
