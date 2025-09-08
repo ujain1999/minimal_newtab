@@ -78,6 +78,22 @@
                     </div>
                 </div>
 
+                <div class="setting-row">
+                    <label for="background-image-input">Custom Background Image:</label>
+                    <div class="background-image-controls">
+                        <label for="background-image-input" id="background-add-label" class="background-add-label">
+                            <div id="background-preview-container" class="background-preview-container">
+                                <span class="plus-icon">+</span>
+                            </div>
+                        </label>
+                        <div id="image-present-container" class="background-preview-container hidden">
+                            <img id="background-preview" src="#" alt="Background preview" class="hidden">
+                            <button id="clear-background-image" class="clear-background-button hidden">&times;</button>
+                        </div>
+                        <input type="file" id="background-image-input" class="visually-hidden" accept="image/*">
+                    </div>
+                </div>
+
                 <label class="checkbox-label"><input type="checkbox" id="show-pixelArt"><span class="custom-checkbox"></span>Show Background Pixel Art</label>
                 <div id="pixel-art-select-div" class="sub-settings">
                     <label for="pixel-art-select">Select Pixel Art: </label>

@@ -22,7 +22,8 @@ const defaultSettings = {
     "pixelArtColorDark": "#cccccc",
     "pixelArtColorLight": "#b04288",
     "availableWidgets": ["calendar", "todo"]
-};
+,
+    "backgroundImage": ""};
 
 Object.assign(defaultSettings, {
     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": []
@@ -52,19 +53,21 @@ async function fetchCitySuggestions(query) {
     }
 }
 
-function showNotification(message, duration = 2000, type = 'success') {
+function showNotification(message, duration = 2000, type = 'success', reload = false) {
     const notification = document.getElementById('notification');
     notification.textContent = message;
     notification.className = 'hidden'; // Reset classes
     notification.classList.add(type);
     notification.classList.remove('hidden');
     notification.classList.add('show');
-
+    
     setTimeout(() => {
         notification.classList.remove('show');
         setTimeout(() => {
             notification.classList.add('hidden');
-            location.reload();
+            if (reload) {
+                location.reload();
+            }
         }, 500); // Wait for fade out before reloading
     }, duration);
 }
@@ -72,7 +75,7 @@ function showNotification(message, duration = 2000, type = 'success') {
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
-        "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme",
+        "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
         "sidebar", "sidebarPosition", "sidebarWidgets"
     ];
 
@@ -148,6 +151,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const theme = localStorage.getItem('theme') || 'system';
     if (document.querySelector(`input[name="theme"][value="${theme}"]`)) {
         document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
+    }
+
+    // Handle background image preview
+    const bgPreview = document.getElementById('background-preview');
+    const imagePresentContainer = document.getElementById('image-present-container');
+    const bgAddLabel = document.getElementById('background-add-label');
+    const clearBgButton = document.getElementById('clear-background-image');
+
+    if (settings.backgroundImage) {
+        bgPreview.src = settings.backgroundImage;
+        bgPreview.classList.remove('hidden');
+        imagePresentContainer.classList.remove('hidden');
+        bgAddLabel.classList.add('hidden');
+        clearBgButton.classList.remove('hidden');
+    } else {
+        bgPreview.classList.add('hidden');
+        imagePresentContainer.classList.add('hidden');
+        bgAddLabel.classList.remove('hidden');
+        clearBgButton.classList.add('hidden');
     }
 
     // Populate widgets
@@ -329,6 +351,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 // This is a static list for now, just carry it over.
                 settings_obj[key] = settings.availableWidgets || defaultSettings.availableWidgets;
             }
+            else if (key === 'backgroundImage') {
+                // This is handled by its own event listener, so just carry over the existing value
+                settings_obj[key] = settings.backgroundImage || "";
+            }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
             }
@@ -336,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
         localStorage.setItem("settings", JSON.stringify(settings_obj));
-        showNotification("Settings Saved!", 2000, 'success');
+        showNotification("Settings Saved!", 2000, 'success', false);
     })
 
     const cityInput = document.getElementById('custom-city');
@@ -431,6 +457,36 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTheme(e.target.value);
         });
     });
+
+    document.getElementById('background-image-input').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                settings.backgroundImage = event.target.result;
+                localStorage.setItem("settings", JSON.stringify(settings));
+                bgPreview.src = event.target.result;
+                imagePresentContainer.classList.remove('hidden');
+                bgPreview.classList.remove('hidden');
+                bgAddLabel.classList.add('hidden');
+                clearBgButton.classList.remove('hidden');
+                showNotification("Background image saved. It will appear on the new tab page.", 3000, 'success', false);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('clear-background-image').addEventListener('click', () => {
+        settings.backgroundImage = "";
+        localStorage.setItem("settings", JSON.stringify(settings));
+        document.getElementById('background-image-input').value = ''; // Clear file input
+        bgPreview.src = '#';
+        imagePresentContainer.classList.add('hidden');
+        bgPreview.classList.add('hidden');
+        bgAddLabel.classList.remove('hidden');
+        clearBgButton.classList.add('hidden');
+        showNotification("Background image cleared.", 2000, 'restore', false);
+    });
 });
 
 document.getElementById("show-weather").addEventListener('change', (e) => {
@@ -454,7 +510,7 @@ document.getElementById("custom-city").addEventListener('input', () => {
 document.getElementById("restore-defaults").addEventListener("click", () => {
     localStorage.removeItem("settings");
     localStorage.setItem("settings", JSON.stringify(defaultSettings));
-    showNotification("Settings restored to defaults!", 2000, 'restore');
+    showNotification("Settings restored to defaults! Reloading...", 2000, 'restore', true);
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {

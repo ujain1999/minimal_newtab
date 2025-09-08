@@ -207,6 +207,13 @@ const defaultSettings = {
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
 
+if (settings.backgroundImage) {
+    document.body.style.backgroundImage = `url(${settings.backgroundImage})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+}
+
 if (settings.clock) {
     setInterval(updateClock, 1000);
     updateClock();
