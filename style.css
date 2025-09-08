@@ -8,7 +8,7 @@ body {
     height: 100vh;
     text-align: center;
     padding-top: 10vh;
-    font-size: 1.1rem;
+    font-size: 1.1rem;    
     transition: background 0.3s ease, color 0.3s ease;
 }
 
@@ -22,6 +22,10 @@ body.light {
     color: #222;
 }
 
+body {
+    background-color: transparent; /* Allow background image to show */
+}
+
 .clock {
     font-size: 5rem;
     margin-bottom: 0.5rem;
@@ -31,28 +35,6 @@ body.light {
     font-size: 1.4rem;
     margin-bottom: 2rem;
     color: inherit;
-}
-
-
-.search {
-    margin-bottom: 2rem;
-}
-
-.search input {
-    width: 350px;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: 3px;
-    font-size: 1rem;
-    outline: none;
-    background: #1e1e1e;
-    color: #fff;    
-    font-family: monospace;
-}
-
-body.light .search input {
-    background: #eee;
-    color: #000;
 }
 
 .shortcuts {
@@ -204,8 +186,9 @@ body.options {
     align-items: center;
     justify-content: flex-start;
     text-align: left;
-    padding: 3rem 1rem;
+    padding: 2rem 1rem;
     margin: 0;
+    font-size: 1rem; /* Smaller base font for options */
 }
 
 div#back {
@@ -221,12 +204,14 @@ div#back:hover {
 }
 
 #options-wrapper {
-    max-width: 700px;
+    max-width: 900px;
+    height: 80vh;
     width: 100%;
-    padding: 2rem;
     background: rgba(128, 128, 128, 0.1);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: flex;
+    overflow: hidden;
 }
 
 body.dark #options-wrapper {
@@ -234,14 +219,14 @@ body.dark #options-wrapper {
 }
 
 #options-wrapper h1 {
-    margin-top: 0;
+    margin: 0 0 1.5em 0;
     border-bottom: 1px solid rgba(128, 128, 128, 0.3);
     padding-bottom: 0.5em;
 }
 
-#options-wrapper h2 {
+#options-wrapper .options-panel h2 {
     margin-top: 2em;
-    margin-bottom: 1em;
+    margin-bottom: 0.8em;
     border-bottom: 1px solid rgba(128, 128, 128, 0.2);
     padding-bottom: 0.3em;
 }
@@ -249,7 +234,8 @@ body.dark #options-wrapper {
 .setting-row {
     display: flex;
     align-items: center;
-    margin-bottom: 1em;
+    margin-bottom: 0.8em;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
 }
 
 .options-table .checkbox-label {
@@ -261,8 +247,8 @@ body.dark #options-wrapper {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
-    font-size: 1.1em;
-    margin-bottom: 1em;
+    font-size: 1em;
+    margin-bottom: 0.8em;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -274,8 +260,8 @@ body.dark #options-wrapper {
 }
 
 .checkbox-label .custom-checkbox {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     border: 2px solid #888;
     border-radius: 3px;
     margin-right: 0.75em;
@@ -291,8 +277,8 @@ body.dark #options-wrapper {
 
 .checkbox-label {
     display: block;
-    margin-bottom: 1em;
-    font-size: 1.1em;
+    margin-bottom: 0.8em;
+    font-size: 1em;
 }
 
 #options-wrapper input[type="text"],
@@ -376,15 +362,176 @@ body.light #options-wrapper input[type="range"] {
     border-bottom: 1px solid rgba(128, 128, 128, 0.2);
 }
 
+.options-table th:first-child {
+    width: 50px;
+}
+
+.options-table th.drag-handle-header {
+    width: 80px;
+    text-align: center;
+}
+
+.options-table .drag-handle {
+    cursor: grab;
+    text-align: center;
+    user-select: none;
+}
+
+.options-table tr.dragging {
+    opacity: 0.5;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.options-sidebar {
+    width: 180px;
+    padding: 1.5rem;
+    border-right: 1px solid rgba(128, 128, 128, 0.2);
+    flex-shrink: 0;
+}
+
+.options-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+.options-sidebar nav a {
+    text-decoration: none;
+    color: inherit;
+    padding: 0.5em 0.75em;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.options-sidebar nav a:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.options-sidebar nav a.active {
+    background-color: rgba(128, 128, 128, 0.2);
+    font-weight: bold;
+}
+
+.options-content {
+    flex-grow: 1;
+    padding: 0 2rem;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.options-content a {
+    color: inherit;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.options-content a:hover {
+    color: #0077cc;
+}
+
 .options-table button {
     margin: 0 2px;
     padding: 2px 6px;
 }
 
 .button-group {
-    margin-top: 2.5em;
+    margin-top: auto;
     border-top: 1px solid rgba(128, 128, 128, 0.3);
-    padding-top: 1.5em;
+    padding: 1.2em 0;
+    position: sticky; 
+    bottom: 0; 
+    background-color: #1c1c1c; /* A slightly different dark shade for the sticky footer */
+}
+
+body.light .button-group {
+    background-color: #fdfdfd; /* A slightly different light shade */
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+.background-image-controls {
+    margin: 0.5em 0 0 2em; /* Top margin, no side margin, bottom margin, left indent */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.background-add-label {
+    cursor: pointer;
+}
+
+.background-preview-container {
+    position: relative;
+    width: 100px;
+    height: 56px; /* 16:9 aspect ratio */
+    border: 1px solid #555;
+    border-radius: 12px; /* More rounded for a squircle look */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 0.8em;
+    color: #888;
+    transition: border-color 0.2s ease;
+}
+
+.background-add-label:hover .background-preview-container {
+    border-color: #888;
+}
+
+.plus-icon {
+    font-size: 3em;
+    font-weight: 100;
+    color: #555;
+    line-height: 1;
+}
+
+
+body.light .background-add-label {
+    color: #ccc;
+}
+
+.clear-background-button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.background-preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#image-present-container:hover .clear-background-button {
+    opacity: 1;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
 #options-wrapper button {
@@ -394,7 +541,28 @@ body.light #options-wrapper input[type="range"] {
     cursor: pointer;
     font-family: monospace;
     font-size: 1em;
-    margin-right: 10px;
+}
+
+.options-panel {
+    display: none;
+}
+
+.options-panel.active {
+    display: block;
+}
+
+/* Reorderable list styles */
+.reorder-list .drag-handle {
+    cursor: grab;
+}
+
+.reorder-list tr.dragging {
+    opacity: 0.5;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.reorder-list tr.dragging .drag-handle {
+    cursor: grabbing;
 }
 
 #save { background-color: #4CAF50; color: white; }
@@ -489,4 +657,330 @@ body.light {
 
 #notification.hidden {
     display: none;
+}
+
+#background-add-label.hidden,
+#background-preview.hidden,
+.clear-background-button.hidden,
+#image-present-container.hidden {
+    display: none;
+}
+
+/* Segmented Control for Radio Buttons */
+.segmented-control-container {
+    justify-content: space-between;
+}
+
+.segmented-control {
+    display: flex;
+    border: 1px solid #555;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+body.light .segmented-control {
+    border-color: #ccc;
+}
+
+.segmented-control label {
+    display: inline-block;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.segmented-control label:not(:last-child) {
+    border-right: 1px solid #555;
+}
+
+body.light .segmented-control label:not(:last-child) {
+    border-right-color: #ccc;
+}
+
+.segmented-control input[type="radio"] {
+    display: none; /* Hide the actual radio button */
+}
+
+.segmented-control input[type="radio"]:checked + span {
+    color: #121212; /* Dark text for contrast on the highlight */
+}
+
+.segmented-control label:has(input:checked) {
+    background-color: #ccc;
+}
+
+body.light .segmented-control label:has(input:checked) {
+    background-color: #555;
+    color: #f0f0f0;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    background: rgba(25, 25, 25, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+    display: none; /* Hidden by default, enabled via JS */
+}
+
+body.light .sidebar {
+    background: rgba(245, 245, 245, 0.75);
+}
+
+.sidebar.left {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.sidebar.right {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.sidebar:not(.minimised) {
+    transform: translateX(0);
+}
+
+.sidebar-handle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+body.light .sidebar-handle {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar.left .sidebar-handle {
+    right: -45px;
+}
+
+.sidebar.right .sidebar-handle {
+    left: -45px;
+}
+
+.sidebar-caret {
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.left .sidebar-caret {
+    border-left: 6px solid #f0f0f0;
+}
+
+.sidebar.left:not(.minimised) .sidebar-caret {
+    transform: rotate(180deg);
+}
+
+body.light .sidebar.left .sidebar-caret {
+    border-left-color: #222;
+}
+
+.sidebar.right .sidebar-caret {
+    border-right: 6px solid #f0f0f0;
+}
+
+.sidebar.right:not(.minimised) .sidebar-caret {
+    transform: rotate(180deg);
+}
+
+body.light .sidebar.right .sidebar-caret {
+    border-right-color: #222;
+}
+
+.sidebar-content {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.widget {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+body.light .widget {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.widget h3 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+    padding-bottom: 10px;
+}
+
+/* Calendar Widget Styles */
+.calendar-container {
+    font-size: 0.9em;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+.calendar-header span {
+    flex-grow: 1;
+    text-align: center;
+    width: 130px; /* Enforce a fixed width */
+}
+
+.calendar-header button:hover {
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.calendar-day-name {
+    font-weight: bold;
+    opacity: 0.7;
+    padding-bottom: 5px;
+}
+
+.calendar-day {
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-day:not(.today):hover {
+    background-color: rgba(128, 128, 128, 0.2);
+    cursor: pointer; /* The whole widget is clickable, this reinforces it */
+    transition: background-color 0.2s ease;
+}
+
+.calendar-day.today {
+    background-color: var(--color-accent);
+    color: #121212;
+    font-weight: bold;
+}
+
+/* Todo Widget Styles */
+.todo-widget .todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    text-align: left;
+}
+
+.todo-widget .todo-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    font-size: 0.95em;
+    transition: opacity 0.3s ease;
+}
+
+.todo-widget .todo-list li .checkbox-label {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-bottom: 0; /* Override default checkbox-label margin */
+    font-size: 1em; /* Inherit from parent li */
+    word-break: break-word;
+}
+
+
+.todo-widget .todo-list li:last-child {
+    border-bottom: none;
+}
+
+.todo-widget .todo-list li.completed {
+    opacity: 0.5;
+}
+
+.todo-widget .todo-list li.completed span {
+    text-decoration: line-through;
+}
+
+.todo-widget .todo-list input[type="checkbox"] {
+    display: none; /* Hide default checkbox */
+}
+
+.todo-widget .todo-list .custom-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #888;
+    border-radius: 3px;
+    margin-right: 10px;
+    display: inline-block;
+    position: relative;
+    transition: background-color 0.2s, border-color 0.2s;
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+
+.todo-widget .todo-list .todo-text {
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+.todo-widget .todo-list button {
+    background: none;
+    border: none;
+    color: #f0f0f0;
+    font-size: 1.2em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    padding: 0 5px;
+}
+
+body.light .todo-widget .todo-list button {
+    color: #222;
+}
+
+.todo-widget .todo-list li:hover button {
+    opacity: 1;
+}
+
+.todo-widget .todo-input {
+    width: 100%;
+    padding: 8px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: inherit;
+    font-family: monospace;
+    box-sizing: border-box; /* Prevents overflow on focus */
 }

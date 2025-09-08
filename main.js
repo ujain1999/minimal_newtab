@@ -1,3 +1,6 @@
+import { renderCalendar } from './widgets/calendar.js';
+import { renderTodo } from './widgets/todo.js';
+
 function updateClock() {
     // Updates Clock
     const now = new Date();
@@ -196,11 +199,20 @@ const defaultSettings = {
         { id: "history", displayBool: true, url: "chrome://history" },
         { id: "extensions", displayBool: true, url: "chrome://extensions" },
         { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
-        { id: "settings", displayBool: true, url: "chrome://settings" }
+        { id: "settings", displayBool: true, url: "chrome://settings" },
+    ],
+    "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [
     ]
 };
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
+
+if (settings.backgroundImage) {
+    document.body.style.backgroundImage = `url(${settings.backgroundImage})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+}
 
 if (settings.clock) {
     setInterval(updateClock, 1000);
@@ -267,6 +279,44 @@ if (settings.topRight) {
 else {
     document.getElementById('top-right').style.display = 'none';
 }
+
+if (settings.sidebar) {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.style.display = 'flex';
+    sidebar.classList.add(settings.sidebarPosition || 'right');
+
+    const sidebarContent = sidebar.querySelector('.sidebar-content');
+    const selectedWidgets = settings.sidebarWidgets || [];
+
+    const widgetRenderers = {
+        calendar: renderCalendar,
+        todo: renderTodo,
+        // sports: renderSports, // Example for later
+        // news: renderNews,     // Example for later
+    };
+
+    if (selectedWidgets.length > 0) {
+        selectedWidgets.forEach(widgetId => {
+            if (widgetRenderers[widgetId]) {
+                const widgetContainer = document.createElement('div');
+                widgetContainer.classList.add('widget');
+                widgetContainer.id = `widget-${widgetId}`;
+
+                const widgetContent = widgetRenderers[widgetId];
+                widgetContainer.append(widgetContent());
+                sidebarContent.appendChild(widgetContainer);
+            }
+        });
+    } else {
+        sidebarContent.innerHTML = '<p style="text-align: center; margin-top: 50px;">No widgets selected. You can add widgets from the Customize menu.</p>';
+    }
+
+    const handle = sidebar.querySelector('.sidebar-handle');
+    handle.addEventListener('click', () => {
+        sidebar.classList.toggle('minimised');
+    });
+}
+
 
 const icons = {
     system: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"> <defs> <linearGradient id="half"> <stop offset="50%" stop-color="white" /> <stop offset="50%" stop-color="black" /> </linearGradient> </defs> <circle cx="24" cy="24" r="10" fill="url(#half)" stroke="currentColor" stroke-width="2"/> <line x1="24" y1="2" x2="24" y2="10" stroke="currentColor" stroke-width="2"/> <line x1="24" y1="38" x2="24" y2="46" stroke="currentColor" stroke-width="2"/> <line x1="2" y1="24" x2="10" y2="24" stroke="currentColor" stroke-width="2"/> <line x1="38" y1="24" x2="46" y2="24" stroke="currentColor" stroke-width="2"/> <line x1="8.5" y1="8.5" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="2"/> <line x1="33.5" y1="33.5" x2="39.5" y2="39.5" stroke="currentColor" stroke-width="2"/> <line x1="8.5" y1="39.5" x2="14.5" y2="33.5" stroke="currentColor" stroke-width="2"/> <line x1="33.5" y1="14.5" x2="39.5" y2="8.5" stroke="currentColor" stroke-width="2"/> </svg>`,
