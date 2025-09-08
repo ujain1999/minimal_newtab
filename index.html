@@ -14,6 +14,12 @@
 
 <body>
 
+  <div id="sidebar" class="sidebar minimised">
+    <div class="sidebar-handle">
+      <span class="sidebar-caret"></span>
+    </div>
+    <div class="sidebar-content"></div>
+  </div>
   <div class="top-right" id="top-right"></div>
 
   <div class="clock" id="clock">--:--</div>
@@ -29,8 +35,10 @@
     <span class="theme-label">System</span>
   </div>
   <div class="art-grid"></div>
-  <script src="main.js"></script>
+  <script type="module" src="main.js"></script>
   <script src="art.js"></script>
+  <script type="module" src="widgets/calendar.js"></script> 
+  <script type="module" src="widgets/todo.js"></script>
 </body>
 
 </html>

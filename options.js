@@ -20,8 +20,13 @@ const defaultSettings = {
     "pixelArtOpacity": 40,
     "pixelArtDensity": 20,
     "pixelArtColorDark": "#cccccc",
-    "pixelArtColorLight": "#b04288"
-}
+    "pixelArtColorLight": "#b04288",
+    "availableWidgets": ["calendar", "todo"]
+};
+
+Object.assign(defaultSettings, {
+    "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": []
+});
 
 function debounce(func, delay) {
     let timeout;
@@ -67,7 +72,8 @@ function showNotification(message, duration = 2000, type = 'success') {
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
-        "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight"
+        "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme",
+        "sidebar", "sidebarPosition", "sidebarWidgets"
     ];
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
@@ -131,7 +137,60 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settings['pixelArtColorLight']) {
         document.getElementById("pixelArtColorLight").value = settings['pixelArtColorLight'];
     }
-    if (settings['topRightOrder']) {
+    if (settings['sidebar']) {
+        document.getElementById("show-sidebar").checked = true;
+    } else {
+        document.getElementById("sidebar-options").style.display = "none";
+    }
+    if (settings['sidebarPosition']) {
+        document.querySelector(`input[name="sidebar-position"][value="${settings.sidebarPosition}"]`).checked = true;
+    }
+    const theme = localStorage.getItem('theme') || 'system';
+    if (document.querySelector(`input[name="theme"][value="${theme}"]`)) {
+        document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
+    }
+
+    // Populate widgets
+    const sidebarWidgetsTbody = document.getElementById('sidebar-widgets');
+    const enabledWidgets = settings.sidebarWidgets || [];
+    let allWidgets = settings.availableWidgets || defaultSettings.availableWidgets;
+
+    // Ensure allWidgets is an array to prevent errors from old settings formats
+    if (!Array.isArray(allWidgets)) {
+        allWidgets = defaultSettings.availableWidgets;
+    }
+
+    // Create a set of enabled widgets for quick lookup
+    const enabledWidgetSet = new Set(enabledWidgets);
+    const sortedWidgets = [
+        ...enabledWidgets,
+        ...allWidgets.filter(w => !enabledWidgetSet.has(w))
+    ];
+
+    sortedWidgets.forEach(widgetId => {
+        const tr = document.createElement('tr');
+        tr.setAttribute('draggable', 'true');
+
+        const td1 = document.createElement('td');
+        const td1label = document.createElement('label');
+        td1label.className = "checkbox-label";
+        td1label.innerHTML = `<input type="checkbox" data-widget="${widgetId}" ${enabledWidgetSet.has(widgetId) ? 'checked' : ''}><span class="custom-checkbox"></span>`;
+        td1.appendChild(td1label);
+
+        const td2 = document.createElement('td');
+        td2.textContent = widgetId.charAt(0).toUpperCase() + widgetId.slice(1);
+
+        const td3 = document.createElement('td');
+        td3.className = 'drag-handle';
+        td3.innerHTML = `<span>☰</span>`;
+
+        tr.append(td1, td2, td3);
+        sidebarWidgetsTbody.appendChild(tr);
+    });
+
+
+
+    if (settings.topRightOrder) {
         let tbody = document.querySelector("table#top-right-links tbody");
         tbody.innerHTML = "";
         settings['topRightOrder'].map(item => {
@@ -149,7 +208,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let td2 = document.createElement("td");
             td2.innerHTML = item.id;
             let td3 = document.createElement("td");
-            td3.innerHTML = `<button class="up">↑</button><button class="down">↓</button>`;
+            td3.innerHTML = `<span>☰</span>`;
+            td3.classList.add('drag-handle');
             tr.innerHTML = "";
             tr.append(td1);
             tr.append(td2);
@@ -157,22 +217,42 @@ document.addEventListener('DOMContentLoaded', () => {
             tbody.append(tr);
         })
     }
-    let container = document.querySelector("table#top-right-links tbody");
-    container.addEventListener('click', e => {
-        if (e.target.classList.contains('up')) {
-            const row = e.target.closest('tr');
-            if (row.previousElementSibling) {
-                container.insertBefore(row, row.previousElementSibling);
-            }
-        }
+    const shortcutsTableBody = document.querySelector("table#top-right-links tbody");
+    let draggingShortcutRow = null;
 
-        if (e.target.classList.contains('down')) {
-            const row = e.target.closest('tr');
-            if (row.nextElementSibling) {
-                container.insertBefore(row.nextElementSibling, row);
-            }
+    shortcutsTableBody.addEventListener('dragstart', e => {
+        const row = e.target.closest('tr');
+        if (row) {
+            draggingShortcutRow = row;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', null); // Necessary for Firefox
+            row.classList.add('dragging');
         }
     });
+
+    shortcutsTableBody.addEventListener('dragend', e => {
+        if (draggingShortcutRow) {
+            draggingShortcutRow.classList.remove('dragging');
+            draggingShortcutRow = null;
+        }
+    });
+
+    shortcutsTableBody.addEventListener('dragover', e => {
+        e.preventDefault();
+        const targetRow = e.target.closest('tr');
+        if (targetRow && targetRow !== draggingShortcutRow) {
+            const rect = targetRow.getBoundingClientRect();
+            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+            shortcutsTableBody.insertBefore(draggingShortcutRow, next && targetRow.nextSibling || targetRow);
+        }
+    });
+
+    shortcutsTableBody.addEventListener('drop', e => {
+        e.preventDefault();
+    });
+
+    // Make rows draggable
+    shortcutsTableBody.querySelectorAll('tr').forEach(row => row.setAttribute('draggable', 'true'));
 
     let selectElem = document.querySelector("#bookmark-folder-selector-span select");
     chrome.bookmarks.getTree(tree => {
@@ -233,6 +313,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (settings_obj[key] !== settings.useCustomCity || settings_obj.customCity !== settings.customCity) {
                     localStorage.removeItem('weatherData');
                 }
+            } else if (key === 'theme') {
+                const selectedTheme = document.querySelector('input[name="theme"]:checked').value;
+                localStorage.setItem('theme', selectedTheme);
+            } else if (key === 'sidebarPosition') {
+                settings_obj[key] = document.querySelector('input[name="sidebar-position"]:checked').value;
+            } else if (key === 'sidebarWidgets') {
+                const widgetRows = document.querySelectorAll('#sidebar-widgets tr');
+                const selectedWidgets = [];
+                widgetRows.forEach(row => {
+                    selectedWidgets.push(row.querySelector('input').getAttribute('data-widget'));
+                });
+                settings_obj[key] = selectedWidgets;
+            } else if (key === 'availableWidgets') {
+                // This is a static list for now, just carry it over.
+                settings_obj[key] = settings.availableWidgets || defaultSettings.availableWidgets;
             }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
@@ -277,6 +372,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    const navLinks = document.querySelectorAll('.options-sidebar nav a');
+    const panels = document.querySelectorAll('.options-panel');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+
+            navLinks.forEach(navLink => navLink.classList.remove('active'));
+            panels.forEach(panel => panel.classList.remove('active'));
+
+            link.classList.add('active');
+            document.getElementById(targetId).classList.add('active');
+        });
+    });
+
+    // Drag and drop for widgets
+    const widgetList = document.getElementById('sidebar-widgets');
+    let draggingElement = null;
+
+    widgetList.addEventListener('dragstart', (e) => {
+        const row = e.target.closest('tr');
+        if (row) {
+            draggingElement = row;
+            e.dataTransfer.effectAllowed = 'move';
+            row.classList.add('dragging');
+        }
+    });
+
+    widgetList.addEventListener('dragend', (e) => {
+        if (draggingElement) {
+            draggingElement.classList.remove('dragging');
+            draggingElement = null;
+        }
+    });
+
+    widgetList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const targetRow = e.target.closest('tr');
+        if (targetRow && targetRow !== draggingElement) {
+            const rect = targetRow.getBoundingClientRect();
+            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
+            widgetList.insertBefore(draggingElement, next && targetRow.nextSibling || targetRow);
+        }
+    });
+
+    widgetList.addEventListener('drop', (e) => {
+        e.preventDefault();
+    });
+
+
+
+
+
+    document.querySelectorAll('input[name="theme"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            applyTheme(e.target.value);
+        });
+    });
 });
 
 document.getElementById("show-weather").addEventListener('change', (e) => {
@@ -337,6 +491,15 @@ document.getElementById("pixel-art-select").onchange = (e) => {
     }
     else {
         document.getElementById("custom-svg-input-div").style.display = "none";
+    }
+}
+
+document.getElementById("show-sidebar").onchange = (e) => {
+    if (e.target.checked) {
+        document.querySelector("#sidebar-options").style.display = "block";
+    }
+    else {
+        document.querySelector("#sidebar-options").style.display = "none";
     }
 }
 
