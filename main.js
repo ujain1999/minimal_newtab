@@ -18,7 +18,7 @@ const weatherCodes = {
     95: "Thunderstorm", 96: "Thunderstorm w/ hail", 99: "Severe thunderstorm"
 };
 
-function fetchWeatherAndCity(lat, lon) {
+function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
     const now = new Date();
     const cachedWeather = localStorage.getItem('weatherData');
     
@@ -31,13 +31,15 @@ function fetchWeatherAndCity(lat, lon) {
         }
     }
 
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+    const tempUnitParam = tempUnit === 'fahrenheit' ? '&temperature_unit=fahrenheit' : '';
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true${tempUnitParam}`)
         .then(res => res.json())
         .then(data => {
             const temp = Math.round(data.current_weather.temperature);
             const code = data.current_weather.weathercode;
             const desc = weatherCodes[code] || `Code ${code}`;
-            let weatherText = `${desc}, ${temp}°C`;
+            let weatherText = `${desc}, ${temp}°${tempUnit === 'celsius' ? 'C' : 'F'}`;
 
             fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
                 .then(res => res.json())
@@ -61,7 +63,7 @@ function fetchWeatherAndCity(lat, lon) {
         });
 }
 
-function fetchWeatherByCity(city) {
+function fetchWeatherByCity(city, tempUnit = 'celsius') {
     const now = new Date();
     const cachedWeather = localStorage.getItem('weatherData');
     
@@ -80,7 +82,7 @@ function fetchWeatherByCity(city) {
         .then(data => {
             if (data.length > 0) {
                 const { lat, lon } = data[0];
-                fetchWeatherAndCity(lat, lon);
+                fetchWeatherAndCity(lat, lon, tempUnit);
             } else {
                 document.getElementById('weather').textContent = "City not found";
             }
@@ -193,6 +195,7 @@ const defaultSettings = {
     "weather": true,
     "bookmarks": true,
     "topRight": true,
+    "tempUnit": "celsius",
     "topRightOrder": [
         { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
         { id: "downloads", displayBool: true, url: "chrome://downloads" },
@@ -224,13 +227,14 @@ else {
 
 if (settings.weather) {
     const useCustomCity = settings.useCustomCity;
+    const tempUnit = settings.tempUnit || 'celsius';
     if (useCustomCity && settings.customCity) {
         const customCity = settings.customCity;
-        fetchWeatherByCity(customCity);
+        fetchWeatherByCity(customCity, tempUnit);
     } else {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude),
+                pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude, tempUnit),
                 () => { document.getElementById('weather').textContent = "Location access denied."; }
             );
         } else {
