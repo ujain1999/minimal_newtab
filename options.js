@@ -3,6 +3,7 @@ const defaultSettings = {
     "weather": true,
     "customCity": "",
     "useCustomCity": false,
+    "tempUnit": "celsius",
     "bookmarks": true,
     "bookmarkFolder": "Bookmarks Bar",
     "topRight": true,
@@ -74,7 +75,7 @@ function showNotification(message, duration = 2000, type = 'success', reload = f
 
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "useCustomCity", "customCity", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
+        "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
         "sidebar", "sidebarPosition", "sidebarWidgets"
     ];
@@ -102,6 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     if (settings['customCity']) {
         document.getElementById("custom-city").value = settings['customCity'];
+    }
+    if (settings['tempUnit']) {
+        document.querySelector(`input[name="temp-unit"][value="${settings.tempUnit}"]`).checked = true;
     }
     if (settings['bookmarks']) {
         document.getElementById("show-bookmarks").checked = true;
@@ -335,6 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (settings_obj[key] !== settings.useCustomCity || settings_obj.customCity !== settings.customCity) {
                     localStorage.removeItem('weatherData');
                 }
+            } else if (key === 'tempUnit') {
+                settings_obj[key] = document.querySelector('input[name="temp-unit"]:checked').value;
             } else if (key === 'theme') {
                 const selectedTheme = document.querySelector('input[name="theme"]:checked').value;
                 localStorage.setItem('theme', selectedTheme);
