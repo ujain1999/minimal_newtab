@@ -101,6 +101,35 @@
                     </div>
                 </div>
 
+                <label class="checkbox-label"><input type="checkbox" id="use-unsplash"><span class="custom-checkbox"></span> Use random background from Unsplash</label>
+                <div id="unsplash-options" class="sub-settings">
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-top: -0.5em; margin-bottom: 1em;">This will fetch a new high-quality background image. It will override the custom background image if one is set.</p>
+                    <div class="setting-row">
+                        <label for="unsplash-api-key">Unsplash API Key (Required)</label>
+                        <input type="text" id="unsplash-api-key" placeholder="Enter your Unsplash Access Key">
+                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 0.3em;">An API key is required to fetch images from Unsplash. Get a free key from <a href="https://unsplash.com/developers" target="_blank" rel="noopener">Unsplash Developers</a>.</p>
+                    </div>
+                    <div class="tooltip-wrapper" data-tooltip="Requires an Unsplash API Key">
+                        <div class="setting-row">
+                            <label for="unsplash-update-frequency">Update Frequency</label>
+                            <select id="unsplash-update-frequency" disabled>
+                                <option value="15min">15 Minutes</option>
+                                <option value="30min">30 Minutes</option>
+                                <option value="hourly">Hourly</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="tooltip-wrapper" data-tooltip="Requires an Unsplash API Key">
+                        <div class="setting-row">
+                            <label class="checkbox-label" for="show-unsplash-refresh">
+                                <input type="checkbox" id="show-unsplash-refresh" disabled><span class="custom-checkbox"></span> Show manual refresh button
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <label class="checkbox-label"><input type="checkbox" id="show-pixelArt"><span class="custom-checkbox"></span>Show Background Pixel Art</label>
                 <div id="pixel-art-select-div" class="sub-settings">
                     <label for="pixel-art-select">Select Pixel Art: </label>
