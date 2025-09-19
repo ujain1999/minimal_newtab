@@ -23,7 +23,10 @@ const defaultSettings = {
     "pixelArtColorDark": "#cccccc",
     "pixelArtColorLight": "#b04288",
     "availableWidgets": ["calendar", "todo"]
-,
+    , "useUnsplash": false, 
+    "unsplashApiKey": "",
+    "unsplashUpdateFrequency": "daily",
+    "showUnsplashRefresh": false,
     "backgroundImage": ""};
 
 Object.assign(defaultSettings, {
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
-        "sidebar", "sidebarPosition", "sidebarWidgets"
+        "sidebar", "sidebarPosition", "sidebarWidgets", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh"
     ];
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
@@ -162,6 +165,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const imagePresentContainer = document.getElementById('image-present-container');
     const bgAddLabel = document.getElementById('background-add-label');
     const clearBgButton = document.getElementById('clear-background-image');
+    const useUnsplashCheckbox = document.getElementById('use-unsplash');
+    if (settings.useUnsplash) {
+        useUnsplashCheckbox.checked = true;
+        document.getElementById('unsplash-options').style.display = 'block';
+    } else {
+        document.getElementById('unsplash-options').style.display = 'none';
+    }
+
+    document.getElementById('unsplash-api-key').value = settings.unsplashApiKey || '';
+    const unsplashApiKeyInput = document.getElementById('unsplash-api-key');
+    const unsplashUpdateFrequencySelect = document.getElementById('unsplash-update-frequency');
+    const showUnsplashRefreshCheckbox = document.getElementById('show-unsplash-refresh');
+
+    function toggleUnsplashAdvancedOptions() {
+        const hasApiKey = unsplashApiKeyInput.value.trim() !== '';
+        const tooltipWrappers = document.querySelectorAll('#unsplash-options .tooltip-wrapper');
+
+        unsplashUpdateFrequencySelect.disabled = !hasApiKey;
+        showUnsplashRefreshCheckbox.disabled = !hasApiKey;
+        if (!hasApiKey) {
+            showUnsplashRefreshCheckbox.checked = false;
+            tooltipWrappers.forEach(wrapper => wrapper.classList.add('disabled'));
+        }
+        else { tooltipWrappers.forEach(wrapper => wrapper.classList.remove('disabled')); }
+    }
+    toggleUnsplashAdvancedOptions(); // Initial check
+    document.getElementById('unsplash-update-frequency').value = settings.unsplashUpdateFrequency || 'daily';
+    showUnsplashRefreshCheckbox.checked = settings.showUnsplashRefresh || false;
 
     if (settings.backgroundImage) {
         bgPreview.src = settings.backgroundImage;
@@ -358,8 +389,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 settings_obj[key] = settings.availableWidgets || defaultSettings.availableWidgets;
             }
             else if (key === 'backgroundImage') {
-                // This is handled by its own event listener, so just carry over the existing value
                 settings_obj[key] = settings.backgroundImage || "";
+            } else if (key === 'useUnsplash') {
+                settings_obj[key] = document.getElementById('use-unsplash').checked;
+                if (settings_obj[key]) {
+                    settings_obj['backgroundImage'] = "";
+                }
+            } else if (key === 'unsplashApiKey') {
+                settings_obj[key] = document.getElementById('unsplash-api-key').value.trim();
+            } else if (key === 'unsplashUpdateFrequency') {
+                settings_obj[key] = document.getElementById('unsplash-update-frequency').value;
+                localStorage.removeItem('unsplashData');
+            }
+            else if (key === 'showUnsplashRefresh') {
+                settings_obj[key] = document.getElementById('show-unsplash-refresh').checked;
             }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;
@@ -368,11 +411,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         });
         localStorage.setItem("settings", JSON.stringify(settings_obj));
+        if (settings_obj.useUnsplash) {
+            localStorage.removeItem('unsplashData');
+        }
         showNotification("Settings Saved!", 2000, 'success', false);
     })
 
     const cityInput = document.getElementById('custom-city');
     const suggestionsContainer = document.getElementById('city-suggestions');
+
+    unsplashApiKeyInput.addEventListener('input', toggleUnsplashAdvancedOptions);
+
+    document.getElementById('use-unsplash').addEventListener('change', (e) => {
+        document.getElementById('unsplash-options').style.display = e.target.checked ? 'block' : 'none';
+        toggleUnsplashAdvancedOptions();
+    });
 
     const onCityInput = debounce(async (e) => {
         const query = e.target.value;
@@ -420,7 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Drag and drop for widgets
     const widgetList = document.getElementById('sidebar-widgets');
     let draggingElement = null;
 

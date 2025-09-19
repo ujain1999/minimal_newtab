@@ -9,17 +9,17 @@ body {
     text-align: center;
     padding-top: 10vh;
     font-size: 1.1rem;    
-    transition: background 0.3s ease, color 0.3s ease;
+    transition: background-image 1s ease-in-out, color 0.3s ease;
 }
 
 body.dark {
     background: #121212;
-    color: #f0f0f0;
+    color: #f0f0f0; /* Restore default dark theme text color */
 }
 
 body.light {
     background: #ffffff;
-    color: #222;
+    color: #222; /* Restore default light theme text color */
 }
 
 body {
@@ -181,6 +181,69 @@ body {
     opacity: 1;
     max-width: 6rem;
 }
+
+.tooltip-wrapper {
+    position: relative;
+}
+
+.tooltip-wrapper.disabled > * {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.tooltip-wrapper.disabled:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+body.light .tooltip-wrapper.disabled:hover::after {
+    background-color: #eee;
+    color: #333;
+}
+.photo-credit {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.photo-credit a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+}
+
+.refresh-background {
+    display: inline-flex; /* Changed from flex */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+    opacity: 0.8;
+    rotate: 90deg;
+}
+
+.refresh-background:hover {
+    opacity: 1;
+}
+
 
 body.options {
     align-items: center;
@@ -447,7 +510,7 @@ body.light #options-wrapper input[type="range"] {
 }
 
 body.light .button-group {
-    background-color: #fdfdfd; /* A slightly different light shade */
+    background-color: #f0f0f0; /* Match light theme input background */
     border-top-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -666,6 +729,11 @@ body.light {
     display: none;
 }
 
+.refresh-icon::before {
+    content: '↻';
+    font-size: 1.2rem;
+    color: white;
+}
 /* Segmented Control for Radio Buttons */
 .segmented-control-container {
     justify-content: space-between;

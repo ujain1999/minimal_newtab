@@ -2,7 +2,6 @@ import { renderCalendar } from './widgets/calendar.js';
 import { renderTodo } from './widgets/todo.js';
 
 function updateClock() {
-    // Updates Clock
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const mins = String(now.getMinutes()).padStart(2, '0');
@@ -24,7 +23,6 @@ function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
     
     if (cachedWeather) {
         const weatherData = JSON.parse(cachedWeather);
-        // Check if cache is less than 30 minutes old
         if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
             document.getElementById('weather').textContent = weatherData.text;
             return;
@@ -69,14 +67,12 @@ function fetchWeatherByCity(city, tempUnit = 'celsius') {
     
     if (cachedWeather) {
         const weatherData = JSON.parse(cachedWeather);
-        // Check if cache is less than 30 minutes old
         if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
             document.getElementById('weather').textContent = weatherData.text;
             return;
         }
     }
 
-    // First get coordinates for the city
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
         .then(res => res.json())
         .then(data => {
@@ -92,9 +88,127 @@ function fetchWeatherByCity(city, tempUnit = 'celsius') {
         });
 }
 
+function displayPhotoCredit(photoData) {
+    const creditContainer = document.getElementById('photo-credit');
+    const creditLink = document.getElementById('photo-credit-link');
+
+    if (photoData && photoData.user) {
+        creditLink.href = photoData.user.links.html + "?utm_source=minimal_new_tab&utm_medium=referral";
+        creditLink.textContent = photoData.user.name;
+        creditContainer.style.display = 'block';
+    } else {
+        creditContainer.style.display = 'none';
+    }
+}
+
+function analyzeAndSetTextColor(imageUrl) {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = imageUrl;
+
+    img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        const x = Math.floor(img.width / 4);
+        const y = Math.floor(img.height / 4);
+        const width = Math.floor(img.width / 2);
+        const height = Math.floor(img.height / 2);
+        const imageData = ctx.getImageData(x, y, width, height).data;
+
+        let r = 0, g = 0, b = 0;
+        for (let i = 0; i < imageData.length; i += 4) {
+            r += imageData[i];
+            g += imageData[i + 1];
+            b += imageData[i + 2];
+        }
+        const pixelCount = imageData.length / 4;
+        const luminance = (0.299 * (r / pixelCount) + 0.587 * (g / pixelCount) + 0.114 * (b / pixelCount));
+        document.body.style.color = luminance > 128 ? '#222' : '#f0f0f0';
+    };
+}
+
+async function setUnsplashBackground(forceRefresh = false) {
+    const now = new Date();
+    const cachedData = localStorage.getItem('unsplashData');
+    const userApiKey = settings.unsplashApiKey;    
+    
+    let currentTheme = localStorage.getItem('theme') || 'system';
+    let themeQuery = '';
+    if (currentTheme === 'system') {
+        currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    if (currentTheme === 'dark') {
+        themeQuery = ',dark';
+    }
+
+    const frequencyMap = {
+        '15min': 15 * 60 * 1000,
+        '30min': 30 * 60 * 1000,
+        'hourly': 60 * 60 * 1000,
+        'daily': 24 * 60 * 60 * 1000,
+        'weekly': 7 * 24 * 60 * 60 * 1000
+    };
+    const updateFrequency = frequencyMap[settings.unsplashUpdateFrequency] || frequencyMap['daily'];
+
+    if (userApiKey && settings.showUnsplashRefresh) {
+        document.getElementById('refresh-background').style.display = 'inline-flex';
+    }
+
+    if (cachedData && !forceRefresh) {
+        const { timestamp, photo } = JSON.parse(cachedData);
+        if ((now - new Date(timestamp)) < updateFrequency) {
+            const img = new Image();
+            img.onload = () => {
+                document.body.style.backgroundImage = `url(${photo.urls.full})`;
+                analyzeAndSetTextColor(photo.urls.full);
+            };
+            img.src = photo.urls.full;
+            displayPhotoCredit(photo);
+            return;
+        }
+    }
+
+    if (!userApiKey) {
+        console.error("Unsplash API key is missing. Please add it in the options page.");
+        const creditContainer = document.getElementById('photo-credit');
+        creditContainer.style.display = 'block';
+        creditContainer.innerHTML = 'Unsplash background requires an API key in settings.';
+        return;
+    }
+
+    try {
+        let apiUrl;
+        if (userApiKey) {
+            apiUrl = `https://api.unsplash.com/photos/random?query=wallpapers${themeQuery}&orientation=landscape&client_id=${userApiKey}`;
+        }
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+            const newPhoto = await response.json();
+            const img = new Image();
+            img.onload = () => {
+                document.body.style.backgroundImage = `url(${newPhoto.urls.full})`;
+                analyzeAndSetTextColor(newPhoto.urls.full);
+                localStorage.setItem('unsplashData', JSON.stringify({
+                    timestamp: now.toISOString(),
+                    photo: newPhoto
+                }));
+                displayPhotoCredit(newPhoto);
+            };
+            img.src = newPhoto.urls.full;
+        }
+        else if (response.status === 429) {
+            console.warn("Unsplash background refresh rate-limited. Please wait before trying again.");
+        }
+    } catch (error) {
+        console.error("Failed to fetch Unsplash background:", error);
+    }
+}
 
 function applyTheme(theme) {
-    // Applies theme - dark, light, system 
     document.body.classList.remove('dark', 'light');
     if (theme === 'dark') {
         document.body.classList.add('dark');
@@ -129,12 +243,10 @@ function applyTheme(theme) {
 }
 
 function renderBookmarks(nodes, container, level = 0, path = "") {
-    // Render Bookmarks 
     nodes.forEach((node, idx) => {
         const currentPath = `${path}/${node.title || "Untitled"}`;
 
         if (node.children && node.children.length > 0) {
-            // Folder
             const folderRow = document.createElement('div');
             folderRow.className = 'bookmark-folder';
             folderRow.style.marginLeft = `${level * 0.5}rem`;
@@ -179,7 +291,6 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
             renderBookmarks(node.children, childrenContainer, level + 1, currentPath);
 
         } else if (node.url) {
-            // Bookmark
             const a = document.createElement('a');
             a.href = node.url;
             a.className = 'shortcut';
@@ -197,7 +308,7 @@ const defaultSettings = {
     "topRight": true,
     "tempUnit": "celsius",
     "topRightOrder": [
-        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
+        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks" },
         { id: "downloads", displayBool: true, url: "chrome://downloads" },
         { id: "history", displayBool: true, url: "chrome://history" },
         { id: "extensions", displayBool: true, url: "chrome://extensions" },
@@ -205,16 +316,24 @@ const defaultSettings = {
         { id: "settings", displayBool: true, url: "chrome://settings" },
     ],
     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [
-    ]
+    ],
+    "unsplashApiKey": "", 
+    "showUnsplashRefresh": false,
+    "unsplashUpdateFrequency": "daily"
 };
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
 
-if (settings.backgroundImage) {
+if (settings.useUnsplash) {
+    setUnsplashBackground();
+} else if (settings.backgroundImage) {
     document.body.style.backgroundImage = `url(${settings.backgroundImage})`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
+    analyzeAndSetTextColor(settings.backgroundImage);
+}
+
+if (settings.useUnsplash || settings.backgroundImage) {
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
 }
 
 if (settings.clock) {
@@ -294,9 +413,7 @@ if (settings.sidebar) {
 
     const widgetRenderers = {
         calendar: renderCalendar,
-        todo: renderTodo,
-        // sports: renderSports, // Example for later
-        // news: renderNews,     // Example for later
+        todo: renderTodo
     };
 
     if (selectedWidgets.length > 0) {
@@ -320,8 +437,11 @@ if (settings.sidebar) {
         sidebar.classList.toggle('minimised');
     });
 }
-
-
+if (settings.unsplashApiKey && settings.showUnsplashRefresh) {
+    document.getElementById('refresh-background').addEventListener('click', () => {
+        setUnsplashBackground(true);
+    });
+}
 const icons = {
     system: `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"> <defs> <linearGradient id="half"> <stop offset="50%" stop-color="white" /> <stop offset="50%" stop-color="black" /> </linearGradient> </defs> <circle cx="24" cy="24" r="10" fill="url(#half)" stroke="currentColor" stroke-width="2"/> <line x1="24" y1="2" x2="24" y2="10" stroke="currentColor" stroke-width="2"/> <line x1="24" y1="38" x2="24" y2="46" stroke="currentColor" stroke-width="2"/> <line x1="2" y1="24" x2="10" y2="24" stroke="currentColor" stroke-width="2"/> <line x1="38" y1="24" x2="46" y2="24" stroke="currentColor" stroke-width="2"/> <line x1="8.5" y1="8.5" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="2"/> <line x1="33.5" y1="33.5" x2="39.5" y2="39.5" stroke="currentColor" stroke-width="2"/> <line x1="8.5" y1="39.5" x2="14.5" y2="33.5" stroke="currentColor" stroke-width="2"/> <line x1="33.5" y1="14.5" x2="39.5" y2="8.5" stroke="currentColor" stroke-width="2"/> </svg>`,
     dark: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path fill="none" stroke="white" d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 1 0 9.79 9.79Z"/> </svg>`,
