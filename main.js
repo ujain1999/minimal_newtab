@@ -183,7 +183,9 @@ async function setUnsplashBackground(forceRefresh = false) {
     try {
         let apiUrl;
         if (userApiKey) {
-            apiUrl = `https://api.unsplash.com/photos/random?query=wallpapers${themeQuery}&orientation=landscape&client_id=${userApiKey}`;
+            const cacheBust = new Date().getTime();
+            apiUrl = `https://api.unsplash.com/photos/random?query=wallpapers${themeQuery}&orientation=landscape&client_id=${userApiKey}&cache_bust=${cacheBust}`;
+        
         }
         const response = await fetch(apiUrl);
         if (response.ok) {
