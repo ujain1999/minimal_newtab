@@ -173,6 +173,17 @@
                     <div class="setting-row"><label>Pixel Art Color (Dark Theme)<input type="color" id="pixelArtColorDark"></label></div>
                     <div class="setting-row"><label>Pixel Art Color (Light Theme)<input type="color" id="pixelArtColorLight"></label></div>
                 </div>
+
+                <div class="setting-row" style="margin-top: 2em;">
+                    <label for="custom-css">Custom CSS</label>
+                    <p style="font-size: 0.9em; opacity: 0.8; margin-top: 0.3em; margin-bottom: 0.8em;">Add your own CSS to customize the appearance of the new tab page. Changes apply after saving settings.</p>
+                    <textarea id="custom-css" rows="10" placeholder="/* Add your custom CSS here */
+/* Example:
+body { font-family: 'Comic Sans MS'; }
+.clock { font-size: 5em; }
+*/" style="width: 100%; font-family: monospace; font-size: 0.9em;"></textarea>
+                    <p style="font-size: 0.8em; opacity: 0.7; margin-top: 0.5em;">Note: Invalid CSS may affect page styling. Use the "Restore Defaults" button if something breaks.</p>
+                </div>
             </div>
 
             <div id="sidebar-settings" class="options-panel">
