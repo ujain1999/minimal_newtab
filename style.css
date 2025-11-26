@@ -210,6 +210,28 @@ body.light .tooltip-wrapper.disabled:hover::after {
     background-color: #eee;
     color: #333;
 }
+/* Custom tooltip for tooltip-wrapper when not disabled */
+.tooltip-wrapper:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    white-space: nowrap;
+    z-index: 20;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+body.light .tooltip-wrapper:hover::after {
+    background-color: #eee;
+    color: #222;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
 .photo-credit {
     position: absolute;
     bottom: 1rem;
@@ -874,9 +896,90 @@ body.light .sidebar.right .sidebar-caret {
 }
 
 .sidebar-content {
-    padding: 20px;
+    padding: 20px 20px 80px 20px;
     height: 100%;
     overflow-y: auto;
+}
+
+/* Sidebar footer (sticky at bottom) */
+.sidebar-footer {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-customize-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: inherit;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.95rem;
+    text-align: center;
+    transition: background-color 0.18s ease, transform 0.08s ease;
+}
+
+.sidebar-customize-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+body.light .sidebar-customize-btn {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.06);
+}
+
+/* About panel icon links - default uses light border on dark backgrounds */
+
+/* Web Store badge image styling - follow branding: do not alter badge aspect ratio */
+.webstore-badge {
+    height: 36px;
+    width: auto;
+    display: block;
+    border-radius: 6px;
+}
+
+.webstore-badge-link { padding: 4px; }
+
+.fallback-store-icon { color: inherit; }
+
+/* Ensure both About icons (webstore + github) visually match the official badge size */
+.about-links { gap: 12px; }
+
+/* Make both icons look like they're part of the page: no heavy borders, same size as chrome badge */
+.about-links .icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    width: auto;
+    height: auto;
+    background: transparent; /* blend with page */
+    border: 1px solid rgba(255,255,255,0.14); /* white-ish border for dark mode */
+    border-radius: 6px;
+    transition: transform 0.08s ease, opacity 0.12s ease;
+}
+
+.about-links .icon-link img {
+    height: 36px; /* official badge height */
+    width: auto;
+    display: block;
+}
+
+.about-links .icon-link:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+/* Light theme: use darker (black) border so icons stand out */
+body.light .about-links .icon-link {
+    border: 1px solid rgba(0,0,0,0.16);
 }
 
 .widget {

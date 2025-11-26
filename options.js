@@ -22,18 +22,23 @@ const defaultSettings = {
     "pixelArtDensity": 20,
     "pixelArtColorDark": "#cccccc",
     "pixelArtColorLight": "#b04288",
-    "availableWidgets": ["calendar", "todo"]
-    , "useUnsplash": false,
+    "availableWidgets": ["calendar", "todo"], 
+    "useUnsplash": false, 
     "unsplashApiKey": "",
     "unsplashUpdateFrequency": "daily",
     "showUnsplashRefresh": false,
     "backgroundImage": "",
-	"customCSS": ""
+    "sidebar": false, 
+    "sidebarPosition": "right", 
+    "sidebarWidgets": [], 
+    "sidebarExpanded": false, 
+    "sidebarShowCustomize": true,
+    "customCSS": ""
 };
 
-Object.assign(defaultSettings, {
-    "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": []
-});
+// Object.assign(defaultSettings, {
+//     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [], "sidebarExpanded": false
+// });
 
 function debounce(func, delay) {
     let timeout;
@@ -82,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
-        "sidebar", "sidebarPosition", "sidebarWidgets", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh", "customCSS"
+        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh", "customCSS"
     ];
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
@@ -160,6 +165,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settings['sidebarPosition']) {
         document.querySelector(`input[name="sidebar-position"][value="${settings.sidebarPosition}"]`).checked = true;
     }
+    if (settings['sidebarExpanded']) {
+        document.getElementById("sidebar-expanded-check").checked = true;
+    }
+    // Initialize and enforce dependency for sidebar Customize button visibility
+    if (settings['sidebarShowCustomize'] === undefined) settings['sidebarShowCustomize'] = true;
+    const sidebarShowCustomizeCheckbox = document.getElementById('sidebar-show-customize');
+    if (sidebarShowCustomizeCheckbox) {
+        sidebarShowCustomizeCheckbox.checked = !!settings['sidebarShowCustomize'];
+    }
+
+    function updateCustomizeDependency() {
+        const expanded = document.getElementById('sidebar-expanded-check').checked;
+        if (sidebarShowCustomizeCheckbox) {
+            if (expanded) {
+                sidebarShowCustomizeCheckbox.checked = true;
+                sidebarShowCustomizeCheckbox.disabled = true;
+                const wrapper = document.getElementById('sidebar-show-customize-wrapper');
+                if (wrapper) wrapper.classList.add('disabled');
+            } else {
+                sidebarShowCustomizeCheckbox.disabled = false;
+                const wrapper = document.getElementById('sidebar-show-customize-wrapper');
+                if (wrapper) wrapper.classList.remove('disabled');
+            }
+        }
+    }
+    updateCustomizeDependency();
     const theme = localStorage.getItem('theme') || 'system';
     if (document.querySelector(`input[name="theme"][value="${theme}"]`)) {
         document.querySelector(`input[name="theme"][value="${theme}"]`).checked = true;
@@ -198,6 +229,36 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleUnsplashAdvancedOptions(); // Initial check
     document.getElementById('unsplash-update-frequency').value = settings.unsplashUpdateFrequency || 'daily';
     showUnsplashRefreshCheckbox.checked = settings.showUnsplashRefresh || false;
+
+    // Populate About panel: logo and version + links
+    try {
+        // Prefer chrome.runtime.getManifest() when available (extension context)
+        let manifest = null;
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
+            manifest = chrome.runtime.getManifest();
+        }
+        if (manifest && manifest.version) {
+            document.getElementById('extension-version').textContent = manifest.version;
+        } else {
+            // Fallback: fetch manifest.json relative to the page
+            fetch('manifest.json').then(r => r.json()).then(m => {
+                if (m && m.version) document.getElementById('extension-version').textContent = m.version;
+            }).catch(() => {
+                document.getElementById('extension-version').textContent = 'Unknown';
+            });
+        }
+    } catch (e) {
+        try {
+            fetch('manifest.json').then(r => r.json()).then(m => {
+                if (m && m.version) document.getElementById('extension-version').textContent = m.version;
+            });
+        } catch (ignored) {
+            document.getElementById('extension-version').textContent = 'Unknown';
+        }
+    }
+
+    // If the webstore badge image exists, keep it; otherwise the img onerror handler shows the fallback SVG.
+    // Add an accessible tooltip using data-tooltip wrappers for consistent styling if desired later.
 
     if (settings.backgroundImage) {
         bgPreview.src = settings.backgroundImage;
@@ -382,6 +443,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('theme', selectedTheme);
             } else if (key === 'sidebarPosition') {
                 settings_obj[key] = document.querySelector('input[name="sidebar-position"]:checked').value;
+            } else if (key === 'sidebarExpanded') {
+                settings_obj[key] = document.getElementById("sidebar-expanded-check").checked;
+            } else if (key === 'sidebarShowCustomize') {
+                // If sidebarExpanded is set, enforce true for the customize button
+                const expandedVal = document.getElementById("sidebar-expanded-check").checked;
+                settings_obj[key] = expandedVal ? true : document.getElementById('sidebar-show-customize').checked;
             } else if (key === 'sidebarWidgets') {
                 const widgetRows = document.querySelectorAll('#sidebar-widgets tr');
                 const selectedWidgets = [];
@@ -431,6 +498,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const suggestionsContainer = document.getElementById('city-suggestions');
 
     unsplashApiKeyInput.addEventListener('input', toggleUnsplashAdvancedOptions);
+    // When the 'keep sidebar expanded' option changes, enforce customize-button dependency
+    const sidebarExpandedCheck = document.getElementById('sidebar-expanded-check');
+    if (sidebarExpandedCheck) {
+        sidebarExpandedCheck.addEventListener('change', () => {
+            // updateCustomizeDependency is defined above during initialization
+            try { updateCustomizeDependency(); } catch (e) { /* noop if not available */ }
+        });
+    }
 
     document.getElementById('use-unsplash').addEventListener('change', (e) => {
         document.getElementById('unsplash-options').style.display = e.target.checked ? 'block' : 'none';
@@ -647,8 +722,64 @@ function applyTheme(theme) {
 
 applyTheme(theme);
 
+    // Update About icons based on theme (light/dark/system)
+    function updateAboutIcons() {
+        const webstoreImg = document.getElementById('webstore-img');
+        const githubImg = document.getElementById('github-img');
+        if (!webstoreImg || !githubImg) return;
+
+        let effective = theme;
+        if (theme === 'system') {
+            effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        webstoreImg.src = `favicons/chromewebstore-${effective}.png`;
+        githubImg.src = `favicons/github-${effective}.png`;
+    }
+    updateAboutIcons();
+
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
     if (theme === 'system') {
         applyTheme('system');
     }
 });
+
+// Keep About icons in sync when system theme changes while in 'system' mode
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+    if (theme === 'system') {
+        try { updateAboutIcons(); } catch (err) { /* ignore */ }
+    }
+});
+
+// Easter egg: clicking on the app icon or title 10 times redirects to YouTube
+(function() {
+    const CLICK_TARGET = 10;
+    let clickCount = 0;
+    const logo = document.getElementById('about-logo');
+    const title = document.getElementById('about-title');
+
+    function incrementAndMaybeRedirect() {
+        clickCount++;
+        if (clickCount >= CLICK_TARGET) {
+            // Open YouTube (navigate current tab) as the easter egg destination
+            chrome.tabs.create({ url: 'https://music.youtube.com/playlist?list=PLK_7F5FZ-_UQvmcztt2X7qMYOSGIH31Hc&si=BwTs_LOMzIQskPP7' });
+            // try {
+            //     window.location.href = 'https://www.youtube.com/';
+            // } catch (e) {
+            //     window.open('https://www.youtube.com/', '_blank');
+                
+            // }
+        }
+    }
+
+    [logo, title].forEach(el => {
+        if (!el) return;
+        el.addEventListener('click', incrementAndMaybeRedirect);
+        el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                incrementAndMaybeRedirect();
+            }
+        });
+    });
+})();
