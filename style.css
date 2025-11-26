@@ -71,6 +71,7 @@ body {
     user-select: none;
     display: flex;
     align-items: center;
+    gap: 0.4rem;
 }
 
 .bookmark-folder:hover {

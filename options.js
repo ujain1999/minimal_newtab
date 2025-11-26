@@ -1,45 +1,3 @@
-const defaultSettings = {
-    "clock": true,
-    "weather": true,
-    "customCity": "",
-    "useCustomCity": false,
-    "tempUnit": "celsius",
-    "bookmarks": true,
-    "bookmarkFolder": "Bookmarks Bar",
-    "topRight": true,
-    "topRightOrder": [
-        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
-        { id: "downloads", displayBool: true, url: "chrome://downloads" },
-        { id: "history", displayBool: true, url: "chrome://history" },
-        { id: "extensions", displayBool: true, url: "chrome://extensions" },
-        { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
-        { id: "settings", displayBool: true, url: "chrome://settings" }
-    ],
-    "pixelArt": true,
-    "selectedPixelArt": "flowers",
-    "customSVG": "",
-    "pixelArtOpacity": 40,
-    "pixelArtDensity": 20,
-    "pixelArtColorDark": "#cccccc",
-    "pixelArtColorLight": "#b04288",
-    "availableWidgets": ["calendar", "todo"], 
-    "useUnsplash": false, 
-    "unsplashApiKey": "",
-    "unsplashUpdateFrequency": "daily",
-    "showUnsplashRefresh": false,
-    "backgroundImage": "",
-    "sidebar": false, 
-    "sidebarPosition": "right", 
-    "sidebarWidgets": [], 
-    "sidebarExpanded": false, 
-    "sidebarShowCustomize": true,
-    "customCSS": ""
-};
-
-// Object.assign(defaultSettings, {
-//     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [], "sidebarExpanded": false
-// });
-
 function debounce(func, delay) {
     let timeout;
     return function(...args) {
@@ -85,16 +43,17 @@ function showNotification(message, duration = 2000, type = 'success', reload = f
 
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
-        "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
-        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh", "customCSS"
+        "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "expandBookmarks", "topRight", "topRightOrder", "pixelArt", 
+        "selectedPixelArt", "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
+        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", 
+        "showUnsplashRefresh", "customCSS"
     ];
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
     let settings = JSON.parse(settingsJsonStr);
     settings_keys.map((key) => {
-        if (!settings.hasOwnProperty(key) && key != "topRightOrder") {
-            settings[key] = true;
+        if (!settings.hasOwnProperty(key)) {
+            settings[key] = defaultSettings[key];
         }
     });
     if (settings['clock']) {
@@ -122,6 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     else {
         document.querySelector("#bookmark-folder-selector-span select").disabled = true;
+    }
+    if (settings['expandBookmarks']) {
+        document.getElementById("expand-bookmarks").checked = true;
     }
     if (settings['topRight']) {
         document.getElementById("show-topRight").checked = true;
@@ -417,6 +379,9 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (key == "bookmarkFolder") {
                 settings_obj[key] = document.querySelector("#bookmark-folder-selector-span select").value;
             }
+            else if (key == "expandBookmarks") {
+                settings_obj[key] = document.getElementById("expand-bookmarks").checked;
+            }
             else if (key == "selectedPixelArt") {
                 settings_obj[key] = document.querySelector("#pixel-art-select").value;
             }
@@ -659,9 +624,11 @@ document.getElementById("restore-defaults").addEventListener("click", () => {
 document.getElementById("show-bookmarks").onchange = (e) => {
     if (e.target.checked) {
         document.querySelector("#bookmark-folder-selector-span select").disabled = false;
+        // document.querySelector("#expand-bookmarks-span").style.display = "block";
     }
     else {
         document.querySelector("#bookmark-folder-selector-span select").disabled = true;
+        document.querySelector("#bookmark-folder-selector-span").style.display = "none";
     }
 }
 
