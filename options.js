@@ -32,7 +32,8 @@ const defaultSettings = {
     "sidebarPosition": "right", 
     "sidebarWidgets": [], 
     "sidebarExpanded": false, 
-    "sidebarShowCustomize": true
+    "sidebarShowCustomize": true,
+    "customCSS": ""
 };
 
 // Object.assign(defaultSettings, {
@@ -86,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
-        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh"
+        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh", "customCSS"
     ];
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
@@ -152,6 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (settings['pixelArtColorLight']) {
         document.getElementById("pixelArtColorLight").value = settings['pixelArtColorLight'];
+    }
+    if (settings['customCSS']) {
+        document.getElementById("custom-css").value = settings['customCSS'];
     }
     if (settings['sidebar']) {
         document.getElementById("show-sidebar").checked = true;
@@ -471,6 +475,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             else if (key === 'showUnsplashRefresh') {
                 settings_obj[key] = document.getElementById('show-unsplash-refresh').checked;
+            }
+            else if (key === 'customCSS') {
+                // Sanitize: remove </style> tags to prevent breaking out of style block
+                const rawCSS = document.getElementById('custom-css').value;
+                settings_obj[key] = rawCSS.replace(/<\/style>/gi, '');
             }
             else {
                 settings_obj[key] = document.getElementById("show-" + key).checked;

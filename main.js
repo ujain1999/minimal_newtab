@@ -303,27 +303,6 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
     });
 }
 
-// const defaultSettings = {
-//     "clock": true,
-//     "weather": true,
-//     "bookmarks": true,
-//     "topRight": true,
-//     "tempUnit": "celsius",
-//     "topRightOrder": [
-//         { id: "bookmarks", displayBool: true, url: "chrome://bookmarks" },
-//         { id: "downloads", displayBool: true, url: "chrome://downloads" },
-//         { id: "history", displayBool: true, url: "chrome://history" },
-//         { id: "extensions", displayBool: true, url: "chrome://extensions" },
-//         { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
-//         { id: "settings", displayBool: true, url: "chrome://settings" },
-//     ],
-//     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [
-//     ],
-//     "unsplashApiKey": "", 
-//     "showUnsplashRefresh": false,
-//     "unsplashUpdateFrequency": "daily"
-// };
-
 const defaultSettings = {
     "clock": true,
     "weather": true,
@@ -358,10 +337,19 @@ const defaultSettings = {
     "sidebarPosition": "right", 
     "sidebarWidgets": [], 
     "sidebarExpanded": false, 
-    "sidebarShowCustomize": true
+    "sidebarShowCustomize": true,
+    "customCSS": ""
 };
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
+
+// Apply custom CSS if provided
+if (settings.customCSS) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'user-custom-css';
+    styleElement.textContent = settings.customCSS;
+    document.head.appendChild(styleElement);
+}
 
 if (settings.useUnsplash) {
     setUnsplashBackground();
