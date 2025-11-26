@@ -434,6 +434,10 @@ if (settings.sidebar) {
         sidebarContent.innerHTML = '<p style="text-align: center; margin-top: 50px;">No widgets selected. You can add widgets from the Customize menu.</p>';
     }
 
+    if (settings.sidebarExpanded) {
+        sidebar.classList.remove('minimised');
+    }
+
     const handle = sidebar.querySelector('.sidebar-handle');
     handle.addEventListener('click', () => {
         sidebar.classList.toggle('minimised');

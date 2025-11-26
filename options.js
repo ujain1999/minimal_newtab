@@ -27,11 +27,16 @@ const defaultSettings = {
     "unsplashApiKey": "",
     "unsplashUpdateFrequency": "daily",
     "showUnsplashRefresh": false,
-    "backgroundImage": ""};
+    "backgroundImage": "",
+    "sidebar": false, 
+    "sidebarPosition": "right", 
+    "sidebarWidgets": [], 
+    "sidebarExpanded": false
+};
 
-Object.assign(defaultSettings, {
-    "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": []
-});
+// Object.assign(defaultSettings, {
+//     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [], "sidebarExpanded": false
+// });
 
 function debounce(func, delay) {
     let timeout;
@@ -80,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "topRight", "topRightOrder", "pixelArt", "selectedPixelArt",
         "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
-        "sidebar", "sidebarPosition", "sidebarWidgets", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh"
+        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", "showUnsplashRefresh"
     ];
 
     let settingsJsonStr = localStorage.getItem("settings") || JSON.stringify(defaultSettings);
@@ -154,6 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (settings['sidebarPosition']) {
         document.querySelector(`input[name="sidebar-position"][value="${settings.sidebarPosition}"]`).checked = true;
+    }
+    if (settings['sidebarExpanded']) {
+        document.getElementById("sidebar-expanded-check").checked = true;
     }
     const theme = localStorage.getItem('theme') || 'system';
     if (document.querySelector(`input[name="theme"][value="${theme}"]`)) {
@@ -377,6 +385,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('theme', selectedTheme);
             } else if (key === 'sidebarPosition') {
                 settings_obj[key] = document.querySelector('input[name="sidebar-position"]:checked').value;
+            } else if (key === 'sidebarExpanded') {
+                settings_obj[key] = document.getElementById("sidebar-expanded-check").checked;
             } else if (key === 'sidebarWidgets') {
                 const widgetRows = document.querySelectorAll('#sidebar-widgets tr');
                 const selectedWidgets = [];
