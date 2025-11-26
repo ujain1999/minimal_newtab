@@ -268,7 +268,7 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
             childrenContainer.style.maxHeight = '0';
             childrenContainer.style.overflow = 'hidden';
 
-            const isOpen = localStorage.getItem(currentPath) === "true";
+            const isOpen = settings.expandBookmarks ? true : localStorage.getItem(currentPath) === "true";
             if (isOpen) {
                 childrenContainer.style.maxHeight = '1000px';
                 chevron.textContent = "▼";
@@ -303,43 +303,9 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
     });
 }
 
-const defaultSettings = {
-    "clock": true,
-    "weather": true,
-    "customCity": "",
-    "useCustomCity": false,
-    "tempUnit": "celsius",
-    "bookmarks": true,
-    "bookmarkFolder": "Bookmarks Bar",
-    "topRight": true,
-    "topRightOrder": [
-        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
-        { id: "downloads", displayBool: true, url: "chrome://downloads" },
-        { id: "history", displayBool: true, url: "chrome://history" },
-        { id: "extensions", displayBool: true, url: "chrome://extensions" },
-        { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
-        { id: "settings", displayBool: true, url: "chrome://settings" }
-    ],
-    "pixelArt": true,
-    "selectedPixelArt": "flowers",
-    "customSVG": "",
-    "pixelArtOpacity": 40,
-    "pixelArtDensity": 20,
-    "pixelArtColorDark": "#cccccc",
-    "pixelArtColorLight": "#b04288",
-    "availableWidgets": ["calendar", "todo"], 
-    "useUnsplash": false, 
-    "unsplashApiKey": "",
-    "unsplashUpdateFrequency": "daily",
-    "showUnsplashRefresh": false,
-    "backgroundImage": "",
-    "sidebar": false, 
-    "sidebarPosition": "right", 
-    "sidebarWidgets": [], 
-    "sidebarExpanded": false, 
-    "sidebarShowCustomize": true,
-    "customCSS": ""
-};
+if (localStorage.getItem("settings") === null) {
+    localStorage.setItem("settings", JSON.stringify(defaultSettings));
+}
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
 
@@ -467,7 +433,7 @@ if (settings.sidebar) {
     handle.addEventListener('click', () => {
         sidebar.classList.toggle('minimised');
     });
-    // Add a sticky footer inside the sidebar with a Customize button (controlled by setting)
+    
     if (settings.sidebarShowCustomize || settings.sidebarExpanded) {
         const sidebarFooter = document.createElement('div');
         sidebarFooter.className = 'sidebar-footer';
