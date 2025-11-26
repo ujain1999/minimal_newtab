@@ -303,25 +303,62 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
     });
 }
 
+// const defaultSettings = {
+//     "clock": true,
+//     "weather": true,
+//     "bookmarks": true,
+//     "topRight": true,
+//     "tempUnit": "celsius",
+//     "topRightOrder": [
+//         { id: "bookmarks", displayBool: true, url: "chrome://bookmarks" },
+//         { id: "downloads", displayBool: true, url: "chrome://downloads" },
+//         { id: "history", displayBool: true, url: "chrome://history" },
+//         { id: "extensions", displayBool: true, url: "chrome://extensions" },
+//         { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
+//         { id: "settings", displayBool: true, url: "chrome://settings" },
+//     ],
+//     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [
+//     ],
+//     "unsplashApiKey": "", 
+//     "showUnsplashRefresh": false,
+//     "unsplashUpdateFrequency": "daily"
+// };
+
 const defaultSettings = {
     "clock": true,
     "weather": true,
-    "bookmarks": true,
-    "topRight": true,
+    "customCity": "",
+    "useCustomCity": false,
     "tempUnit": "celsius",
+    "bookmarks": true,
+    "bookmarkFolder": "Bookmarks Bar",
+    "topRight": true,
     "topRightOrder": [
-        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks" },
+        { id: "bookmarks", displayBool: true, url: "chrome://bookmarks", },
         { id: "downloads", displayBool: true, url: "chrome://downloads" },
         { id: "history", displayBool: true, url: "chrome://history" },
         { id: "extensions", displayBool: true, url: "chrome://extensions" },
         { id: "passwords", displayBool: true, url: "chrome://password-manager/passwords" },
-        { id: "settings", displayBool: true, url: "chrome://settings" },
+        { id: "settings", displayBool: true, url: "chrome://settings" }
     ],
-    "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [
-    ],
-    "unsplashApiKey": "", 
+    "pixelArt": true,
+    "selectedPixelArt": "flowers",
+    "customSVG": "",
+    "pixelArtOpacity": 40,
+    "pixelArtDensity": 20,
+    "pixelArtColorDark": "#cccccc",
+    "pixelArtColorLight": "#b04288",
+    "availableWidgets": ["calendar", "todo"], 
+    "useUnsplash": false, 
+    "unsplashApiKey": "",
+    "unsplashUpdateFrequency": "daily",
     "showUnsplashRefresh": false,
-    "unsplashUpdateFrequency": "daily"
+    "backgroundImage": "",
+    "sidebar": false, 
+    "sidebarPosition": "right", 
+    "sidebarWidgets": [], 
+    "sidebarExpanded": false, 
+    "sidebarShowCustomize": true
 };
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
@@ -442,6 +479,17 @@ if (settings.sidebar) {
     handle.addEventListener('click', () => {
         sidebar.classList.toggle('minimised');
     });
+    // Add a sticky footer inside the sidebar with a Customize button (controlled by setting)
+    if (settings.sidebarShowCustomize || settings.sidebarExpanded) {
+        const sidebarFooter = document.createElement('div');
+        sidebarFooter.className = 'sidebar-footer';
+        sidebarFooter.innerHTML = `<button id="sidebar-customize" class="sidebar-customize-btn" title="Customize">Customize</button>`;
+        sidebar.appendChild(sidebarFooter);
+
+        document.getElementById('sidebar-customize').addEventListener('click', () => {
+            location.href = '/options.html';
+        });
+    }
 }
 if (settings.unsplashApiKey && settings.showUnsplashRefresh) {
     document.getElementById('refresh-background').addEventListener('click', () => {
