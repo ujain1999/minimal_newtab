@@ -319,12 +319,21 @@ const defaultSettings = {
     ],
     "sidebar": false, "sidebarPosition": "right", "sidebarWidgets": [
     ],
-    "unsplashApiKey": "", 
+    "unsplashApiKey": "",
     "showUnsplashRefresh": false,
-    "unsplashUpdateFrequency": "daily"
+    "unsplashUpdateFrequency": "daily",
+    "customCSS": ""
 };
 
 const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
+
+// Apply custom CSS if provided
+if (settings.customCSS) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'user-custom-css';
+    styleElement.textContent = settings.customCSS;
+    document.head.appendChild(styleElement);
+}
 
 if (settings.useUnsplash) {
     setUnsplashBackground();
