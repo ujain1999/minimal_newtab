@@ -352,8 +352,17 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     });
 
+    // Back link navigation
     document.getElementById("back-link").addEventListener("click", () => {
         chrome.tabs.update({ url: "chrome://newtab" });
+    });
+
+    // Navigate back when pressing Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            chrome.tabs.update({ url: "chrome://newtab" });
+        }
     });
 
     let saveBtn = document.getElementById("save");
