@@ -1,13 +1,22 @@
+/* Clear default margin and padding */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 body {
-    margin-top: 3rem;
     font-family: monospace;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: 100vh;
+    max-height: 100vh;
     text-align: center;
-    padding-top: 10vh;
+    padding-top: calc(10vh + 3rem);
     font-size: 1.1rem;    
     transition: background-image 1s ease-in-out, color 0.3s ease;
 }
