@@ -530,6 +530,15 @@ body.light #options-wrapper input[type="range"] {
     position: sticky; 
     bottom: 0; 
     background-color: #1c1c1c; /* A slightly different dark shade for the sticky footer */
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
 }
 
 body.light .button-group {
@@ -627,6 +636,78 @@ body.light .background-add-label {
     cursor: pointer;
     font-family: monospace;
     font-size: 1em;
+}
+
+#options-wrapper button.ghost-button {
+    background: transparent;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    color: inherit;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+#options-wrapper button.ghost-button:hover {
+    background: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #222;
+}
+
+#options-wrapper button.ghost-button.drag-over {
+    background: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #222;
+    border-style: dashed;
+}
+
+body.light #options-wrapper button.ghost-button:hover {
+    background: #222;
+    border-color: #222;
+    color: #f0f0f0;
+}
+
+body.light #options-wrapper button.ghost-button.drag-over {
+    background: #222;
+    border-color: #222;
+    color: #f0f0f0;
+    border-style: dashed;
+}
+
+.settings-data-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.settings-data-container .button-row {
+    display: flex;
+    gap: 0.5em;
+}
+
+.drop-zone {
+    margin-top: 0.8em;
+    padding: 1em;
+    border: 1px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.drop-zone-text {
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+
+.drop-zone.drag-over {
+    background: rgba(128, 128, 128, 0.15);
+    border-color: #f0f0f0;
+}
+
+.drop-zone.drag-over .drop-zone-text {
+    opacity: 1;
+}
+
+body.light .drop-zone.drag-over {
+    border-color: #222;
 }
 
 .options-panel {
