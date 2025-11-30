@@ -41,6 +41,125 @@ function showNotification(message, duration = 2000, type = 'success', reload = f
     }, duration);
 }
 
+// Mouse-based drag and drop for table rows (like todo list)
+function setupTableDragAndDrop(tbody) {
+    const table = tbody.closest('table');
+    const DRAG_THRESHOLD = 5;
+    let draggedRow, placeholder, offsetY, rowHeight, cellWidths = [];
+
+    tbody.addEventListener('mousedown', (e) => {
+        const row = e.target.closest('tr');
+        if (!row || ['INPUT', 'BUTTON', 'SELECT'].includes(e.target.tagName)) return;
+        
+        e.preventDefault();
+        
+        const startY = e.clientY;
+        const rect = row.getBoundingClientRect();
+        const tableWidth = table.offsetWidth;
+        let isDragging = false;
+        
+        offsetY = e.clientY - rect.top;
+        rowHeight = rect.height;
+        draggedRow = row;
+        
+        const cells = row.querySelectorAll('td');
+        cellWidths = [];
+        tbody.querySelectorAll('tr td').forEach(cell => {
+            cellWidths.push({ cell, width: cell.offsetWidth });
+        });
+        
+        const onMouseMove = (moveEvent) => {
+            const dy = Math.abs(moveEvent.clientY - startY);
+            
+            if (!isDragging && dy > DRAG_THRESHOLD) {
+                isDragging = true;
+                const tbodyRect = tbody.getBoundingClientRect();
+                
+                // Lock dimensions
+                table.style.width = tableWidth + 'px';
+                cellWidths.forEach(({ cell, width }) => cell.style.width = width + 'px');
+                tbody.style.height = tbodyRect.height + 'px';
+                tbody.style.position = 'relative';
+                
+                // Create placeholder
+                placeholder = document.createElement('tr');
+                placeholder.className = 'drag-placeholder';
+                const td = document.createElement('td');
+                td.colSpan = cells.length;
+                td.style.height = (rowHeight - 4) + 'px';
+                placeholder.appendChild(td);
+                
+                // Style dragged row
+                Object.assign(row.style, {
+                    position: 'absolute',
+                    top: (rect.top - tbodyRect.top) + 'px',
+                    left: '0', right: '0',
+                    width: rect.width + 'px',
+                    zIndex: '1000'
+                });
+                row.classList.add('dragging');
+                tbody.insertBefore(placeholder, row);
+                
+                document.body.style.cursor = 'grabbing';
+                document.body.style.userSelect = 'none';
+            }
+            
+            if (isDragging && placeholder) {
+                const tbodyRect = tbody.getBoundingClientRect();
+                const clampedY = Math.max(0, Math.min(tbodyRect.height - rowHeight, 
+                    moveEvent.clientY - offsetY - tbodyRect.top));
+                draggedRow.style.top = clampedY + 'px';
+                
+                // Find insertion point
+                const otherRows = Array.from(tbody.querySelectorAll('tr:not(.dragging):not(.drag-placeholder)'));
+                let insertBefore = null;
+                
+                for (const otherRow of otherRows) {
+                    const otherRect = otherRow.getBoundingClientRect();
+                    if (clampedY + tbodyRect.top + rowHeight * 0.5 < otherRect.top + otherRect.height * 0.5) {
+                        insertBefore = otherRow;
+                        break;
+                    }
+                }
+                
+                if (insertBefore && placeholder.nextSibling !== insertBefore) {
+                    tbody.insertBefore(placeholder, insertBefore);
+                } else if (!insertBefore && placeholder.nextSibling !== null) {
+                    tbody.appendChild(placeholder);
+                }
+            }
+        };
+        
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            
+            if (isDragging && placeholder) {
+                tbody.insertBefore(draggedRow, placeholder);
+                placeholder.remove();
+                
+                // Reset styles
+                table.style.width = '';
+                tbody.style.height = '';
+                tbody.style.position = '';
+                cellWidths.forEach(({ cell }) => cell.style.width = '');
+                Object.assign(draggedRow.style, {
+                    position: '', top: '', left: '', right: '', width: '', zIndex: ''
+                });
+                draggedRow.classList.remove('dragging');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+            
+            draggedRow = placeholder = null;
+            cellWidths = [];
+        };
+        
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "expandBookmarks", "topRight", "topRightOrder", "pixelArt", 
@@ -302,42 +421,9 @@ document.addEventListener('DOMContentLoaded', () => {
             tbody.append(tr);
         })
     }
-    const shortcutsTableBody = document.querySelector("table#top-right-links tbody");
-    let draggingShortcutRow = null;
-
-    shortcutsTableBody.addEventListener('dragstart', e => {
-        const row = e.target.closest('tr');
-        if (row) {
-            draggingShortcutRow = row;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', null); // Necessary for Firefox
-            row.classList.add('dragging');
-        }
-    });
-
-    shortcutsTableBody.addEventListener('dragend', e => {
-        if (draggingShortcutRow) {
-            draggingShortcutRow.classList.remove('dragging');
-            draggingShortcutRow = null;
-        }
-    });
-
-    shortcutsTableBody.addEventListener('dragover', e => {
-        e.preventDefault();
-        const targetRow = e.target.closest('tr');
-        if (targetRow && targetRow !== draggingShortcutRow) {
-            const rect = targetRow.getBoundingClientRect();
-            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
-            shortcutsTableBody.insertBefore(draggingShortcutRow, next && targetRow.nextSibling || targetRow);
-        }
-    });
-
-    shortcutsTableBody.addEventListener('drop', e => {
-        e.preventDefault();
-    });
-
-    // Make rows draggable
-    shortcutsTableBody.querySelectorAll('tr').forEach(row => row.setAttribute('draggable', 'true'));
+    
+    // Mouse-based drag and drop for shortcuts table
+    setupTableDragAndDrop(document.querySelector("table#top-right-links tbody"));
 
     let selectElem = document.querySelector("#bookmark-folder-selector-span select");
     chrome.bookmarks.getTree(tree => {
@@ -524,37 +610,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const widgetList = document.getElementById('sidebar-widgets');
-    let draggingElement = null;
-
-    widgetList.addEventListener('dragstart', (e) => {
-        const row = e.target.closest('tr');
-        if (row) {
-            draggingElement = row;
-            e.dataTransfer.effectAllowed = 'move';
-            row.classList.add('dragging');
-        }
-    });
-
-    widgetList.addEventListener('dragend', (e) => {
-        if (draggingElement) {
-            draggingElement.classList.remove('dragging');
-            draggingElement = null;
-        }
-    });
-
-    widgetList.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        const targetRow = e.target.closest('tr');
-        if (targetRow && targetRow !== draggingElement) {
-            const rect = targetRow.getBoundingClientRect();
-            const next = (e.clientY - rect.top) / (rect.bottom - rect.top) > 0.5;
-            widgetList.insertBefore(draggingElement, next && targetRow.nextSibling || targetRow);
-        }
-    });
-
-    widgetList.addEventListener('drop', (e) => {
-        e.preventDefault();
-    });
+    
+    // Mouse-based drag and drop for widgets table
+    setupTableDragAndDrop(widgetList);
 
 
 
