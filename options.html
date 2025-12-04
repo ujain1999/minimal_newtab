@@ -22,6 +22,7 @@
                 <a href="#shortcuts">Shortcuts</a>
                 <a href="#appearance">Appearance</a>
                     <a href="#sidebar-settings">Sidebar</a>
+                    <a href="#preset">Backup</a>
                     <a href="#about">About</a>
             </nav>
         </div>
@@ -225,6 +226,21 @@ body { font-family: 'Comic Sans MS'; }
                 </div>
             </div>
 
+            <div id="preset" class="options-panel">
+                <h2>Backup</h2>
+                <p>Export your current settings or import a previously saved configuration.</p>
+                <div class="settings-data-container">
+                    <div class="button-row">
+                        <button id="export-settings" class="ghost-button">Export Settings</button>
+                        <button id="import-settings" class="ghost-button">Import Settings</button>
+                        <input type="file" id="import-file" accept=".json" style="display:none;">
+                    </div>
+                    <div id="import-drop-zone" class="drop-zone">
+                        <span class="drop-zone-text">or drag & drop a settings file here</span>
+                    </div>
+                </div>
+            </div>
+
             <div id="about" class="options-panel">
                 <h2>About</h2>
                 <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
@@ -251,8 +267,10 @@ body { font-family: 'Comic Sans MS'; }
             </div>
 
             <div class="button-group">
-                <button id="save">Save Settings</button>
-                <button id="restore-defaults">Restore Defaults</button>
+                <div class="button-row">
+                    <button id="save">Save Settings</button>
+                    <button id="restore-defaults">Restore Defaults</button>
+                </div>
             </div>
         </div>
     </div>
