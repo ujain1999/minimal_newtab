@@ -428,11 +428,6 @@ if (settings.sidebar) {
     if (settings.sidebarExpanded) {
         sidebar.classList.remove('minimised');
     }
-
-    const handle = sidebar.querySelector('.sidebar-handle');
-    handle.addEventListener('click', () => {
-        sidebar.classList.toggle('minimised');
-    });
     
     if (settings.sidebarShowCustomize || settings.sidebarExpanded) {
         const sidebarFooter = document.createElement('div');
@@ -444,6 +439,41 @@ if (settings.sidebar) {
             location.href = '/options.html';
         });
     }
+
+    // Hide/show bottom-left customize button based on sidebar position and state
+    const customizeBtn = document.getElementById('customize');
+    const themeToggle = document.querySelector('.theme-toggle');
+    const updateCustomizeVisibility = () => {
+        const isLeft = settings.sidebarPosition === 'left';
+        const isRight = settings.sidebarPosition === 'right' || !settings.sidebarPosition;
+        const isExpanded = !sidebar.classList.contains('minimised');
+        
+        // Hide customize button when sidebar is on left and expanded
+        if (isLeft && isExpanded) {
+            customizeBtn.style.opacity = '0';
+            customizeBtn.style.pointerEvents = 'none';
+        } else {
+            customizeBtn.style.opacity = '1';
+            customizeBtn.style.pointerEvents = 'auto';
+        }
+        
+        // Hide theme toggle when sidebar is on right and expanded
+        if (isRight && isExpanded) {
+            themeToggle.style.opacity = '0';
+            themeToggle.style.pointerEvents = 'none';
+        } else {
+            themeToggle.style.opacity = '1';
+            themeToggle.style.pointerEvents = 'auto';
+        }
+    };
+    
+    updateCustomizeVisibility();
+    
+    const handle = sidebar.querySelector('.sidebar-handle');
+    handle.addEventListener('click', () => {
+        sidebar.classList.toggle('minimised');
+        updateCustomizeVisibility();
+    });
 }
 if (settings.unsplashApiKey && settings.showUnsplashRefresh) {
     document.getElementById('refresh-background').addEventListener('click', () => {

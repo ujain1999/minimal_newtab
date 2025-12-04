@@ -121,6 +121,7 @@ body {
     align-items: center;
     gap: 0.4rem;
     direction: rtl;
+    transition: opacity 0.3s ease;
 }
 
 .theme-icon svg {
@@ -159,6 +160,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    transition: opacity 0.3s ease;
 }
 
 .customize-icon svg {
@@ -272,27 +274,37 @@ body.options {
     align-items: center;
     justify-content: flex-start;
     text-align: left;
-    padding: 2rem 1rem;
+    padding: 2rem 0;
     margin: 0;
     font-size: 1rem; /* Smaller base font for options */
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 div#back {
     position: absolute;
-    top: 1rem;
-    left: 4rem;
+    top: 0.5rem;
+    right: 2.5rem;
     text-decoration: none;
-    font-size: 5em;
+    font-size: 4em;
+    line-height: 1;
+    z-index: 10;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
 }
 
 div#back:hover {
     cursor: pointer;
+    opacity: 1;
 }
 
 #options-wrapper {
+    position: relative;
     max-width: 900px;
     height: 80vh;
-    width: 100%;
+    width: calc(100% - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
     background: rgba(128, 128, 128, 0.1);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -530,6 +542,15 @@ body.light #options-wrapper input[type="range"] {
     position: sticky; 
     bottom: 0; 
     background-color: #1c1c1c; /* A slightly different dark shade for the sticky footer */
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
 }
 
 body.light .button-group {
@@ -627,6 +648,78 @@ body.light .background-add-label {
     cursor: pointer;
     font-family: monospace;
     font-size: 1em;
+}
+
+#options-wrapper button.ghost-button {
+    background: transparent;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    color: inherit;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+#options-wrapper button.ghost-button:hover {
+    background: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #222;
+}
+
+#options-wrapper button.ghost-button.drag-over {
+    background: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #222;
+    border-style: dashed;
+}
+
+body.light #options-wrapper button.ghost-button:hover {
+    background: #222;
+    border-color: #222;
+    color: #f0f0f0;
+}
+
+body.light #options-wrapper button.ghost-button.drag-over {
+    background: #222;
+    border-color: #222;
+    color: #f0f0f0;
+    border-style: dashed;
+}
+
+.settings-data-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.settings-data-container .button-row {
+    display: flex;
+    gap: 0.5em;
+}
+
+.drop-zone {
+    margin-top: 0.8em;
+    padding: 1em;
+    border: 1px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.drop-zone-text {
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+
+.drop-zone.drag-over {
+    background: rgba(128, 128, 128, 0.15);
+    border-color: #f0f0f0;
+}
+
+.drop-zone.drag-over .drop-zone-text {
+    opacity: 1;
+}
+
+body.light .drop-zone.drag-over {
+    border-color: #222;
 }
 
 .options-panel {
@@ -1144,6 +1237,31 @@ body.light .todo-widget .todo-list button {
 
 .todo-widget .todo-list li:hover button {
     opacity: 1;
+}
+
+.todo-widget .todo-list li.dragging {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: grabbing !important;
+}
+
+.todo-widget .todo-list li.drag-placeholder {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+.todo-widget .todo-list li {
+    cursor: pointer;
+    user-select: none;
+}
+
+body.todo-dragging,
+body.todo-dragging * {
+    cursor: grabbing !important;
 }
 
 .todo-widget .todo-input {

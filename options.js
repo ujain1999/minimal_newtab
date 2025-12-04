@@ -352,8 +352,17 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     });
 
+    // Back link navigation
     document.getElementById("back-link").addEventListener("click", () => {
         chrome.tabs.update({ url: "chrome://newtab" });
+    });
+
+    // Navigate back when pressing Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            chrome.tabs.update({ url: "chrome://newtab" });
+        }
     });
 
     let saveBtn = document.getElementById("save");
@@ -750,3 +759,119 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
         });
     });
 })();
+
+// Export settings to JSON file
+document.getElementById('export-settings').addEventListener('click', () => {
+    const storedSettings = JSON.parse(localStorage.getItem('settings') || '{}');
+    // Merge with defaults to ensure all keys are included in export
+    const settings = { ...defaultSettings, ...storedSettings };
+    const dataStr = JSON.stringify(settings, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'minimal-newtab-settings.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showNotification('Settings exported successfully!', 2000, 'success');
+});
+
+// Import settings from JSON file
+document.getElementById('import-settings').addEventListener('click', () => {
+    document.getElementById('import-file').click();
+});
+
+function handleImportFile(file) {
+    if (!file) return;
+    
+    // Check file type
+    if (file.type !== 'application/json' && !file.name.endsWith('.json')) {
+        showNotification('Invalid file type. Please use a .json file.', 3000, 'error');
+        return;
+    }
+    
+    // Check file size (max 1MB)
+    if (file.size > 1024 * 1024) {
+        showNotification('File too large. Maximum size is 1MB.', 3000, 'error');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            let importedSettings;
+            try {
+                importedSettings = JSON.parse(event.target.result);
+            } catch (parseError) {
+                showNotification('Invalid JSON format. File may be corrupted.', 3000, 'error');
+                return;
+            }
+            
+            // Validate that it's an object
+            if (typeof importedSettings !== 'object' || importedSettings === null || Array.isArray(importedSettings)) {
+                showNotification('Invalid settings format. Expected a settings object.', 3000, 'error');
+                return;
+            }
+            
+            // Check if it looks like a settings file (has at least one known key)
+            const knownKeys = ['clock', 'weather', 'bookmarks', 'theme', 'topRight', 'pixelArt', 'sidebar'];
+            const hasKnownKey = knownKeys.some(key => importedSettings.hasOwnProperty(key));
+            if (!hasKnownKey) {
+                showNotification('This doesn\'t appear to be a valid settings file.', 3000, 'error');
+                return;
+            }
+
+            // Merge with default settings to ensure all keys exist
+            const mergedSettings = { ...defaultSettings, ...importedSettings };
+            
+            localStorage.setItem('settings', JSON.stringify(mergedSettings));
+            showNotification('Settings imported successfully! Reloading...', 2000, 'success', true);
+        } catch (error) {
+            console.error('Error importing settings:', error);
+            showNotification('Error importing settings. Please try again.', 3000, 'error');
+        }
+    };
+    reader.onerror = () => {
+        showNotification('Error reading file. Please try again.', 3000, 'error');
+    };
+    reader.readAsText(file);
+}
+
+document.getElementById('import-file').addEventListener('change', (e) => {
+    handleImportFile(e.target.files[0]);
+    // Reset the input so the same file can be selected again
+    e.target.value = '';
+});
+
+// Drag and drop support for import button and drop zone
+const importButton = document.getElementById('import-settings');
+const dropZone = document.getElementById('import-drop-zone');
+const dropTargets = [importButton, dropZone];
+
+dropTargets.forEach(target => {
+    target.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add('drag-over');
+        importButton.classList.add('drag-over');
+    });
+
+    target.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+        importButton.classList.remove('drag-over');
+    });
+
+    target.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove('drag-over');
+        importButton.classList.remove('drag-over');
+        
+        const file = e.dataTransfer.files[0];
+        handleImportFile(file);
+    });
+});
