@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settings['weather']) {
         document.getElementById("show-weather").checked = true;
     } else {
-        document.getElementById("weather-options").style.display = "none";
+        document.getElementById("weather-options").classList.add("disabled");
     }
     if (settings['useCustomCity']) {
         document.getElementById("use-custom-city").checked = true;
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("show-bookmarks").checked = true;
     }
     else {
-        document.querySelector("#bookmark-folder-selector-span select").disabled = true;
+        document.querySelector("#bookmark-folder-selector-span").classList.add("disabled");
     }
     if (settings['expandBookmarks']) {
         document.getElementById("expand-bookmarks").checked = true;
@@ -89,10 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("show-topRight").checked = true;
     }
     else {
-        document.querySelector("#shortcuts-links").style.display = "none";
+        document.querySelector("#shortcuts-links").classList.add("disabled");
     }
     if (settings['pixelArt']) {
         document.getElementById("show-pixelArt").checked = true;
+    } else {
+        document.getElementById("pixel-art-select-div").classList.add("disabled");
     }
     if (settings['selectedPixelArt']) {
         document.getElementById("pixel-art-select").value = settings['selectedPixelArt'];
@@ -122,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settings['sidebar']) {
         document.getElementById("show-sidebar").checked = true;
     } else {
-        document.getElementById("sidebar-options").style.display = "none";
+        document.getElementById("sidebar-options").classList.add("disabled");
     }
     if (settings['sidebarPosition']) {
         document.querySelector(`input[name="sidebar-position"][value="${settings.sidebarPosition}"]`).checked = true;
@@ -598,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.getElementById("show-weather").addEventListener('change', (e) => {
-    document.getElementById('weather-options').style.display = e.target.checked ? 'block' : 'none';
+    document.getElementById('weather-options').classList.toggle('disabled', !e.target.checked);
 });
 
 document.getElementById("use-custom-city").addEventListener('change', (e) => {
@@ -622,32 +624,15 @@ document.getElementById("restore-defaults").addEventListener("click", () => {
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {
-    if (e.target.checked) {
-        document.querySelector("#bookmark-folder-selector-span select").disabled = false;
-        // document.querySelector("#expand-bookmarks-span").style.display = "block";
-    }
-    else {
-        document.querySelector("#bookmark-folder-selector-span select").disabled = true;
-        document.querySelector("#bookmark-folder-selector-span").style.display = "none";
-    }
+    document.querySelector("#bookmark-folder-selector-span").classList.toggle('disabled', !e.target.checked);
 }
 
 document.getElementById("show-topRight").onchange = (e) => {
-    if (e.target.checked) {
-        document.querySelector("#shortcuts-links").style.display = "block";
-    }
-    else {
-        document.querySelector("#shortcuts-links").style.display = "none";
-    }
+    document.querySelector("#shortcuts-links").classList.toggle('disabled', !e.target.checked);
 }
 
 document.getElementById("show-pixelArt").onchange = (e) => {
-    if (e.target.checked) {
-        document.querySelector("#pixel-art-select-div").style.display = "block";
-    }
-    else {
-        document.querySelector("#pixel-art-select-div").style.display = "none";
-    }
+    document.querySelector("#pixel-art-select-div").classList.toggle('disabled', !e.target.checked);
 }
 
 document.getElementById("pixel-art-select").onchange = (e) => {
@@ -661,12 +646,7 @@ document.getElementById("pixel-art-select").onchange = (e) => {
 }
 
 document.getElementById("show-sidebar").onchange = (e) => {
-    if (e.target.checked) {
-        document.querySelector("#sidebar-options").style.display = "block";
-    }
-    else {
-        document.querySelector("#sidebar-options").style.display = "none";
-    }
+    document.querySelector("#sidebar-options").classList.toggle('disabled', !e.target.checked);
 }
 
 

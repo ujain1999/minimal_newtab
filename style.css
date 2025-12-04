@@ -1,13 +1,22 @@
+/* Clear default margin and padding */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 body {
-    margin-top: 3rem;
     font-family: monospace;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: 100vh;
+    max-height: 100vh;
     text-align: center;
-    padding-top: 10vh;
+    padding-top: calc(10vh + 3rem);
     font-size: 1.1rem;    
     transition: background-image 1s ease-in-out, color 0.3s ease;
 }
@@ -121,6 +130,7 @@ body {
     align-items: center;
     gap: 0.4rem;
     direction: rtl;
+    transition: opacity 0.3s ease;
 }
 
 .theme-icon svg {
@@ -159,6 +169,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    transition: opacity 0.3s ease;
 }
 
 .customize-icon svg {
@@ -270,51 +281,91 @@ body.light .tooltip-wrapper:hover::after {
 
 body.options {
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     text-align: left;
-    padding: 2rem 1rem;
+    padding: 2rem 0;
     margin: 0;
-    font-size: 1rem; /* Smaller base font for options */
+    font-size: 1rem;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 div#back {
     position: absolute;
-    top: 1rem;
-    left: 4rem;
+    top: 0.75rem;
+    right: 0.75rem;
     text-decoration: none;
-    font-size: 5em;
+    font-size: 2em;
+    line-height: 1;
+    z-index: 10;
+    opacity: 0.5;
+    transition: all 0.15s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
 }
 
 div#back:hover {
     cursor: pointer;
+    opacity: 1;
+    background: rgba(128, 128, 128, 0.2);
 }
 
 #options-wrapper {
+    position: relative;
     max-width: 900px;
     height: 80vh;
-    width: 100%;
-    background: rgba(128, 128, 128, 0.1);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: calc(100% - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     display: flex;
     overflow: hidden;
 }
 
 body.dark #options-wrapper {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+body.light #options-wrapper {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
 }
 
 #options-wrapper h1 {
     margin: 0 0 1.5em 0;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
-    padding-bottom: 0.5em;
+    font-size: 1.4em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    border-bottom: none;
+    padding-bottom: 0;
+    opacity: 0.9;
 }
 
 #options-wrapper .options-panel h2 {
+    margin-top: 0;
+    margin-bottom: 1.2em;
+    font-size: 1.1em;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    opacity: 0.85;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+#options-wrapper .options-panel h2:not(:first-child) {
     margin-top: 2em;
-    margin-bottom: 0.8em;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
-    padding-bottom: 0.3em;
+    padding-top: 1.5em;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
 }
 
 .setting-row {
@@ -346,19 +397,39 @@ body.dark #options-wrapper {
 }
 
 .checkbox-label .custom-checkbox {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #888;
-    border-radius: 3px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
     margin-right: 0.75em;
     display: inline-block;
     position: relative;
-    transition: background-color 0.2s, border-color 0.2s;
+    transition: all 0.15s ease;
+}
+
+.checkbox-label:hover .custom-checkbox {
+    border-color: rgba(128, 128, 128, 0.8);
 }
 
 .checkbox-label input:checked + .custom-checkbox {
-    background-color: #ccc;
-    border-color: #ccc;
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.checkbox-label input:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #1c1c1c;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+body.light .checkbox-label input:checked + .custom-checkbox::after {
+    border-color: white;
 }
 
 .checkbox-label {
@@ -371,14 +442,25 @@ body.dark #options-wrapper {
 #options-wrapper input[type="number"],
 #options-wrapper select,
 #options-wrapper textarea {
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid #555;
-    background: #333;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    background: rgba(0, 0, 0, 0.2);
     color: #f0f0f0;
-    font-family: monospace;
+    font-family: inherit;
+    font-size: 0.95em;
     margin-top: 0.5em;
     box-sizing: border-box;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+#options-wrapper input[type="text"]:focus,
+#options-wrapper input[type="number"]:focus,
+#options-wrapper select:focus,
+#options-wrapper textarea:focus {
+    outline: none;
+    border-color: rgba(128, 128, 128, 0.6);
+    background: rgba(0, 0, 0, 0.3);
 }
 
 #options-wrapper input[type="text"],
@@ -395,9 +477,17 @@ body.light #options-wrapper input[type="text"],
 body.light #options-wrapper input[type="number"],
 body.light #options-wrapper select,
 body.light #options-wrapper textarea {
-    background: #f0f0f0;
+    background: rgba(0, 0, 0, 0.04);
     color: #222;
-    border-color: #ccc;
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.light #options-wrapper input[type="text"]:focus,
+body.light #options-wrapper input[type="number"]:focus,
+body.light #options-wrapper select:focus,
+body.light #options-wrapper textarea:focus {
+    background: rgba(0, 0, 0, 0.06);
+    border-color: rgba(0, 0, 0, 0.25);
 }
 
 /* Slider Styles */
@@ -435,17 +525,62 @@ body.light #options-wrapper input[type="range"] {
     border: none;
 }
 
+/* Custom scrollbar for options content */
+.options-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.options-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.options-content::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+}
+
+.options-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.5);
+}
+
 .options-table {
     width: 100%;
     text-transform: capitalize;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0 4px;
     margin-top: 1em;
+    table-layout: fixed;
 }
 
 .options-table th, .options-table td {
-    padding: 8px;
+    padding: 10px 12px;
     text-align: left;
-    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.options-table th {
+    font-size: 0.85em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    padding-bottom: 8px;
+}
+
+.options-table tbody tr {
+    background: rgba(128, 128, 128, 0.08);
+    border-radius: 8px;
+}
+
+.options-table tbody tr:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+
+.options-table tbody td:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.options-table tbody td:last-child {
+    border-radius: 0 8px 8px 0;
 }
 
 .options-table th:first-child {
@@ -469,38 +604,51 @@ body.light #options-wrapper input[type="range"] {
 }
 
 .options-sidebar {
-    width: 180px;
+    width: 200px;
     padding: 1.5rem;
-    border-right: 1px solid rgba(128, 128, 128, 0.2);
+    background: rgba(0, 0, 0, 0.15);
+    border-right: 1px solid rgba(128, 128, 128, 0.1);
     flex-shrink: 0;
+}
+
+body.light .options-sidebar {
+    background: rgba(0, 0, 0, 0.03);
 }
 
 .options-sidebar nav {
     display: flex;
     flex-direction: column;
-    gap: 0.5em;
+    gap: 0.25em;
 }
 
 .options-sidebar nav a {
     text-decoration: none;
     color: inherit;
-    padding: 0.5em 0.75em;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    padding: 0.6em 0.9em;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    font-size: 0.95em;
+    opacity: 0.7;
 }
 
 .options-sidebar nav a:hover {
-    background-color: rgba(128, 128, 128, 0.1);
+    background-color: rgba(128, 128, 128, 0.15);
+    opacity: 1;
 }
 
 .options-sidebar nav a.active {
-    background-color: rgba(128, 128, 128, 0.2);
-    font-weight: bold;
+    background-color: rgba(128, 128, 128, 0.25);
+    font-weight: 500;
+    opacity: 1;
+}
+
+body.light .options-sidebar nav a.active {
+    background-color: rgba(0, 0, 0, 0.08);
 }
 
 .options-content {
     flex-grow: 1;
-    padding: 0 2rem;
+    padding: 1.5rem 2rem;
     overflow-y: auto;
     position: relative;
     display: flex;
@@ -525,16 +673,26 @@ body.light #options-wrapper input[type="range"] {
 
 .button-group {
     margin-top: auto;
-    border-top: 1px solid rgba(128, 128, 128, 0.3);
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
     padding: 1.2em 0;
     position: sticky; 
     bottom: 0; 
-    background-color: #1c1c1c; /* A slightly different dark shade for the sticky footer */
+    background: linear-gradient(to top, rgba(30, 30, 30, 1) 80%, rgba(30, 30, 30, 0));
+    padding-top: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
 }
 
 body.light .button-group {
-    background-color: #f0f0f0; /* Match light theme input background */
-    border-top-color: rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 80%, rgba(255, 255, 255, 0));
+    border-top-color: rgba(0, 0, 0, 0.08);
 }
 
 .background-image-controls {
@@ -623,10 +781,79 @@ body.light .background-add-label {
 #options-wrapper button {
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    font-family: monospace;
-    font-size: 1em;
+    font-family: inherit;
+    font-size: 0.95em;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+#options-wrapper button:hover {
+    transform: translateY(-1px);
+}
+
+#options-wrapper button:active {
+    transform: translateY(0);
+}
+
+#options-wrapper button.ghost-button {
+    background: rgba(128, 128, 128, 0.1);
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    color: inherit;
+    transition: all 0.15s ease;
+}
+
+#options-wrapper button.ghost-button:hover {
+    background: rgba(128, 128, 128, 0.2);
+    border-color: rgba(128, 128, 128, 0.4);
+}
+
+#options-wrapper button.ghost-button.drag-over {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #1c1c1c;
+    border-style: dashed;
+}
+
+body.light #options-wrapper button.ghost-button.drag-over {
+    color: white;
+}
+
+.settings-data-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.settings-data-container .button-row {
+    display: flex;
+    gap: 0.5em;
+}
+
+.drop-zone {
+    margin-top: 0.8em;
+    padding: 1.2em;
+    border: 2px dashed rgba(128, 128, 128, 0.3);
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+    background: rgba(128, 128, 128, 0.05);
+}
+
+.drop-zone-text {
+    opacity: 0.5;
+    font-size: 0.9em;
+}
+
+.drop-zone.drag-over {
+    background: rgba(128, 128, 128, 0.12);
+    border-color: var(--color-accent);
+}
+
+.drop-zone.drag-over .drop-zone-text {
+    opacity: 0.8;
 }
 
 .options-panel {
@@ -638,21 +865,60 @@ body.light .background-add-label {
 }
 
 /* Reorderable list styles */
-.reorder-list .drag-handle {
+.reorder-list .drag-handle,
+.options-table .drag-handle {
     cursor: grab;
 }
 
-.reorder-list tr.dragging {
-    opacity: 0.5;
-    background: rgba(128, 128, 128, 0.2);
+.options-table tbody tr {
+    cursor: grab;
 }
 
-.reorder-list tr.dragging .drag-handle {
+.reorder-list tr.dragging,
+.options-table tr.dragging {
+    opacity: 0.95;
+    background: rgba(128, 128, 128, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     cursor: grabbing;
 }
 
-#save { background-color: #4CAF50; color: white; }
-#restore-defaults { background-color: #f44336; color: white; }
+.reorder-list tr.dragging .drag-handle,
+.options-table tr.dragging .drag-handle {
+    cursor: grabbing;
+}
+
+.options-table tr.drag-placeholder td {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.options-table tr.drag-placeholder {
+    background: none;
+    border: none;
+}
+
+#save { 
+    background: #4CAF50;
+    color: white;
+}
+
+#save:hover {
+    background: #3d8b40;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+#restore-defaults { 
+    background: #f44336;
+    color: white;
+}
+
+#restore-defaults:hover {
+    background: #d32f2f;
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
+}
 
 :root {
     --color-accent: #ccc;
@@ -688,7 +954,21 @@ body.light {
 }
 
 .sub-settings {
-    margin-left: 2em;
+    margin-left: 1.5em;
+    padding-left: 1em;
+    border-left: 2px solid rgba(128, 128, 128, 0.2);
+}
+
+/* Disabled state for sub-settings - only target specific container IDs */
+.sub-settings.disabled,
+#sidebar-options.disabled,
+#shortcuts-links.disabled,
+#weather-options.disabled,
+#bookmark-folder-selector-span.disabled,
+#pixel-art-select-div.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    user-select: none;
 }
 
 #city-search-container {
@@ -764,45 +1044,44 @@ body.light {
 
 .segmented-control {
     display: flex;
-    border: 1px solid #555;
-    border-radius: 6px;
-    overflow: hidden;
+    background: rgba(128, 128, 128, 0.15);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
 }
 
 body.light .segmented-control {
-    border-color: #ccc;
+    background: rgba(0, 0, 0, 0.06);
 }
 
 .segmented-control label {
     display: inline-block;
     padding: 6px 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.15s ease;
     position: relative;
+    border-radius: 6px;
+    font-size: 0.95em;
 }
 
-.segmented-control label:not(:last-child) {
-    border-right: 1px solid #555;
-}
-
-body.light .segmented-control label:not(:last-child) {
-    border-right-color: #ccc;
+.segmented-control label:hover {
+    background: rgba(128, 128, 128, 0.15);
 }
 
 .segmented-control input[type="radio"] {
-    display: none; /* Hide the actual radio button */
+    display: none;
 }
 
 .segmented-control input[type="radio"]:checked + span {
-    color: #121212; /* Dark text for contrast on the highlight */
+    color: #121212;
 }
 
 .segmented-control label:has(input:checked) {
-    background-color: #ccc;
+    background-color: var(--color-accent);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 body.light .segmented-control label:has(input:checked) {
-    background-color: #555;
     color: #f0f0f0;
 }
 
@@ -1144,6 +1423,31 @@ body.light .todo-widget .todo-list button {
 
 .todo-widget .todo-list li:hover button {
     opacity: 1;
+}
+
+.todo-widget .todo-list li.dragging {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: grabbing !important;
+}
+
+.todo-widget .todo-list li.drag-placeholder {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+.todo-widget .todo-list li {
+    cursor: pointer;
+    user-select: none;
+}
+
+body.todo-dragging,
+body.todo-dragging * {
+    cursor: grabbing !important;
 }
 
 .todo-widget .todo-input {
