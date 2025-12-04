@@ -121,6 +121,7 @@ body {
     align-items: center;
     gap: 0.4rem;
     direction: rtl;
+    transition: opacity 0.3s ease;
 }
 
 .theme-icon svg {
@@ -159,6 +160,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    transition: opacity 0.3s ease;
 }
 
 .customize-icon svg {
