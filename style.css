@@ -1239,6 +1239,31 @@ body.light .todo-widget .todo-list button {
     opacity: 1;
 }
 
+.todo-widget .todo-list li.dragging {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: grabbing !important;
+}
+
+.todo-widget .todo-list li.drag-placeholder {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+.todo-widget .todo-list li {
+    cursor: pointer;
+    user-select: none;
+}
+
+body.todo-dragging,
+body.todo-dragging * {
+    cursor: grabbing !important;
+}
+
 .todo-widget .todo-input {
     width: 100%;
     padding: 8px;
