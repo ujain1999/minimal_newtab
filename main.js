@@ -255,8 +255,6 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
             const folderButton = document.createElement('button');
             folderButton.type = 'button';
             folderButton.className = 'bookmark-folder';
-            folderButton.style.marginLeft = `${level * 0.5}rem`;
-
             const chevron = document.createElement('span');
             chevron.className = 'chevron';
             chevron.textContent = '▶';
@@ -302,7 +300,6 @@ function renderBookmarks(nodes, container, level = 0, path = "") {
             const a = document.createElement('a');
             a.href = node.url;
             a.className = 'shortcut';
-            a.style.marginLeft = `${level * 0.5}rem`;
             a.textContent = node.title || node.url;
 
             listItem.appendChild(a);

@@ -68,17 +68,24 @@ body {
     display: none; /* Hide scrollbar in WebKit browsers */
 }
 
+.bookmark-list {
+    padding-left: 14px;
+    padding-right: 24px;
+}
+
 .bookmark-list,
 .bookmark-children {
     list-style: none;
-    padding-left: 4px;
     margin: 0;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .bookmark-folder-item,
 .bookmark-link-item {
     width: 100%;
+    box-sizing: border-box;
 }
 
 .shortcut {
@@ -89,6 +96,11 @@ body {
     color: inherit;
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .shortcut:hover {
@@ -103,7 +115,8 @@ body {
     color: inherit;
     user-select: none;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 0.4rem;
     width: 100%;
     background: transparent;
@@ -111,6 +124,18 @@ body {
     text-align: left;
     padding: 0.2rem 0;
     font: inherit;
+}
+
+.bookmark-folder .chevron,
+.bookmark-folder span {
+    white-space: normal;
+}
+
+.bookmark-folder span:last-child {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .bookmark-folder:hover {
@@ -122,6 +147,7 @@ body {
     margin-top: 0.1rem;
     overflow: visible;
     max-height: none;
+    box-sizing: border-box;
 }
 
 .bookmark-children.collapsed {
