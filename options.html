@@ -11,10 +11,10 @@
 <body class="options">
     <div id="notification" class="hidden"></div>
 
-    <div id="back">
-        <span id="back-link">←</span>
-    </div>
     <div id="options-wrapper">
+        <div id="back">
+            <span id="back-link">×</span>
+        </div>
         <div class="options-sidebar">
             <h1>Settings</h1>
             <nav>
@@ -22,6 +22,7 @@
                 <a href="#shortcuts">Shortcuts</a>
                 <a href="#appearance">Appearance</a>
                     <a href="#sidebar-settings">Sidebar</a>
+                    <a href="#preset">Backup</a>
                     <a href="#about">About</a>
             </nav>
         </div>
@@ -225,10 +226,25 @@ body { font-family: 'Comic Sans MS'; }
                 </div>
             </div>
 
+            <div id="preset" class="options-panel">
+                <h2>Backup</h2>
+                <p>Export your current settings or import a previously saved configuration.</p>
+                <div class="settings-data-container">
+                    <div class="button-row">
+                        <button id="export-settings" class="ghost-button">Export Settings</button>
+                        <button id="import-settings" class="ghost-button">Import Settings</button>
+                        <input type="file" id="import-file" accept=".json" style="display:none;">
+                    </div>
+                    <div id="import-drop-zone" class="drop-zone">
+                        <span class="drop-zone-text">or drag & drop a settings file here</span>
+                    </div>
+                </div>
+            </div>
+
             <div id="about" class="options-panel">
                 <h2>About</h2>
                 <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
-                    <img id="about-logo" src="favicons/favicon-128x128.png" alt="Logo" style="width:72px;height:72px;border-radius:12px;box-shadow:0 4px 8px rgba(0,0,0,0.12);">
+                    <img id="about-logo" src="favicons/android-chrome-512x512.png" alt="Logo" style="width:72px;height:72px;border-radius:12px;box-shadow:0 4px 8px rgba(0,0,0,0.12);">
                     <div>
                         <div id="about-title" role="button" tabindex="0" style="font-weight:bold; font-size:1.1rem;">Minimal New Tab</div>
                         <div style="opacity:0.8; margin-top:0.25rem;">Version <span id="extension-version">-</span></div>
@@ -251,8 +267,10 @@ body { font-family: 'Comic Sans MS'; }
             </div>
 
             <div class="button-group">
-                <button id="save">Save Settings</button>
-                <button id="restore-defaults">Restore Defaults</button>
+                <div class="button-row">
+                    <button id="save">Save Settings</button>
+                    <button id="restore-defaults">Restore Defaults</button>
+                </div>
             </div>
         </div>
     </div>
