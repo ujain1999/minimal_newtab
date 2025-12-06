@@ -245,60 +245,65 @@ function applyTheme(theme) {
 }
 
 function renderBookmarks(nodes, container, level = 0, path = "") {
-    nodes.forEach((node, idx) => {
+    nodes.forEach(node => {
         const currentPath = `${path}/${node.title || "Untitled"}`;
 
         if (node.children && node.children.length > 0) {
-            const folderRow = document.createElement('div');
-            folderRow.className = 'bookmark-folder';
-            folderRow.style.marginLeft = `${level * 0.5}rem`;
+            const listItem = document.createElement('li');
+            listItem.className = 'bookmark-folder-item';
 
+            const folderButton = document.createElement('button');
+            folderButton.type = 'button';
+            folderButton.className = 'bookmark-folder';
             const chevron = document.createElement('span');
-            chevron.textContent = "▶";
             chevron.className = 'chevron';
+            chevron.textContent = '▶';
 
             const title = document.createElement('span');
             title.textContent = ` ${node.title || "Untitled folder"}`;
 
-            folderRow.appendChild(chevron);
-            folderRow.appendChild(title);
+            folderButton.appendChild(chevron);
+            folderButton.appendChild(title);
 
-            const childrenContainer = document.createElement('div');
-            childrenContainer.className = 'bookmark-children';
-            childrenContainer.style.maxHeight = '0';
-            childrenContainer.style.overflow = 'hidden';
+            const childrenList = document.createElement('ul');
+            childrenList.className = 'bookmark-children';
 
             const isOpen = settings.expandBookmarks ? true : localStorage.getItem(currentPath) === "true";
             if (isOpen) {
-                childrenContainer.style.maxHeight = '1000px';
-                chevron.textContent = "▼";
+                chevron.textContent = '▼';
+            } else {
+                childrenList.classList.add('collapsed');
             }
 
-            folderRow.addEventListener('click', () => {
-                const expanded = childrenContainer.style.maxHeight !== '0px';
-                if (expanded) {
-                    childrenContainer.style.maxHeight = '0';
-                    chevron.textContent = "▶";
-                    localStorage.setItem(currentPath, "false");
-                } else {
-                    childrenContainer.style.maxHeight = '1000px';
-                    chevron.textContent = "▼";
+            folderButton.addEventListener('click', () => {
+                const isCollapsed = childrenList.classList.contains('collapsed');
+                if (isCollapsed) {
+                    childrenList.classList.remove('collapsed');
+                    chevron.textContent = '▼';
                     localStorage.setItem(currentPath, "true");
+                } else {
+                    childrenList.classList.add('collapsed');
+                    chevron.textContent = '▶';
+                    localStorage.setItem(currentPath, "false");
                 }
             });
 
-            container.appendChild(folderRow);
-            container.appendChild(childrenContainer);
+            listItem.appendChild(folderButton);
+            listItem.appendChild(childrenList);
+            container.appendChild(listItem);
 
-            renderBookmarks(node.children, childrenContainer, level + 1, currentPath);
-
+            renderBookmarks(node.children, childrenList, level + 1, currentPath);
         } else if (node.url) {
+            const listItem = document.createElement('li');
+            listItem.className = 'bookmark-link-item';
+
             const a = document.createElement('a');
             a.href = node.url;
             a.className = 'shortcut';
-            a.style.marginLeft = `${level * 0.5}rem`;
             a.textContent = node.title || node.url;
-            container.appendChild(a);
+
+            listItem.appendChild(a);
+            container.appendChild(listItem);
         }
     });
 }
@@ -365,7 +370,11 @@ if (settings.bookmarks) {
             bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase());
         }
         if (bookmarksBar && bookmarksBar.children) {
-            renderBookmarks(bookmarksBar.children, shortcuts);
+            const listRoot = document.createElement('ul');
+            listRoot.className = 'bookmark-list';
+            renderBookmarks(bookmarksBar.children, listRoot);
+            shortcuts.innerHTML = '';
+            shortcuts.appendChild(listRoot);
         } else {
             shortcuts.textContent = "No bookmarks found.";
         }

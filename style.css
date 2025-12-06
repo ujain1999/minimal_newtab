@@ -1,13 +1,22 @@
+/* Clear default margin and padding */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
 body {
-    margin-top: 3rem;
     font-family: monospace;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    height: 100vh;
+    max-height: 100vh;
     text-align: center;
-    padding-top: 10vh;
+    padding-top: calc(10vh + 3rem);
     font-size: 1.1rem;    
     transition: background-image 1s ease-in-out, color 0.3s ease;
 }
@@ -46,6 +55,38 @@ body {
     font-size: 1.1rem;
     text-align: left;
     margin-left: 4rem;
+    max-height: calc(100vh - 18rem);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 1rem;
+    padding-bottom: 12rem;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+.shortcuts::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in WebKit browsers */
+}
+
+.bookmark-list {
+    padding-left: 14px;
+    padding-right: 24px;
+}
+
+.bookmark-list,
+.bookmark-children {
+    list-style: none;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.bookmark-folder-item,
+.bookmark-link-item {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .shortcut {
@@ -56,6 +97,11 @@ body {
     color: inherit;
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .shortcut:hover {
@@ -70,8 +116,27 @@ body {
     color: inherit;
     user-select: none;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: 0.4rem;
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 0.2rem 0;
+    font: inherit;
+}
+
+.bookmark-folder .chevron,
+.bookmark-folder span {
+    white-space: normal;
+}
+
+.bookmark-folder span:last-child {
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .bookmark-folder:hover {
@@ -79,15 +144,15 @@ body {
 }
 
 .bookmark-children {
-    margin-left: 0.8rem;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
-    overflow: hidden;
-    opacity: 1;
+    padding-left: 1.2rem;
+    margin-top: 0.1rem;
+    overflow: visible;
+    max-height: none;
+    box-sizing: border-box;
 }
 
 .bookmark-children.collapsed {
-    max-height: 0;
-    opacity: 0;
+    display: none;
 }
 
 .top-right {
