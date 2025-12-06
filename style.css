@@ -517,6 +517,7 @@ body.light #options-wrapper input[type="range"] {
     text-transform: capitalize;
     border-collapse: collapse;
     margin-top: 1em;
+    table-layout: fixed;
 }
 
 .options-table th, .options-table td {
@@ -796,17 +797,39 @@ body.light .drop-zone.drag-over {
 }
 
 /* Reorderable list styles */
-.reorder-list .drag-handle {
+.reorder-list .drag-handle,
+.options-table .drag-handle {
     cursor: grab;
 }
 
-.reorder-list tr.dragging {
-    opacity: 0.5;
-    background: rgba(128, 128, 128, 0.2);
+.options-table tbody tr {
+    cursor: grab;
 }
 
-.reorder-list tr.dragging .drag-handle {
+.reorder-list tr.dragging,
+.options-table tr.dragging {
+    opacity: 0.95;
+    background: rgba(128, 128, 128, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     cursor: grabbing;
+}
+
+.reorder-list tr.dragging .drag-handle,
+.options-table tr.dragging .drag-handle {
+    cursor: grabbing;
+}
+
+.options-table tr.drag-placeholder td {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.options-table tr.drag-placeholder {
+    background: none;
+    border: none;
 }
 
 #save { background-color: #4CAF50; color: white; }
