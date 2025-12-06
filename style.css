@@ -649,6 +649,7 @@ body.light .options-sidebar nav a.active {
 .options-content {
     flex-grow: 1;
     padding: 1.5rem 2rem;
+    padding-bottom: 0em;
     overflow-y: auto;
     position: relative;
     display: flex;
@@ -675,6 +676,7 @@ body.light .options-sidebar nav a.active {
     margin-top: auto;
     border-top: 1px solid rgba(128, 128, 128, 0.15);
     padding: 1.2em 0;
+    padding-bottom: 1.2em;
     position: sticky; 
     bottom: 0; 
     background: linear-gradient(to top, rgba(30, 30, 30, 1) 80%, rgba(30, 30, 30, 0));
