@@ -59,6 +59,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 1rem;
+    padding-bottom: 12rem;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     scrollbar-width: none; /* Hide scrollbar in Firefox */
