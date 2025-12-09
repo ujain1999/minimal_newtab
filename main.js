@@ -245,6 +245,8 @@ function applyTheme(theme) {
 }
 
 function renderBookmarks(nodes, container, level = 0, path = "") {
+    // echo all inputs
+    console.log("renderBookmarks called with:", { nodes, level, path });
     nodes.forEach(node => {
         const currentPath = `${path}/${node.title || "Untitled"}`;
 
@@ -365,14 +367,14 @@ if (settings.weather) {
 if (settings.bookmarks) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
-        let bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === "bookmarks bar");
-        if (settings.bookmarkFolder) {
-            bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase());
-        }
-        if (bookmarksBar && bookmarksBar.children) {
+        let bookmarksBar = tree[0].children;
+        // if (settings.bookmarkFolder) {
+        //     bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase());
+        // }
+        if (bookmarksBar) {
             const listRoot = document.createElement('ul');
             listRoot.className = 'bookmark-list';
-            renderBookmarks(bookmarksBar.children, listRoot);
+            renderBookmarks(bookmarksBar, listRoot);
             shortcuts.innerHTML = '';
             shortcuts.appendChild(listRoot);
         } else {
