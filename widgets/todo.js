@@ -1,11 +1,14 @@
 const TODO_STORAGE_KEY = 'sidebar-todo-list';
 
-function getTodos() {
-    return JSON.parse(localStorage.getItem(TODO_STORAGE_KEY)) || [];
+async function getTodos() {
+    const result = await chrome.storage.local.get(TODO_STORAGE_KEY);
+    return result[TODO_STORAGE_KEY] || [];
 }
 
-function saveTodos(todos) {
-    localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
+async function saveTodos(todos) {
+    await chrome.storage.local.set({
+        [TODO_STORAGE_KEY]: todos
+    });
 }
 
 export function renderTodo() {
@@ -29,8 +32,8 @@ export function renderTodo() {
     let offsetY = 0;
     let itemHeight = 0;
 
-    const renderItems = () => {
-        const todos = getTodos();
+    const renderItems = async () => {
+        const todos = await getTodos();
         todoList.innerHTML = '';
         todos.forEach((todo, index) => {
             const li = document.createElement('li');
@@ -100,15 +103,15 @@ export function renderTodo() {
                     }
                 };
 
-                const onMouseUpStart = (upEvent) => {
+                const onMouseUpStart =  async (upEvent) => {
                     document.removeEventListener('mousemove', onMouseMoveStart);
                     document.removeEventListener('mouseup', onMouseUpStart);
                     
                     if (!isDragging) {
                         // It was a click, toggle completed state
-                        const todos = getTodos();
+                        const todos = await getTodos();
                         todos[index].completed = !todos[index].completed;
-                        saveTodos(todos);
+                        await saveTodos(todos);
                         renderItems();
                     } else {
                         onMouseUp();
@@ -222,7 +225,7 @@ export function renderTodo() {
         }
     };
 
-    const onMouseUp = () => {
+    const onMouseUp = async (e) => {
         if (!draggedElement || !placeholder) return;
 
         // Calculate new index based on placeholder position
@@ -231,10 +234,10 @@ export function renderTodo() {
 
         // Reorder todos if position changed
         if (newIndex !== -1 && newIndex !== draggedIndex) {
-            const todos = getTodos();
+            const todos = await getTodos();
             const [draggedItem] = todos.splice(draggedIndex, 1);
             todos.splice(newIndex, 0, draggedItem);
-            saveTodos(todos);
+            await saveTodos(todos);
         }
 
         // Cleanup
@@ -255,11 +258,11 @@ export function renderTodo() {
         renderItems();
     };
 
-    input.addEventListener('keypress', (e) => {
+    input.addEventListener('keypress', async (e) => {
         if (e.key === 'Enter' && input.value.trim() !== '') {
-            const todos = getTodos();
+            const todos = await getTodos();
             todos.push({ text: input.value.trim(), completed: false });
-            saveTodos(todos);
+            await saveTodos(todos);
             input.value = '';
             renderItems();
         }
