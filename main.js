@@ -530,9 +530,8 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
     }
 });
 
-// In your new page's initialization code
+// On page initialization, check for pending notification
 const pendingNotification = localStorage.getItem('pendingNotification');
-console.log(pendingNotification);
 if (pendingNotification) {
     showNotification(pendingNotification, 2000, 'success', false);
     localStorage.removeItem('pendingNotification');
