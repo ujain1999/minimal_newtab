@@ -341,17 +341,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make rows draggable
     shortcutsTableBody.querySelectorAll('tr').forEach(row => row.setAttribute('draggable', 'true'));
 
-    let selectElem = document.querySelector("#bookmark-folder-selector-span select");
+    const selectElem = document.querySelector("#bookmark-folder-selector-span select");
+
+    const allOption = document.createElement("option");
+    allOption.value = "";
+    allOption.text = "All";
+    allOption.selected = !settings['bookmarkFolder'];
+    selectElem.append(allOption);
+
     chrome.bookmarks.getTree(tree => {
-        tree[0].children.map((folder) => {
+        tree[0].children.forEach(folder => {
             const optionElem = document.createElement("option");
-            optionElem.value = folder.title;
-            optionElem.text = folder.title;
-            if (settings['bookmarkFolder'] == folder.title) {
-                optionElem.selected = true;
-            }
+            optionElem.value = optionElem.text = folder.title;
+            optionElem.selected = settings['bookmarkFolder'] === folder.title;
             selectElem.append(optionElem);
-        })
+        });
     });
 
     // Back link navigation

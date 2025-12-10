@@ -367,41 +367,27 @@ if (settings.weather) {
 if (settings.bookmarks) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
-        let bookmarksBar = tree[0].children[0]; // Default to Bookmarks Bar
+        let bookmarksBar = settings.bookmarkFolder?.trim()
+            ? tree[0].children.find(f => f.title.toLowerCase() === settings.bookmarkFolder.toLowerCase())
+            : tree[0].children[0];
 
-        // Filter by specified folder if set
-        if (settings.bookmarkFolder && settings.bookmarkFolder.trim()) {
-            console.log("Looking for bookmark folder:", settings.bookmarkFolder);
-            const foundFolder = tree[0].children.find(
-                folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase()
-            );
-
-            if (foundFolder) {
-                bookmarksBar = foundFolder;
-                console.log("Found folder:", bookmarksBar.title);
-            } else {
-                console.warn("Bookmark folder not found:", settings.bookmarkFolder);
-                shortcuts.textContent = "Bookmark folder not found.";
-                return;
-            }
-        } else {
-            console.log("Using default Bookmarks Bar");
+        if (settings.bookmarkFolder?.trim() && !bookmarksBar) {
+            shortcuts.textContent = "Bookmark folder not found.";
+            return;
         }
 
-        console.log("Using bookmarks from:", bookmarksBar.title);
+        const listRoot = document.createElement('ul');
+        listRoot.className = 'bookmark-list';
+        shortcuts.innerHTML = '';
 
-        if (bookmarksBar && bookmarksBar.children) {
-            const listRoot = document.createElement('ul');
-            listRoot.className = 'bookmark-list';
-            renderBookmarks(bookmarksBar.children, listRoot); // Pass children array
-            shortcuts.innerHTML = '';
-            shortcuts.appendChild(listRoot);
-        } else {
-            shortcuts.textContent = "No bookmarks found.";
-        }
+        renderBookmarks(
+            settings.bookmarkFolder?.trim() ? bookmarksBar.children : tree[0].children,
+            listRoot
+        );
+
+        shortcuts.appendChild(listRoot);
     });
-}
-else {
+} else {
     document.getElementById("shortcuts").style.display = 'none';
 }
 
