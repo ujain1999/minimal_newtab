@@ -468,6 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('unsplashData');
         }
         showNotification("Settings Saved!", 2000, 'success', false);
+        chrome.tabs.update({ url: "chrome://newtab" });
     })
 
     const cityInput = document.getElementById('custom-city');
@@ -630,6 +631,7 @@ document.getElementById("restore-defaults").addEventListener("click", () => {
     localStorage.removeItem("settings");
     localStorage.setItem("settings", JSON.stringify(defaultSettings));
     showNotification("Settings restored to defaults! Reloading...", 2000, 'restore', true);
+    chrome.tabs.update({ url: "chrome://newtab" });
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {
