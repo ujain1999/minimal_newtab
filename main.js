@@ -245,8 +245,6 @@ function applyTheme(theme) {
 }
 
 function renderBookmarks(nodes, container, level = 0, path = "") {
-    // echo all inputs
-    console.log("renderBookmarks called with:", { nodes, level, path });
     nodes.forEach(node => {
         const currentPath = `${path}/${node.title || "Untitled"}`;
 
