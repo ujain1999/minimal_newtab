@@ -50,13 +50,13 @@
                 </div>
                 <label class="checkbox-label"><input type="checkbox" id="show-bookmarks"><span class="custom-checkbox"></span> Show Bookmarks</label>
                 <div id="bookmark-folder-selector-span" class="sub-settings">
-                    <label for="bookmark-folders">Select Bookmark folder: </label>
-                    <select id="bookmark-folders" name="bookmark-folders">
-                    </select>
-                    <br>
                     <span id="expand-bookmarks-span">
                     <label class="checkbox-label"><input type="checkbox" id="expand-bookmarks"><span class="custom-checkbox"></span> Expand bookmark folders by default</label>
                     </span>
+                    <label for="bookmark-folders" class="selector-label">Select Bookmark folder: 
+                        <select id="bookmark-folders" name="bookmark-folders">
+                    </label>
+                    </select>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
                     </div>
                 </div>
 
-                <div class="setting-row">
+                <div class="selector-label">
                     <label for="background-image-input">Custom Background Image:</label>
                     <div class="background-image-controls">
                         <label for="background-image-input" id="background-add-label" class="background-add-label">
@@ -136,15 +136,17 @@
 
                 <label class="checkbox-label"><input type="checkbox" id="show-pixelArt"><span class="custom-checkbox"></span>Show Background Pixel Art</label>
                 <div id="pixel-art-select-div" class="sub-settings">
-                    <label for="pixel-art-select">Select Pixel Art: </label>
-                    <select id="pixel-art-select" name="pixel-art-select">
-                        <option value="flowers">Flowers</option>
-                        <option value="hearts">Hearts</option>
-                        <option value="stars">Stars</option>
-                        <option value="kitty">Kitty</option>
-                        <option value="leaves">Leaves</option>
-                        <option value="custom">Custom</option>
-                    </select>
+                    <div class="selector-label">
+                        <label for="pixel-art-select">Select Pixel Art: </label>
+                        <select id="pixel-art-select" name="pixel-art-select">
+                            <option value="flowers">Flowers</option>
+                            <option value="hearts">Hearts</option>
+                            <option value="stars">Stars</option>
+                            <option value="kitty">Kitty</option>
+                            <option value="leaves">Leaves</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
                     <br>
                     <div id="custom-svg-input-div">
                         <label for="custom-svg-input">Custom SVG</label><br>

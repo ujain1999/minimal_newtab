@@ -437,7 +437,7 @@ body.light #options-wrapper {
 }
 
 .checkbox-label {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     cursor: pointer;
     font-size: 1em;
@@ -489,7 +489,7 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
 }
 
 .checkbox-label {
-    display: block;
+    display: flex;
     margin-bottom: 0.8em;
     font-size: 1em;
 }
@@ -870,7 +870,7 @@ body.light .background-add-label {
 #options-wrapper button.ghost-button.drag-over {
     background: var(--color-accent);
     border-color: var(--color-accent);
-    color: #1c1c1c;
+    color: white;
     border-style: dashed;
 }
 
@@ -1031,23 +1031,31 @@ body.light .drop-zone.drag-over {
 }
 
 #save { 
-    background: #4CAF50;
+    background: var(--color-accent);
     color: white;
 }
 
 #save:hover {
-    background: #3d8b40;
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    background: #000000;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 #restore-defaults { 
-    background: #f44336;
-    color: white;
+    background: transparent;
+    border: 2px solid #3b3b3b;
+    color: #3b3b3b;
 }
 
 #restore-defaults:hover {
-    background: #d32f2f;
-    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
+.selector-label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 :root {
@@ -1055,7 +1063,7 @@ body.light .drop-zone.drag-over {
 }
 
 body.light {
-    --color-accent: #b04288;
+    --color-accent: #3b3b3b;
 }
 
 .art-grid {
@@ -1203,7 +1211,7 @@ body.light .segmented-control {
 }
 
 .segmented-control input[type="radio"]:checked + span {
-    color: #121212;
+    color: white;
 }
 
 .segmented-control label:has(input:checked) {
@@ -1472,7 +1480,7 @@ body.light .widget {
 
 .calendar-day.today {
     background-color: var(--color-accent);
-    color: #121212;
+    color: white;
     font-weight: bold;
 }
 
