@@ -5,7 +5,7 @@ const defaultSettings = {
     "useCustomCity": false,
     "tempUnit": "celsius",
     "bookmarks": true,
-    "bookmarkFolder": "Bookmarks Bar",
+    "bookmarkFolder": false,
     "expandBookmarks": false,
     "topRight": true,
     "topRightOrder": [

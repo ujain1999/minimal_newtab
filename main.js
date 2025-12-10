@@ -367,14 +367,33 @@ if (settings.weather) {
 if (settings.bookmarks) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
-        let bookmarksBar = tree[0].children;
-        // if (settings.bookmarkFolder) {
-        //     bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase());
-        // }
-        if (bookmarksBar) {
+        let bookmarksBar = tree[0].children[0]; // Default to Bookmarks Bar
+
+        // Filter by specified folder if set
+        if (settings.bookmarkFolder && settings.bookmarkFolder.trim()) {
+            console.log("Looking for bookmark folder:", settings.bookmarkFolder);
+            const foundFolder = tree[0].children.find(
+                folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase()
+            );
+
+            if (foundFolder) {
+                bookmarksBar = foundFolder;
+                console.log("Found folder:", bookmarksBar.title);
+            } else {
+                console.warn("Bookmark folder not found:", settings.bookmarkFolder);
+                shortcuts.textContent = "Bookmark folder not found.";
+                return;
+            }
+        } else {
+            console.log("Using default Bookmarks Bar");
+        }
+
+        console.log("Using bookmarks from:", bookmarksBar.title);
+
+        if (bookmarksBar && bookmarksBar.children) {
             const listRoot = document.createElement('ul');
             listRoot.className = 'bookmark-list';
-            renderBookmarks(bookmarksBar, listRoot);
+            renderBookmarks(bookmarksBar.children, listRoot); // Pass children array
             shortcuts.innerHTML = '';
             shortcuts.appendChild(listRoot);
         } else {
