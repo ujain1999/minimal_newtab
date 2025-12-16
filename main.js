@@ -365,22 +365,27 @@ if (settings.weather) {
 if (settings.bookmarks) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
-        let bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === "bookmarks bar");
-        if (settings.bookmarkFolder) {
-            bookmarksBar = tree[0].children.find(folder => folder.title.toLowerCase() === settings.bookmarkFolder.toLowerCase());
+        let bookmarksBar = settings.bookmarkFolder?.trim()
+            ? tree[0].children.find(f => f.title.toLowerCase() === settings.bookmarkFolder.toLowerCase())
+            : tree[0].children[0];
+
+        if (settings.bookmarkFolder?.trim() && !bookmarksBar) {
+            shortcuts.textContent = "Bookmark folder not found.";
+            return;
         }
-        if (bookmarksBar && bookmarksBar.children) {
-            const listRoot = document.createElement('ul');
-            listRoot.className = 'bookmark-list';
-            renderBookmarks(bookmarksBar.children, listRoot);
-            shortcuts.innerHTML = '';
-            shortcuts.appendChild(listRoot);
-        } else {
-            shortcuts.textContent = "No bookmarks found.";
-        }
+
+        const listRoot = document.createElement('ul');
+        listRoot.className = 'bookmark-list';
+        shortcuts.innerHTML = '';
+
+        renderBookmarks(
+            settings.bookmarkFolder?.trim() ? bookmarksBar.children : tree[0].children,
+            listRoot
+        );
+
+        shortcuts.appendChild(listRoot);
     });
-}
-else {
+} else {
     document.getElementById("shortcuts").style.display = 'none';
 }
 
