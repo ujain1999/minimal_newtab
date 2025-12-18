@@ -23,20 +23,20 @@
 
 ## 📷 Screenshots
 
-|           Dark Theme          |         Light Theme             |               Options               |
-|-------------------------------|---------------------------------|-------------------------------------|
-| ![Dark](screenshots/dark_new.png) | ![Light](screenshots/light_new.png) | ![Options](screenshots/options.png) |
-
+|           Dark Theme              |         Light Theme                 |
+|-----------------------------------|-------------------------------------|
+| ![Dark](screenshots/dark_new.png) | ![Light](screenshots/light_new.png) |
+| Options                           |         Sidebar                     |
+|![Options](screenshots/options.png)| ![Sidebar](screenshots/sidebar.png) |
 
 
 ---
 
 ## Installation (CRX)
 
-- 📎 [Chrome Web Store](https://chromewebstore.google.com/detail/minimal-new-tab/hdodpjlgcieifmkkidligdnonbfiijnd)
+[![Download from the Chrome WebStore](favicons/chromewebstore-dark.png)](https://chromewebstore.google.com/detail/minimal-new-tab/hdodpjlgcieifmkkidligdnonbfiijnd)
 
-- 📦 [Download CRX](https://github.com/ujain1999/minimal_newtab/releases/latest)
 
-- For manual installation, clone this repository and [load it as an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
+For manual installation, clone this repository and [load it as an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 ```bash
 git clone https://github.com/ujain1999/minimal_newtab.git
