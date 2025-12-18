@@ -10,10 +10,11 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16x16.png">
   <link rel="manifest" href="favicons/site.webmanifest">
   <link rel="stylesheet" href="style.css" />
+  <script src="defaultSettings.js"></script>
+  <script src="utils.js"></script>
 </head>
 
 <body>
-
   <div id="sidebar" class="sidebar minimised">
     <div class="sidebar-handle">
       <span class="sidebar-caret"></span>
@@ -21,9 +22,9 @@
     <div class="sidebar-content"></div>
   </div>
   <div class="top-right" id="top-right"></div>
-
-  <div class="clock" id="clock">--:--</div>
-  <div class="weather" id="weather">Fetching weather...</div>
+  
+  <div class="clock" id="clock"></div>
+  <div class="weather" id="weather"></div>
   <div class="shortcuts" id="shortcuts"></div>
 
   <div class="customize" id="customize" title="customize">
@@ -39,7 +40,8 @@
     <span class="theme-label">System</span>
   </div>
   <div class="art-grid"></div>
-  <script src="defaultSettings.js"></script>
+  <!-- <script src="defaultSettings.js"></script>
+  <script src="utils.js"></script> -->
   <script type="module" src="main.js"></script>
   <script type="module" src="art.js"></script>
   <script type="module" src="widgets/calendar.js"></script> 
