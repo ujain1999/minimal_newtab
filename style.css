@@ -257,8 +257,8 @@ body.auto-hide .theme-toggle {
     pointer-events: none;
 }
 
-body.controls-visible .customize,
-body.controls-visible .theme-toggle {
+body.auto-hide.controls-visible .customize,
+body.auto-hide.controls-visible .theme-toggle {
     opacity: 1;
     pointer-events: auto;
 }
