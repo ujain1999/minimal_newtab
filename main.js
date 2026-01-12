@@ -342,6 +342,18 @@ else {
     document.getElementById("clock").style.display = 'none';
 }
 
+if (settings.autoHide) {
+    document.body.classList.add('auto-hide');
+    document.addEventListener('mousemove', (e) => {
+        const threshold = 100;
+        if (window.innerHeight - e.clientY < threshold) {
+            document.body.classList.add('controls-visible');
+        } else {
+            document.body.classList.remove('controls-visible');
+        }
+    });
+}
+
 if (settings.weather) {
     const useCustomCity = settings.useCustomCity;
     const tempUnit = settings.tempUnit || 'celsius';

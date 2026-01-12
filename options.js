@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
         "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "expandBookmarks", "topRight", "topRightOrder", "pixelArt", 
         "selectedPixelArt", "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
-        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", 
+        "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "autoHide", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", 
         "showUnsplashRefresh", "customCSS"
     ];
 
@@ -131,6 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (settings['sidebarExpanded']) {
         document.getElementById("sidebar-expanded-check").checked = true;
+    }
+    if (settings['autoHide']) {
+        document.getElementById("show-autoHide").checked = true;
     }
     // Initialize and enforce dependency for sidebar Customize button visibility
     if (settings['sidebarShowCustomize'] === undefined) settings['sidebarShowCustomize'] = true;

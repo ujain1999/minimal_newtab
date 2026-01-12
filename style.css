@@ -250,6 +250,19 @@ body {
     max-width: 6rem;
 }
 
+/* Auto-hide control buttons */
+body.auto-hide .customize,
+body.auto-hide .theme-toggle {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.controls-visible .customize,
+body.controls-visible .theme-toggle {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .tooltip-wrapper {
     position: relative;
 }
