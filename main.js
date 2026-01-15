@@ -1,92 +1,10 @@
-import { renderCalendar } from './widgets/calendar.js';
-import { renderTodo } from './widgets/todo.js';
+import { renderClock } from './components/js/clock.js';
+import { renderWeather } from './components/js/weather.js';
+import { renderBookmarks } from './components/js/bookmarks.js';
+import { renderTopRight } from './components/js/topRight.js';
+import { renderSidebar } from './components/js/sidebar.js';
 
-function updateClock() {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const mins = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('clock').textContent = `${hours}:${mins}`;
-}
 
-const weatherCodes = {
-    0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
-    45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
-    61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
-    71: "Slight snow", 73: "Moderate snow", 75: "Heavy snow",
-    80: "Slight rain showers", 81: "Moderate rain showers", 82: "Violent rain showers",
-    95: "Thunderstorm", 96: "Thunderstorm w/ hail", 99: "Severe thunderstorm"
-};
-
-function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
-    const now = new Date();
-    const cachedWeather = localStorage.getItem('weatherData');
-    
-    if (cachedWeather) {
-        const weatherData = JSON.parse(cachedWeather);
-        if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
-            document.getElementById('weather').textContent = weatherData.text;
-            return;
-        }
-    }
-
-    const tempUnitParam = tempUnit === 'fahrenheit' ? '&temperature_unit=fahrenheit' : '';
-
-    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true${tempUnitParam}`)
-        .then(res => res.json())
-        .then(data => {
-            const temp = Math.round(data.current_weather.temperature);
-            const code = data.current_weather.weathercode;
-            const desc = weatherCodes[code] || `Code ${code}`;
-            let weatherText = `${desc}, ${temp}°${tempUnit === 'celsius' ? 'C' : 'F'}`;
-
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-                .then(res => res.json())
-                .then(location => {
-                    const city = location.address.city || location.address.town || location.address.village || location.address.county || "your area";
-                    const weatherString = `${city}: ${weatherText}`;
-                    document.getElementById('weather').textContent = weatherString;
-                    
-                    // Cache the weather data
-                    localStorage.setItem('weatherData', JSON.stringify({
-                        text: weatherString,
-                        timestamp: now.toISOString()
-                    }));
-                })
-                .catch(() => {
-                    document.getElementById('weather').textContent = weatherText;
-                });
-        })
-        .catch(() => {
-            document.getElementById('weather').textContent = "Unable to fetch weather.";
-        });
-}
-
-function fetchWeatherByCity(city, tempUnit = 'celsius') {
-    const now = new Date();
-    const cachedWeather = localStorage.getItem('weatherData');
-    
-    if (cachedWeather) {
-        const weatherData = JSON.parse(cachedWeather);
-        if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
-            document.getElementById('weather').textContent = weatherData.text;
-            return;
-        }
-    }
-
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.length > 0) {
-                const { lat, lon } = data[0];
-                fetchWeatherAndCity(lat, lon, tempUnit);
-            } else {
-                document.getElementById('weather').textContent = "City not found";
-            }
-        })
-        .catch(() => {
-            document.getElementById('weather').textContent = "Unable to fetch weather";
-        });
-}
 
 function displayPhotoCredit(photoData) {
     const creditContainer = document.getElementById('photo-credit');
@@ -244,70 +162,6 @@ function applyTheme(theme) {
 
 }
 
-function renderBookmarks(nodes, container, level = 0, path = "") {
-    nodes.forEach(node => {
-        const currentPath = `${path}/${node.title || "Untitled"}`;
-
-        if (node.children && node.children.length > 0) {
-            const listItem = document.createElement('li');
-            listItem.className = 'bookmark-folder-item';
-
-            const folderButton = document.createElement('button');
-            folderButton.type = 'button';
-            folderButton.className = 'bookmark-folder';
-            const chevron = document.createElement('span');
-            chevron.className = 'chevron';
-            chevron.textContent = '▶';
-
-            const title = document.createElement('span');
-            title.textContent = ` ${node.title || "Untitled folder"}`;
-
-            folderButton.appendChild(chevron);
-            folderButton.appendChild(title);
-
-            const childrenList = document.createElement('ul');
-            childrenList.className = 'bookmark-children';
-
-            const isOpen = settings.expandBookmarks ? true : localStorage.getItem(currentPath) === "true";
-            if (isOpen) {
-                chevron.textContent = '▼';
-            } else {
-                childrenList.classList.add('collapsed');
-            }
-
-            folderButton.addEventListener('click', () => {
-                const isCollapsed = childrenList.classList.contains('collapsed');
-                if (isCollapsed) {
-                    childrenList.classList.remove('collapsed');
-                    chevron.textContent = '▼';
-                    localStorage.setItem(currentPath, "true");
-                } else {
-                    childrenList.classList.add('collapsed');
-                    chevron.textContent = '▶';
-                    localStorage.setItem(currentPath, "false");
-                }
-            });
-
-            listItem.appendChild(folderButton);
-            listItem.appendChild(childrenList);
-            container.appendChild(listItem);
-
-            renderBookmarks(node.children, childrenList, level + 1, currentPath);
-        } else if (node.url) {
-            const listItem = document.createElement('li');
-            listItem.className = 'bookmark-link-item';
-
-            const a = document.createElement('a');
-            a.href = node.url;
-            a.className = 'shortcut';
-            a.textContent = node.title || node.url;
-
-            listItem.appendChild(a);
-            container.appendChild(listItem);
-        }
-    });
-}
-
 if (localStorage.getItem("settings") === null) {
     localStorage.setItem("settings", JSON.stringify(defaultSettings));
 }
@@ -334,161 +188,121 @@ if (settings.useUnsplash || settings.backgroundImage) {
     document.body.style.backgroundPosition = "center";
 }
 
+if (settings.topRight) {
+    renderTopRight(settings);
+}
+else {
+    document.getElementById('top-right').style.display = 'none';
+}
+
 if (settings.clock) {
-    setInterval(updateClock, 1000);
-    updateClock();
+    renderClock();
 }
 else {
     document.getElementById("clock").style.display = 'none';
 }
 
 if (settings.weather) {
-    const useCustomCity = settings.useCustomCity;
-    const tempUnit = settings.tempUnit || 'celsius';
-    if (useCustomCity && settings.customCity) {
-        const customCity = settings.customCity;
-        fetchWeatherByCity(customCity, tempUnit);
-    } else {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude, tempUnit),
-                () => { document.getElementById('weather').textContent = "Location access denied."; }
-            );
-        } else {
-            document.getElementById('weather').textContent = "Geolocation not supported.";
-        }
-    }
+    renderWeather(settings);
 } else {
     document.getElementById('weather').style.display = 'none';
 }
 
 if (settings.bookmarks) {
-    chrome.bookmarks.getTree(tree => {
-        const shortcuts = document.getElementById('shortcuts');
-        let bookmarksBar = settings.bookmarkFolder?.trim()
-            ? tree[0].children.find(f => f.title.toLowerCase() === settings.bookmarkFolder.toLowerCase())
-            : tree[0].children[0];
-
-        if (settings.bookmarkFolder?.trim() && !bookmarksBar) {
-            shortcuts.textContent = "Bookmark folder not found.";
-            return;
-        }
-
-        const listRoot = document.createElement('ul');
-        listRoot.className = 'bookmark-list';
-        shortcuts.innerHTML = '';
-
-        renderBookmarks(
-            settings.bookmarkFolder?.trim() ? bookmarksBar.children : tree[0].children,
-            listRoot
-        );
-
-        shortcuts.appendChild(listRoot);
-    });
+    renderBookmarks(settings);
 } else {
     document.getElementById("shortcuts").style.display = 'none';
 }
 
-if (settings.topRight) {
-    const topRightOrder = settings.topRightOrder;
-    let container = document.getElementById("top-right");
-    container.innerHTML = "";
-    topRightOrder.map((item) => {
-        if (item.displayBool) {
-            let itemElem = document.createElement("span");
-            itemElem.id = "open-" + item["id"];
-            itemElem.innerHTML = item["id"];
-            itemElem.addEventListener('click', () => {
-                chrome.tabs.create({ url: item['url'] });
-            })
-            container.append(itemElem);
-        }
-
-    })
-}
-else {
-    document.getElementById('top-right').style.display = 'none';
-}
+// if (settings.topRight) {
+//     renderTopRight(settings);
+// }
+// else {
+//     document.getElementById('top-right').style.display = 'none';
+// }
 
 if (settings.sidebar) {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.style.display = 'flex';
-    sidebar.classList.add(settings.sidebarPosition || 'right');
+    // const sidebar = document.getElementById('sidebar');
+    // sidebar.style.display = 'flex';
+    // sidebar.classList.add(settings.sidebarPosition || 'right');
 
-    const sidebarContent = sidebar.querySelector('.sidebar-content');
-    const selectedWidgets = settings.sidebarWidgets || [];
+    // const sidebarContent = sidebar.querySelector('.sidebar-content');
+    // const selectedWidgets = settings.sidebarWidgets || [];
 
-    const widgetRenderers = {
-        calendar: renderCalendar,
-        todo: renderTodo
-    };
+    // const widgetRenderers = {
+    //     calendar: renderCalendar,
+    //     todo: renderTodo
+    // };
 
-    if (selectedWidgets.length > 0) {
-        selectedWidgets.forEach(widgetId => {
-            if (widgetRenderers[widgetId]) {
-                const widgetContainer = document.createElement('div');
-                widgetContainer.classList.add('widget');
-                widgetContainer.id = `widget-${widgetId}`;
+    // if (selectedWidgets.length > 0) {
+    //     selectedWidgets.forEach(widgetId => {
+    //         if (widgetRenderers[widgetId]) {
+    //             const widgetContainer = document.createElement('div');
+    //             widgetContainer.classList.add('widget');
+    //             widgetContainer.id = `widget-${widgetId}`;
 
-                const widgetContent = widgetRenderers[widgetId];
-                widgetContainer.append(widgetContent());
-                sidebarContent.appendChild(widgetContainer);
-            }
-        });
-    } else {
-        sidebarContent.innerHTML = '<p style="text-align: center; margin-top: 50px;">No widgets selected. You can add widgets from the Customize menu.</p>';
-    }
+    //             const widgetContent = widgetRenderers[widgetId];
+    //             widgetContainer.append(widgetContent());
+    //             sidebarContent.appendChild(widgetContainer);
+    //         }
+    //     });
+    // } else {
+    //     sidebarContent.innerHTML = '<p style="text-align: center; margin-top: 50px;">No widgets selected. You can add widgets from the Customize menu.</p>';
+    // }
 
-    if (settings.sidebarExpanded) {
-        sidebar.classList.remove('minimised');
-    }
+    // if (settings.sidebarExpanded) {
+    //     sidebar.classList.remove('minimised');
+    // }
     
-    if (settings.sidebarShowCustomize || settings.sidebarExpanded) {
-        const sidebarFooter = document.createElement('div');
-        sidebarFooter.className = 'sidebar-footer';
-        sidebarFooter.innerHTML = `<button id="sidebar-customize" class="sidebar-customize-btn" title="Customize">Customize</button>`;
-        sidebar.appendChild(sidebarFooter);
+    // if (settings.sidebarShowCustomize || settings.sidebarExpanded) {
+    //     const sidebarFooter = document.createElement('div');
+    //     sidebarFooter.className = 'sidebar-footer';
+    //     sidebarFooter.innerHTML = `<button id="sidebar-customize" class="sidebar-customize-btn" title="Customize">Customize</button>`;
+    //     sidebar.appendChild(sidebarFooter);
 
-        document.getElementById('sidebar-customize').addEventListener('click', () => {
-            location.href = '/options.html';
-        });
-    }
+    //     document.getElementById('sidebar-customize').addEventListener('click', () => {
+    //         location.href = '/options.html';
+    //     });
+    // }
 
-    // Hide/show bottom-left customize button based on sidebar position and state
-    const customizeBtn = document.getElementById('customize');
-    const themeToggle = document.querySelector('.theme-toggle');
-    const updateCustomizeVisibility = () => {
-        const isLeft = settings.sidebarPosition === 'left';
-        const isRight = settings.sidebarPosition === 'right' || !settings.sidebarPosition;
-        const isExpanded = !sidebar.classList.contains('minimised');
+    // // Hide/show bottom-left customize button based on sidebar position and state
+    // const customizeBtn = document.getElementById('customize');
+    // const themeToggle = document.querySelector('.theme-toggle');
+    // const updateCustomizeVisibility = () => {
+    //     const isLeft = settings.sidebarPosition === 'left';
+    //     const isRight = settings.sidebarPosition === 'right' || !settings.sidebarPosition;
+    //     const isExpanded = !sidebar.classList.contains('minimised');
         
-        // Hide customize button when sidebar is on left and expanded
-        if (isLeft && isExpanded) {
-            customizeBtn.style.opacity = '0';
-            customizeBtn.style.pointerEvents = 'none';
-        } else {
-            customizeBtn.style.opacity = '1';
-            customizeBtn.style.pointerEvents = 'auto';
-        }
+    //     // Hide customize button when sidebar is on left and expanded
+    //     if (isLeft && isExpanded) {
+    //         customizeBtn.style.opacity = '0';
+    //         customizeBtn.style.pointerEvents = 'none';
+    //     } else {
+    //         customizeBtn.style.opacity = '1';
+    //         customizeBtn.style.pointerEvents = 'auto';
+    //     }
         
-        // Hide theme toggle when sidebar is on right and expanded
-        if (isRight && isExpanded) {
-            themeToggle.style.opacity = '0';
-            themeToggle.style.pointerEvents = 'none';
-        } else {
-            themeToggle.style.opacity = '1';
-            themeToggle.style.pointerEvents = 'auto';
-        }
-    };
+    //     // Hide theme toggle when sidebar is on right and expanded
+    //     if (isRight && isExpanded) {
+    //         themeToggle.style.opacity = '0';
+    //         themeToggle.style.pointerEvents = 'none';
+    //     } else {
+    //         themeToggle.style.opacity = '1';
+    //         themeToggle.style.pointerEvents = 'auto';
+    //     }
+    // };
     
-    updateCustomizeVisibility();
+    // updateCustomizeVisibility();
     
-    const handle = sidebar.querySelector('.sidebar-handle');
-    handle.addEventListener('click', () => {
-        sidebar.classList.toggle('minimised');
-        updateCustomizeVisibility();
-    });
+    // const handle = sidebar.querySelector('.sidebar-handle');
+    // handle.addEventListener('click', () => {
+    //     sidebar.classList.toggle('minimised');
+    //     updateCustomizeVisibility();
+    // });
+    renderSidebar(settings);
 }
+
+
 if (settings.unsplashApiKey && settings.showUnsplashRefresh) {
     document.getElementById('refresh-background').addEventListener('click', () => {
         setUnsplashBackground(true);
