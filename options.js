@@ -1,3 +1,5 @@
+import { showNotification } from "./widgets/notification.js";
+
 function debounce(func, delay) {
     let timeout;
     return function(...args) {
@@ -22,24 +24,6 @@ async function fetchCitySuggestions(query) {
     }
 }
 
-function showNotification(message, duration = 2000, type = 'success', reload = false) {
-    const notification = document.getElementById('notification');
-    notification.textContent = message;
-    notification.className = 'hidden'; // Reset classes
-    notification.classList.add(type);
-    notification.classList.remove('hidden');
-    notification.classList.add('show');
-    
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            notification.classList.add('hidden');
-            if (reload) {
-                location.reload();
-            }
-        }, 500); // Wait for fade out before reloading
-    }, duration);
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
@@ -474,7 +458,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (settings_obj.useUnsplash) {
             localStorage.removeItem('unsplashData');
         }
-        showNotification("Settings Saved!", 2000, 'success', false);
+        // Navigate to new tab with a pending notification
+        localStorage.setItem('pendingNotification', "Settings Saved!");
+        chrome.tabs.update({ url: "chrome://newtab" });
     })
 
     const cityInput = document.getElementById('custom-city');
@@ -636,7 +622,10 @@ document.getElementById("custom-city").addEventListener('input', () => {
 document.getElementById("restore-defaults").addEventListener("click", () => {
     localStorage.removeItem("settings");
     localStorage.setItem("settings", JSON.stringify(defaultSettings));
-    showNotification("Settings restored to defaults! Reloading...", 2000, 'restore', true);
+
+    // Navigate to new tab with a pending notification
+    localStorage.setItem('pendingNotification', "Settings restored to defaults!");
+    chrome.tabs.update({ url: "chrome://newtab" });
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {

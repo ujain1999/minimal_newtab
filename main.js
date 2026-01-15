@@ -1,3 +1,4 @@
+import { showNotification } from "./widgets/notification.js";
 import { renderCalendar } from './widgets/calendar.js';
 import { renderTodo } from './widgets/todo.js';
 
@@ -552,3 +553,10 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e =
         applyTheme('system');
     }
 });
+
+// On page initialization, check for pending notification
+const pendingNotification = localStorage.getItem('pendingNotification');
+if (pendingNotification) {
+    showNotification(pendingNotification, 2000, 'success', false);
+    localStorage.removeItem('pendingNotification');
+}
