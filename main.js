@@ -364,7 +364,14 @@ if (settings.weather) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude, tempUnit),
-                () => { document.getElementById('weather').textContent = "Location access denied."; }
+                () => { 
+                    setTimeout(() => {
+                        navigator.geolocation.getCurrentPosition(
+                            pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude, tempUnit),
+                            () => document.getElementById('weather').textContent = "Location access denied."
+                        );
+                    }, 100);
+                }
             );
         } else {
             document.getElementById('weather').textContent = "Geolocation not supported.";
