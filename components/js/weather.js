@@ -36,7 +36,6 @@ function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
                     const weatherString = `${city}: ${weatherText}`;
                     document.getElementById('weather').textContent = weatherString;
                     
-                    // Cache the weather data
                     localStorage.setItem('weatherData', JSON.stringify({
                         text: weatherString,
                         timestamp: now.toISOString()
@@ -90,7 +89,14 @@ function renderWeather(settings) {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude, tempUnit),
-                () => { document.getElementById('weather').textContent = "Location access denied."; }
+                (err) => {
+                    setTimeout(() => {
+                        navigator.geolocation.getCurrentPosition(
+                            pos => fetchWeatherAndCity(pos.coords.latitude, pos.coords.longitude, tempUnit),
+                            () => document.getElementById('weather').textContent = "Location access denied."
+                        );
+                    }, 100);
+                }
             );
         } else {
             document.getElementById('weather').textContent = "Geolocation not supported.";
