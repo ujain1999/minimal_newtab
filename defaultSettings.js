@@ -34,5 +34,6 @@ const defaultSettings = {
     "sidebarWidgets": [], 
     "sidebarExpanded": false, 
     "sidebarShowCustomize": true,
+    "autoHide": false,
     "customCSS": ""
 }
