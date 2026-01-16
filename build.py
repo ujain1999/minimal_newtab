@@ -201,6 +201,7 @@ def get_build_configs() -> Dict[str, BuildConfig]:
         BuildAsset("style.css", minify=True),
         BuildAsset("options.html", minify=True),
         BuildAsset("options.js", minify=True),
+        BuildAsset("options.css", minify=True),
         BuildAsset("components", is_dir=True, minify=True),
         BuildAsset("widgets", is_dir=True, minify=True),
     ]

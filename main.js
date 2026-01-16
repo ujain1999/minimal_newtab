@@ -89,9 +89,7 @@ document.querySelector(".theme-toggle").addEventListener("click", () => {
   }
 
   localStorage.setItem("theme", theme);
-  document.addEventListener("DOMContentLoaded", () => {
-    applyTheme(theme);
-  });
+  applyTheme(theme);
 });
 
 // React to system theme change if in system mode
