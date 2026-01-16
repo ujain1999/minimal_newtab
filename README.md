@@ -32,10 +32,9 @@
 
 ---
 
-## Installation (CRX)
+## Installation
 
 [![Download from the Chrome WebStore](favicons/chromewebstore-dark.png)](https://chromewebstore.google.com/detail/minimal-new-tab/hdodpjlgcieifmkkidligdnonbfiijnd)
-
 
 For manual installation, clone this repository and [load it as an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 ```bash
