@@ -373,6 +373,7 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
 }
 
 #options-wrapper input[type="text"],
+#options-wrapper input.text-input,
 #options-wrapper input[type="number"],
 #options-wrapper select,
 #options-wrapper textarea {
@@ -389,6 +390,7 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
 }
 
 #options-wrapper input[type="text"]:focus,
+#options-wrapper input.text-input:focus,
 #options-wrapper input[type="number"]:focus,
 #options-wrapper select:focus,
 #options-wrapper textarea:focus {
@@ -398,6 +400,7 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
 }
 
 #options-wrapper input[type="text"],
+#options-wrapper input.text-input,
 #options-wrapper textarea {
     width: 100%;
 }
@@ -408,6 +411,7 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
 }
 
 body.light #options-wrapper input[type="text"],
+body.light #options-wrapper input.text-input,
 body.light #options-wrapper input[type="number"],
 body.light #options-wrapper select,
 body.light #options-wrapper textarea {
@@ -417,6 +421,7 @@ body.light #options-wrapper textarea {
 }
 
 body.light #options-wrapper input[type="text"]:focus,
+body.light #options-wrapper input.text-input:focus,
 body.light #options-wrapper input[type="number"]:focus,
 body.light #options-wrapper select:focus,
 body.light #options-wrapper textarea:focus {
