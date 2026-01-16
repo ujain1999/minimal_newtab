@@ -1,0 +1,15 @@
+[project]
+name = "minimal-newtab"
+version = "1.4.4"
+description = "A minimal, new tab page with clock, weather, and bookmarks with theme support"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "minify-html>=0.18.1",
+    "rcssmin>=1.2.2",
+    "rjsmin>=1.2.5",
+    "watchdog>=6.0.0",
+]

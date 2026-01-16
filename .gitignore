@@ -1,1 +1,10 @@
 *.DS_Store
+
+# uv
+.venv
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build output
+dist/
