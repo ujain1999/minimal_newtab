@@ -1,3 +1,9 @@
+function setWeatherClickable(city) {
+    const weatherEl = document.getElementById('weather');
+    weatherEl.style.cursor = 'pointer';
+    weatherEl.onclick = () => window.open(`https://www.google.com/search?q=Weather+${encodeURIComponent(city)}`, '_blank');
+}
+
 const weatherCodes = {
     0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
     45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
@@ -15,6 +21,8 @@ function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
         const weatherData = JSON.parse(cachedWeather);
         if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
             document.getElementById('weather').textContent = weatherData.text;
+            const city = weatherData.text.split(': ')[0];
+            setWeatherClickable(city);
             return;
         }
     }
@@ -35,6 +43,7 @@ function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
                     const city = location.address.city || location.address.town || location.address.village || location.address.county || "your area";
                     const weatherString = `${city}: ${weatherText}`;
                     document.getElementById('weather').textContent = weatherString;
+                    setWeatherClickable(city);
                     
                     localStorage.setItem('weatherData', JSON.stringify({
                         text: weatherString,
@@ -43,6 +52,7 @@ function fetchWeatherAndCity(lat, lon, tempUnit = 'celsius') {
                 })
                 .catch(() => {
                     document.getElementById('weather').textContent = weatherText;
+                    setWeatherClickable("your area");
                 });
         })
         .catch(() => {
@@ -58,6 +68,8 @@ function fetchWeatherByCity(city, tempUnit = 'celsius') {
         const weatherData = JSON.parse(cachedWeather);
         if ((now - new Date(weatherData.timestamp)) < 30 * 60 * 1000) {
             document.getElementById('weather').textContent = weatherData.text;
+            const cityFromCache = weatherData.text.split(': ')[0];
+            setWeatherClickable(cityFromCache);
             return;
         }
     }
