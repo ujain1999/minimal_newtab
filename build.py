@@ -17,7 +17,6 @@ import rcssmin
 import rjsmin
 from rich.console import Console
 from rich.text import Text
-from textual import work
 from textual.app import App, ComposeResult
 from textual.containers import Container, VerticalScroll
 from textual.widgets import RichLog, Static
