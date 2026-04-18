@@ -51,6 +51,7 @@ function showNotification(
 document.addEventListener("DOMContentLoaded", () => {
   const settings_keys = [
     "clock",
+    "use12HourClock",
     "weather",
     "useCustomCity",
     "customCity",
@@ -92,6 +93,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   if (settings["clock"]) {
     document.getElementById("show-clock").checked = true;
+  }
+  if (settings["use12HourClock"] === true) {
+    document.getElementById("use-12-hour-clock").checked = true;
+  } else if (settings["use12HourClock"] === false) {
+    document.getElementById("use-12-hour-clock").checked = false;
+  }
+  document.getElementById("show-clock").addEventListener("change", (e) => {
+    const clockOptions = document.getElementById("clock-options");
+    if (e.target.checked) {
+      clockOptions.classList.remove("disabled");
+    } else {
+      clockOptions.classList.add("disabled");
+    }
+  });
+  if (!settings["clock"]) {
+    document.getElementById("clock-options").classList.add("disabled");
   }
   if (settings["weather"]) {
     document.getElementById("show-weather").checked = true;
@@ -510,6 +527,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ) {
           localStorage.removeItem("weatherData");
         }
+      } else if (key === "use12HourClock") {
+        const checkbox = document.getElementById("use-12-hour-clock");
+        settings_obj[key] = checkbox.checked;
       } else if (key === "tempUnit") {
         settings_obj[key] = document.querySelector(
           'input[name="temp-unit"]:checked',

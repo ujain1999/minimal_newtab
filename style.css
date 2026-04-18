@@ -1,6 +1,7 @@
 /* Clear default margin and padding */
 
-body, html {
+body,
+html {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -17,8 +18,10 @@ body {
     max-height: 100vh;
     text-align: center;
     padding-top: calc(10vh + 3rem);
-    font-size: 1.1rem;    
-    transition: background-image 1s ease-in-out, color 0.3s ease;
+    font-size: 1.1rem;
+    transition:
+        background-image 1s ease-in-out,
+        color 0.3s ease;
 }
 
 body.dark {
@@ -71,7 +74,9 @@ body {
     max-width: 0;
     overflow: hidden;
     white-space: nowrap;
-    transition: opacity 0.3s ease, max-width 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        max-width 0.3s ease;
     font-size: 0.95rem;
     text-decoration: underline dotted;
     direction: ltr;
@@ -106,7 +111,9 @@ body {
     max-width: 0;
     overflow: hidden;
     white-space: nowrap;
-    transition: opacity 0.3s ease, max-width 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        max-width 0.3s ease;
     font-size: 0.95rem;
     text-decoration: underline dotted;
 }
@@ -158,13 +165,13 @@ body.light .tooltip-wrapper.disabled:hover::after {
     font-size: 0.85em;
     white-space: nowrap;
     z-index: 20;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
 body.light .tooltip-wrapper:hover::after {
     background-color: #eee;
     color: #222;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 .photo-credit {
     position: absolute;
@@ -177,7 +184,7 @@ body.light .tooltip-wrapper:hover::after {
     padding: 4px 8px;
     border-radius: 4px;
     display: inline-flex;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .photo-credit a {
@@ -254,7 +261,7 @@ body.light .tooltip-wrapper:hover::after {
 }
 
 .checkbox-label input:checked + .custom-checkbox::after {
-    content: '';
+    content: "";
     position: absolute;
     left: 5px;
     top: 2px;
@@ -309,7 +316,7 @@ body.light {
 }
 
 .refresh-icon::before {
-    content: '↻';
+    content: "↻";
     font-size: 1.2rem;
     color: white;
 }
