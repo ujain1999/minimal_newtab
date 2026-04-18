@@ -3,9 +3,15 @@ import { renderTodo } from './widgets/todo.js';
 
 function updateClock() {
     const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
+    const use12Hour = settings.use12HourClock ?? new Intl.DateTimeFormat(undefined, { hour: 'numeric' }).format(now).includes('AM');
+    let hours = now.getHours();
     const mins = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('clock').textContent = `${hours}:${mins}`;
+    const period = use12Hour ? (hours < 12 ? ' AM' : ' PM') : '';
+    if (use12Hour) {
+        hours = hours % 12 || 12;
+    }
+    hours = String(hours).padStart(2, '0');
+    document.getElementById('clock').textContent = `${hours}:${mins}${period}`;
 }
 
 const weatherCodes = {

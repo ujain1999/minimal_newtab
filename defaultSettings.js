@@ -1,5 +1,6 @@
 const defaultSettings = {
     "clock": true,
+    "use12HourClock": null,
     "weather": true,
     "customCity": "",
     "useCustomCity": false,

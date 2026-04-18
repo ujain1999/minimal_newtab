@@ -43,7 +43,7 @@ function showNotification(message, duration = 2000, type = 'success', reload = f
 
 document.addEventListener('DOMContentLoaded', () => {
     const settings_keys = [
-        "clock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "expandBookmarks", "topRight", "topRightOrder", "pixelArt", 
+        "clock", "use12HourClock", "weather", "useCustomCity", "customCity", "tempUnit", "bookmarks", "bookmarkFolder", "expandBookmarks", "topRight", "topRightOrder", "pixelArt", 
         "selectedPixelArt", "customSVG", "pixelArtOpacity", "pixelArtDensity", "pixelArtColorDark", "pixelArtColorLight", "availableWidgets", "theme", "backgroundImage",
         "sidebar", "sidebarPosition", "sidebarWidgets", "sidebarExpanded", "sidebarShowCustomize", "autoHide", "useUnsplash", "unsplashApiKey", "unsplashUpdateFrequency", 
         "showUnsplashRefresh", "customCSS"
@@ -58,7 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (settings['clock']) {
         document.getElementById("show-clock").checked = true;
+        document.getElementById("clock-options").style.display = 'block';
     };
+    if (settings['use12HourClock']) {
+        const checkbox = document.getElementById('use12HourClock') || document.querySelector('#clock-options input');
+        if (checkbox) checkbox.checked = true;
+    }
     if (settings['weather']) {
         document.getElementById("show-weather").checked = true;
     } else {
@@ -459,6 +464,10 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (key === 'showUnsplashRefresh') {
                 settings_obj[key] = document.getElementById('show-unsplash-refresh').checked;
             }
+            else if (key === 'use12HourClock') {
+                const checkbox = document.getElementById('use12HourClock') || document.querySelector('#clock-options input');
+                settings_obj[key] = checkbox ? checkbox.checked : null;
+            }
             else if (key === 'customCSS') {
                 // Sanitize: remove </style> tags to prevent breaking out of style block
                 const rawCSS = document.getElementById('custom-css').value;
@@ -617,6 +626,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.getElementById("show-weather").addEventListener('change', (e) => {
     document.getElementById('weather-options').classList.toggle('disabled', !e.target.checked);
+});
+
+document.getElementById("show-clock").addEventListener('change', (e) => {
+    document.getElementById('clock-options').style.display = e.target.checked ? 'block' : 'none';
 });
 
 document.getElementById("use-custom-city").addEventListener('change', (e) => {
