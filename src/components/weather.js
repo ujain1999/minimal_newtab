@@ -90,7 +90,6 @@ function fetchWeatherByCity(city, tempUnit = 'celsius') {
 }
 
 function renderWeather(settings) {
-    loadStylesheet('components/css/weather.css');
     document.getElementById('weather').textContent = "Fetching weather...";
     const useCustomCity = settings.useCustomCity;
     const tempUnit = settings.tempUnit || 'celsius';

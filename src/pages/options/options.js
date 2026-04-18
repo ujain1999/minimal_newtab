@@ -806,6 +806,7 @@ document.getElementById("show-sidebar").onchange = (e) => {
 let theme = localStorage.getItem("theme") || "system";
 
 function applyTheme(theme) {
+  document.body.style.backgroundColor = null;
   document.body.classList.remove("dark", "light");
   if (theme === "dark") {
     document.body.classList.add("dark");
@@ -835,8 +836,8 @@ function updateAboutIcons() {
       : "light";
   }
 
-  webstoreImg.src = `favicons/chromewebstore-${effective}.png`;
-  githubImg.src = `favicons/github-${effective}.png`;
+  webstoreImg.src = `../../assets/favicons/chromewebstore-${effective}.png`;
+  githubImg.src = `../../assets/favicons/github-${effective}.png`;
 }
 updateAboutIcons();
 

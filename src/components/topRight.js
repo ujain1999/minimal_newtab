@@ -1,5 +1,4 @@
 function renderTopRight(settings) {
-    loadStylesheet('components/css/topRight.css');
     const topRightOrder = settings.topRightOrder;
     let container = document.getElementById("top-right");
     container.innerHTML = "";
