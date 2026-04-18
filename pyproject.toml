@@ -9,7 +9,8 @@ dependencies = []
 [dependency-groups]
 dev = [
     "minify-html>=0.18.1",
-    "rcssmin>=1.2.2",
-    "rjsmin>=1.2.5",
+    "rcssmin>=1.1.0",
+    "rjsmin>=1.2.0",
+    "textual>=0.100.0",
     "watchdog>=6.0.0",
 ]
