@@ -1,0 +1,374 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 280px;
+    background: rgba(25, 25, 25, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: transform 0.3s ease-in-out;
+    z-index: 10;
+    display: none; /* Hidden by default, enabled via JS */
+}
+
+body.light .sidebar {
+    background: rgba(245, 245, 245, 0.75);
+}
+
+.sidebar.left {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.sidebar.right {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.sidebar:not(.minimised) {
+    transform: translateX(0);
+}
+
+.sidebar-handle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+body.light .sidebar-handle {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar.left .sidebar-handle {
+    right: -45px;
+}
+
+.sidebar.right .sidebar-handle {
+    left: -45px;
+}
+
+.sidebar-caret {
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    transition: transform 0.3s ease;
+}
+
+.sidebar.left .sidebar-caret {
+    border-left: 6px solid #f0f0f0;
+}
+
+.sidebar.left:not(.minimised) .sidebar-caret {
+    transform: rotate(180deg);
+}
+
+body.light .sidebar.left .sidebar-caret {
+    border-left-color: #222;
+}
+
+.sidebar.right .sidebar-caret {
+    border-right: 6px solid #f0f0f0;
+}
+
+.sidebar.right:not(.minimised) .sidebar-caret {
+    transform: rotate(180deg);
+}
+
+body.light .sidebar.right .sidebar-caret {
+    border-right-color: #222;
+}
+
+.sidebar-content {
+    padding: 20px 20px 80px 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Sidebar footer (sticky at bottom) */
+.sidebar-footer {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.sidebar-customize-btn {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: inherit;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 0.95rem;
+    text-align: center;
+    transition: background-color 0.18s ease, transform 0.08s ease;
+}
+
+.sidebar-customize-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+body.light .sidebar-customize-btn {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.06);
+}
+
+/* About panel icon links - default uses light border on dark backgrounds */
+
+/* Web Store badge image styling - follow branding: do not alter badge aspect ratio */
+.webstore-badge {
+    height: 36px;
+    width: auto;
+    display: block;
+    border-radius: 6px;
+}
+
+.webstore-badge-link { padding: 4px; }
+
+.fallback-store-icon { color: inherit; }
+
+/* Ensure both About icons (webstore + github) visually match the official badge size */
+.about-links { gap: 12px; }
+
+/* Make both icons look like they're part of the page: no heavy borders, same size as chrome badge */
+.about-links .icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    width: auto;
+    height: auto;
+    background: transparent; /* blend with page */
+    border: 1px solid rgba(255,255,255,0.14); /* white-ish border for dark mode */
+    border-radius: 6px;
+    transition: transform 0.08s ease, opacity 0.12s ease;
+}
+
+.about-links .icon-link img {
+    height: 36px; /* official badge height */
+    width: auto;
+    display: block;
+}
+
+.about-links .icon-link:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+/* Light theme: use darker (black) border so icons stand out */
+body.light .about-links .icon-link {
+    border: 1px solid rgba(0,0,0,0.16);
+}
+
+.widget {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+body.light .widget {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.widget h3 {
+    margin-top: 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+    padding-bottom: 10px;
+}
+
+/* Calendar Widget Styles */
+.calendar-container {
+    font-size: 0.9em;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 5px;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+.calendar-header span {
+    flex-grow: 1;
+    text-align: center;
+    width: 130px; /* Enforce a fixed width */
+}
+
+.calendar-header button:hover {
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+}
+
+.calendar-day-name {
+    font-weight: bold;
+    opacity: 0.7;
+    padding-bottom: 5px;
+}
+
+.calendar-day {
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar-day:not(.today):hover {
+    background-color: rgba(128, 128, 128, 0.2);
+    cursor: pointer; /* The whole widget is clickable, this reinforces it */
+    transition: background-color 0.2s ease;
+}
+
+.calendar-day.today {
+    background-color: var(--color-accent);
+    color: #121212;
+    font-weight: bold;
+}
+
+/* Todo Widget Styles */
+.todo-widget .todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    text-align: left;
+}
+
+.todo-widget .todo-list li {
+    display: flex;
+    align-items: center;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    font-size: 0.95em;
+    transition: opacity 0.3s ease;
+}
+
+.todo-widget .todo-list li .checkbox-label {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-bottom: 0; /* Override default checkbox-label margin */
+    font-size: 1em; /* Inherit from parent li */
+    word-break: break-word;
+}
+
+
+.todo-widget .todo-list li:last-child {
+    border-bottom: none;
+}
+
+.todo-widget .todo-list li.completed {
+    opacity: 0.5;
+}
+
+.todo-widget .todo-list li.completed span {
+    text-decoration: line-through;
+}
+
+.todo-widget .todo-list input[type="checkbox"] {
+    display: none; /* Hide default checkbox */
+}
+
+.todo-widget .todo-list .custom-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #888;
+    border-radius: 3px;
+    margin-right: 10px;
+    display: inline-block;
+    position: relative;
+    transition: background-color 0.2s, border-color 0.2s;
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+
+.todo-widget .todo-list .todo-text {
+    flex-grow: 1;
+    word-break: break-word;
+}
+
+.todo-widget .todo-list button {
+    background: none;
+    border: none;
+    color: #f0f0f0;
+    font-size: 1.2em;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    padding: 0 5px;
+}
+
+body.light .todo-widget .todo-list button {
+    color: #222;
+}
+
+.todo-widget .todo-list li:hover button {
+    opacity: 1;
+}
+
+.todo-widget .todo-list li.dragging {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: grabbing !important;
+}
+
+.todo-widget .todo-list li.drag-placeholder {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+.todo-widget .todo-list li {
+    cursor: pointer;
+    user-select: none;
+}
+
+body.todo-dragging,
+body.todo-dragging * {
+    cursor: grabbing !important;
+}
+
+.todo-widget .todo-input {
+    width: 100%;
+    padding: 8px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: inherit;
+    font-family: monospace;
+    box-sizing: border-box; /* Prevents overflow on focus */
+}

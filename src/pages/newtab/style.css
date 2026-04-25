@@ -1,0 +1,315 @@
+/* Clear default margin and padding */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    max-height: 100vh;
+    text-align: center;
+    padding-top: calc(10vh + 3rem);
+    font-size: 1.1rem;    
+    transition: background-image 1s ease-in-out, color 0.3s ease;
+}
+
+body.dark {
+    background: #121212;
+    color: #f0f0f0; /* Restore default dark theme text color */
+}
+
+body.light {
+    background: #ffffff;
+    color: #222; /* Restore default light theme text color */
+}
+
+body {
+    background-color: transparent; /* Allow background image to show */
+}
+
+.top-right {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+}
+
+.theme-toggle {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    direction: rtl;
+    transition: opacity 0.3s ease;
+}
+
+.theme-icon svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover .theme-icon svg {
+    transform: rotate(20deg);
+}
+
+.theme-label {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, max-width 0.3s ease;
+    font-size: 0.95rem;
+    text-decoration: underline dotted;
+    direction: ltr;
+}
+
+.theme-toggle:hover .theme-label {
+    opacity: 1;
+    max-width: 4rem;
+}
+
+.customize {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    cursor: pointer;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: opacity 0.3s ease;
+}
+
+.customize-icon svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+}
+
+.customize-label {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity 0.3s ease, max-width 0.3s ease;
+    font-size: 0.95rem;
+    text-decoration: underline dotted;
+}
+
+.customize:hover .customize-label {
+    opacity: 1;
+    max-width: 6rem;
+}
+
+.tooltip-wrapper {
+    position: relative;
+}
+
+.tooltip-wrapper.disabled > * {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.tooltip-wrapper.disabled:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+body.light .tooltip-wrapper.disabled:hover::after {
+    background-color: #eee;
+    color: #333;
+}
+/* Custom tooltip for tooltip-wrapper when not disabled */
+.tooltip-wrapper:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    white-space: nowrap;
+    z-index: 20;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+}
+
+body.light .tooltip-wrapper:hover::after {
+    background-color: #eee;
+    color: #222;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+.photo-credit {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.photo-credit a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+}
+
+.refresh-background {
+    display: inline-flex; /* Changed from flex */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+    opacity: 0.8;
+    rotate: 90deg;
+}
+
+.refresh-background:hover {
+    opacity: 1;
+}
+
+/* Sidebar Styles */
+
+.sidebar.left {
+    left: 0;
+    transform: translateX(-100%);
+}
+
+.sidebar.right {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.checkbox-label {
+    margin-bottom: 0; /* Override default margin for table rows */
+    justify-content: center;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1em;
+    margin-bottom: 0.8em;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.checkbox-label input {
+    display: none; /* Hide the default checkbox */
+}
+
+.checkbox-label .custom-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(128, 128, 128, 0.5);
+    border-radius: 5px;
+    margin-right: 0.75em;
+    display: inline-block;
+    position: relative;
+    transition: all 0.15s ease;
+}
+
+.checkbox-label:hover .custom-checkbox {
+    border-color: rgba(128, 128, 128, 0.8);
+}
+
+.checkbox-label input:checked + .custom-checkbox {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.checkbox-label input:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #1c1c1c;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+body.light .checkbox-label input:checked + .custom-checkbox::after {
+    border-color: white;
+}
+
+.checkbox-label {
+    display: block;
+    margin-bottom: 0.8em;
+    font-size: 1em;
+}
+
+:root {
+    --color-accent: #ccc;
+}
+
+body.light {
+    --color-accent: #b04288;
+}
+
+.art-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.art-cell {
+    position: relative;
+}
+
+.art-cell svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    fill: var(--color-accent);
+    opacity: 0.4;
+    transform: translate(-50%, -50%) rotate(var(--rotate, 0deg));
+}
+
+.refresh-icon::before {
+    content: '↻';
+    font-size: 1.2rem;
+    color: white;
+}
