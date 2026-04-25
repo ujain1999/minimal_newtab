@@ -318,7 +318,8 @@ if (localStorage.getItem("settings") === null) {
     localStorage.setItem("settings", JSON.stringify(defaultSettings));
 }
 
-const settings = JSON.parse(localStorage.getItem("settings")) || defaultSettings;
+const storedSettings = JSON.parse(localStorage.getItem("settings")) || {};
+const settings = { ...defaultSettings, ...storedSettings };
 
 // Apply custom CSS if provided
 if (settings.customCSS) {
@@ -492,8 +493,8 @@ if (settings.sidebar) {
             customizeBtn.style.opacity = '0';
             customizeBtn.style.pointerEvents = 'none';
         } else {
-            customizeBtn.style.opacity = '1';
-            customizeBtn.style.pointerEvents = 'auto';
+            customizeBtn.style.opacity = '';
+            customizeBtn.style.pointerEvents = '';
         }
         
         // Hide theme toggle when sidebar is on right and expanded
@@ -501,8 +502,8 @@ if (settings.sidebar) {
             themeToggle.style.opacity = '0';
             themeToggle.style.pointerEvents = 'none';
         } else {
-            themeToggle.style.opacity = '1';
-            themeToggle.style.pointerEvents = 'auto';
+            themeToggle.style.opacity = '';
+            themeToggle.style.pointerEvents = '';
         }
     };
     

@@ -252,13 +252,17 @@ body {
 
 /* Auto-hide control buttons */
 body.auto-hide .customize,
-body.auto-hide .theme-toggle {
+body.auto-hide .theme-toggle,
+body.auto-hide .photo-credit,
+body.auto-hide .refresh-background {
     opacity: 0;
     pointer-events: none;
 }
 
 body.auto-hide.controls-visible .customize,
-body.auto-hide.controls-visible .theme-toggle {
+body.auto-hide.controls-visible .theme-toggle,
+body.auto-hide.controls-visible .photo-credit,
+body.auto-hide.controls-visible .refresh-background {
     opacity: 1;
     pointer-events: auto;
 }
