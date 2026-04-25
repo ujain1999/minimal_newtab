@@ -1,0 +1,16 @@
+.top-right {
+    gap: 1rem;
+    font-size: 0.95rem;
+}
+
+.top-right span {
+    text-transform: capitalize;
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.top-right span:hover {
+    color: #0077cc;
+}

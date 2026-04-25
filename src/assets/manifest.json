@@ -4,17 +4,17 @@
   "description": "A minimal, new tab page with clock, weather, and bookmarks with theme support",
   "version": "1.4.4",
   "chrome_url_overrides": {
-    "newtab": "index.html"
+    "newtab": "pages/newtab/index.html"
   },
-  "options_page" : "options.html",
+  "options_page" : "pages/options/options.html",
   "permissions": [
     "bookmarks",
     "geolocation"
   ],
   "icons": {
-    "16": "favicons/favicon-16x16.png",
-    "32": "favicons/favicon-32x32.png",
-    "48": "favicons/favicon-48x48.png",
-    "128": "favicons/favicon-128x128.png"
+    "16": "assets/favicons/favicon-16x16.png",
+    "32": "assets/favicons/favicon-32x32.png",
+    "48": "assets/favicons/favicon-48x48.png",
+    "128": "assets/favicons/favicon-128x128.png"
   }
 }
