@@ -51,6 +51,7 @@ function showNotification(
 document.addEventListener("DOMContentLoaded", () => {
   const settings_keys = [
     "clock",
+    "clockFormat",
     "weather",
     "useCustomCity",
     "customCity",
@@ -90,8 +91,26 @@ document.addEventListener("DOMContentLoaded", () => {
       settings[key] = defaultSettings[key];
     }
   });
+  // Initialize clock format (12h/24h)
+  if (settings["clockFormat"]) {
+    const clockFormatRadio = document.querySelector(`input[name="clock-format"][value="${settings.clockFormat}"]`);
+    if (clockFormatRadio) clockFormatRadio.checked = true;
+  }
+
+  // Ensure clock checkbox reflects saved setting
   if (settings["clock"]) {
-    document.getElementById("show-clock").checked = true;
+    const sc = document.getElementById("show-clock");
+    if (sc) sc.checked = true;
+  }
+
+  // Show/hide clock format options depending on clock toggle
+  const clockFormatContainer = document.getElementById("clock-format");
+  if (clockFormatContainer) clockFormatContainer.style.display = settings["clock"] ? "block" : "none";
+  const showClockCheckbox = document.getElementById("show-clock");
+  if (showClockCheckbox && clockFormatContainer) {
+    showClockCheckbox.addEventListener("change", (e) => {
+      clockFormatContainer.style.display = e.target.checked ? "block" : "none";
+    });
   }
   if (settings["weather"]) {
     document.getElementById("show-weather").checked = true;
@@ -572,6 +591,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sanitize: remove </style> tags to prevent breaking out of style block
         const rawCSS = document.getElementById("custom-css").value;
         settings_obj[key] = rawCSS.replace(/<\/style>/gi, "");
+      } else if (key === "clockFormat") {
+        const radio = document.querySelector('input[name="clock-format"]:checked');
+        settings_obj[key] = radio ? radio.value : "24h";
       } else {
         settings_obj[key] = document.getElementById("show-" + key).checked;
       }
@@ -971,6 +993,7 @@ function handleImportFile(file) {
       // Check if it looks like a settings file (has at least one known key)
       const knownKeys = [
         "clock",
+        "clockFormat",
         "weather",
         "bookmarks",
         "theme",
