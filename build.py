@@ -10,7 +10,7 @@ import time
 import zipfile
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Dict, List
+from typing import Any, Dict, List
 
 import minify_html
 import rcssmin
@@ -33,7 +33,8 @@ class BuildAsset:
         self.is_dir = is_dir
         self.minify = minify
 
-    def _minify_content(self, content: str) -> str:
+    def _minify_content(self, content: str) -> Any:
+        """Minify content based on file type."""
         if self.src.suffix == ".html":
             return minify_html.minify(content)
         elif self.src.suffix == ".css":
