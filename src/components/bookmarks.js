@@ -63,7 +63,6 @@ function processBookmarks(settings, nodes, container, level = 0, path = "") {
 }
 
 function renderBookmarks(settings) {
-    loadStylesheet('components/css/bookmarks.css');
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
         let bookmarksBar = settings.bookmarkFolder?.trim()

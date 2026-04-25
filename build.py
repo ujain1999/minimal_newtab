@@ -23,19 +23,19 @@ The script will minify and copy all necessary files to the dist/ directory.
 For dev mode, changes to tracked files trigger automatic rebuilds.
 """
 
+import json
 import shutil
 import sys
 import time
-import json
 import zipfile
 from pathlib import Path
-from typing import List, Dict, Callable
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from typing import Any, Dict, List
+
 import minify_html
 import rcssmin
 import rjsmin
-
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 
 # ANSI color codes
 RED = "\033[91m"
@@ -50,13 +50,15 @@ def error(msg: str) -> None:
 class BuildAsset:
     """Represents a build asset (file or folder) to be copied."""
 
-    def __init__(self, src: str, dst_name: str = None, is_dir: bool = False, minify: bool = False):
+    def __init__(
+        self, src: str, dst_name: str = None, is_dir: bool = False, minify: bool = False
+    ):
         self.src = Path(src)
         self.dst_name = dst_name or src
         self.is_dir = is_dir
         self.minify = minify
 
-    def _minify_content(self, content: str) -> str:
+    def _minify_content(self, content: str) -> Any:
         """Minify content based on file type."""
         if self.src.suffix == ".html":
             return minify_html.minify(content)
@@ -77,7 +79,7 @@ class BuildAsset:
             if self.is_dir:
                 if dst.exists():
                     shutil.rmtree(dst)
-                
+
                 if self.minify:
                     self._copy_dir_with_minify(self.src, dst)
                 else:
@@ -86,10 +88,10 @@ class BuildAsset:
             else:
                 dst.parent.mkdir(parents=True, exist_ok=True)
                 if self.minify:
-                    with open(self.src, 'r', encoding='utf-8') as f:
+                    with open(self.src, "r", encoding="utf-8") as f:
                         content = f.read()
                     minified = self._minify_content(content)
-                    with open(dst, 'w', encoding='utf-8') as f:
+                    with open(dst, "w", encoding="utf-8") as f:
                         f.write(minified)
                     print(f"-  Minified and copied {self.src} to {dst}")
                 else:
@@ -103,20 +105,20 @@ class BuildAsset:
     def _copy_dir_with_minify(self, src: Path, dst: Path) -> None:
         """Recursively copy directory, minifying CSS and JS files."""
         dst.mkdir(parents=True, exist_ok=True)
-        
+
         for item in src.iterdir():
             dst_item = dst / item.name
-            
+
             if item.is_dir():
                 self._copy_dir_with_minify(item, dst_item)
             else:
-                if item.suffix in ['.css', '.js']:
+                if item.suffix in [".css", ".js"]:
                     # Minify CSS and JS files
-                    with open(item, 'r', encoding='utf-8') as f:
+                    with open(item, "r", encoding="utf-8") as f:
                         content = f.read()
                     minified = self._minify_content_for_file(item, content)
                     dst_item.parent.mkdir(parents=True, exist_ok=True)
-                    with open(dst_item, 'w', encoding='utf-8') as f:
+                    with open(dst_item, "w", encoding="utf-8") as f:
                         f.write(minified)
                 else:
                     # Copy other files as-is
@@ -167,7 +169,9 @@ class FileChangeHandler(FileSystemEventHandler):
             asset_src = asset.src.resolve()
             try:
                 # Check if path is the asset itself or within it
-                if path == asset_src or (asset_src.is_dir() and path.is_relative_to(asset_src)):
+                if path == asset_src or (
+                    asset_src.is_dir() and path.is_relative_to(asset_src)
+                ):
                     return True
             except ValueError:
                 continue
@@ -191,19 +195,13 @@ class FileChangeHandler(FileSystemEventHandler):
 def get_build_configs() -> Dict[str, BuildConfig]:
     """Define build configurations."""
     assets = [
-        BuildAsset("manifest.json"),
-        BuildAsset("favicons", is_dir=True),
-        BuildAsset("index.html", minify=True),
-        BuildAsset("main.js", minify=True),
-        BuildAsset("art.js", minify=True),
-        BuildAsset("defaultSettings.js", minify=True),
-        BuildAsset("utils.js", minify=True),
-        BuildAsset("style.css", minify=True),
-        BuildAsset("options.html", minify=True),
-        BuildAsset("options.js", minify=True),
-        BuildAsset("options.css", minify=True),
-        BuildAsset("components", is_dir=True, minify=True),
-        BuildAsset("widgets", is_dir=True, minify=True),
+        BuildAsset("src/assets/manifest.json", "manifest.json"),
+        BuildAsset("src/assets/favicons", dst_name="assets/favicons", is_dir=True),
+        BuildAsset("src/pages/newtab", "pages/newtab", is_dir=True, minify=True),
+        BuildAsset("src/pages/options", "pages/options", is_dir=True, minify=True),
+        BuildAsset("src/components", "components", is_dir=True, minify=True),
+        BuildAsset("src/widgets", "widgets", is_dir=True, minify=True),
+        BuildAsset("src/shared", "shared", is_dir=True, minify=True),
     ]
 
     return {
@@ -231,7 +229,7 @@ def build(mode: str) -> None:
 def get_version() -> str:
     """Extract version from manifest.json."""
     try:
-        with open("manifest.json", "r", encoding="utf-8") as f:
+        with open("src/assets/manifest.json", "r", encoding="utf-8") as f:
             manifest = json.load(f)
         return manifest.get("version", "1.0.0")
     except Exception as e:

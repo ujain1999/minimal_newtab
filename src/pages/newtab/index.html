@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>New Tab</title>
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="../../assets/favicons/apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="../../assets/favicons/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="../../assets/favicons/favicon-16x16.png"
+        />
+        <link rel="manifest" href="../../assets/favicons/site.webmanifest" />
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="../../components/clock.css" />
+        <link rel="stylesheet" href="../../components/weather.css" />
+        <link rel="stylesheet" href="../../components/bookmarks.css" />
+        <link rel="stylesheet" href="../../components/topRight.css" />
+        <link rel="stylesheet" href="../../components/sidebar.css" />
+        <script src="../../shared/defaultSettings.js"></script>
+        <script src="../../shared/utils.js"></script>
+    </head>
+
+    <body>
+        <script src="../../shared/fouc.js"></script>
+        <div id="sidebar" class="sidebar minimised"></div>
+        <div class="top-right" id="top-right"></div>
+
+        <div class="clock" id="clock"></div>
+        <div class="weather" id="weather"></div>
+        <div class="shortcuts" id="shortcuts"></div>
+
+        <div class="customize" id="customize" title="customize">
+            <span class="customize-icon"></span>
+            <span class="customize-label">Customize</span>
+        </div>
+        <div class="photo-credit" id="photo-credit" style="display: none">
+            Photo by
+            <a
+                id="photo-credit-link"
+                target="_blank"
+                rel="noopener noreferrer"
+            ></a>
+            on
+            <a
+                href="https://unsplash.com/?utm_source=minimal_new_tab&utm_medium=referral"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Unsplash</a
+            >
+            <span
+                class="refresh-background"
+                id="refresh-background"
+                title="Get new background"
+                style="display: none"
+                ><span class="refresh-icon"></span
+            ></span>
+        </div>
+        <div class="theme-toggle" title="Change theme">
+            <span class="theme-icon"></span>
+            <span class="theme-label">System</span>
+        </div>
+        <div class="art-grid"></div>
+        <script type="module" src="main.js"></script>
+        <script type="module" src="art.js"></script>
+        <script type="module" src="../../widgets/calendar.js"></script>
+        <script type="module" src="../../widgets/todo.js"></script>
+    </body>
+</html>

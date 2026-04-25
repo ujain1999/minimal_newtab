@@ -6,7 +6,6 @@ function updateClock() {
 }
 
 function renderClock() {
-    loadStylesheet('components/css/clock.css');
     updateClock();
     setInterval(updateClock, 1000); 
 }

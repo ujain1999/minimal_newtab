@@ -34,7 +34,7 @@
 
 ## Installation
 
-[![Download from the Chrome WebStore](favicons/chromewebstore-dark.png)](https://chromewebstore.google.com/detail/minimal-new-tab/hdodpjlgcieifmkkidligdnonbfiijnd)
+[![Download from the Chrome WebStore](src/assets/favicons/chromewebstore-dark.png)](https://chromewebstore.google.com/detail/minimal-new-tab/hdodpjlgcieifmkkidligdnonbfiijnd)
 
 For manual installation, clone this repository and [load it as an unpacked extension](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked).
 ```bash
@@ -57,7 +57,7 @@ cd minimal_newtab
 uv sync  # Install dependencies with uv
 ```
 
-**Requirements:** [uv](https://docs.astral.sh/uv/) (fast Python package manager)
+**Requirements:** [uv](https://docs.astral.sh/uv/) (Python package manager)
 
 ### Building
 
