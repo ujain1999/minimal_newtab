@@ -8,6 +8,7 @@ import shutil
 import sys
 import time
 import zipfile
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
@@ -26,7 +27,7 @@ from watchdog.observers import Observer
 
 class BuildAsset:
     def __init__(
-        self, src: str, dst_name: str = None, is_dir: bool = False, minify: bool = False
+        self, src: str, dst_name: Any = None, is_dir: bool = False, minify: bool = False
     ):
         self.src = Path(src)
         self.dst_name = dst_name or src
@@ -96,7 +97,7 @@ class BuildAsset:
                     dst_item.parent.mkdir(parents=True, exist_ok=True)
                     shutil.copy2(item, dst_item)
 
-    def _minify_content_for_file(self, file_path: Path, content: str) -> str:
+    def _minify_content_for_file(self, file_path: Path, content: str) -> Any:
         if file_path.suffix == ".css":
             return rcssmin.cssmin(content)
         elif file_path.suffix == ".js":
@@ -154,6 +155,7 @@ class FileChangeHandler(FileSystemEventHandler):
 def get_build_configs() -> Dict[str, BuildConfig]:
     assets = [
         BuildAsset("src/assets/manifest.json", "manifest.json"),
+        BuildAsset("src/pages/background.js", "pages/background.js"),
         BuildAsset("src/assets/favicons", dst_name="assets/favicons", is_dir=True),
         BuildAsset("src/pages/newtab", "pages/newtab", is_dir=True, minify=True),
         BuildAsset("src/pages/options", "pages/options", is_dir=True, minify=True),

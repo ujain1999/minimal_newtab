@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "unsplashUpdateFrequency",
     "showUnsplashRefresh",
     "customCSS",
+    "enableKeyboardNav",
   ];
 
   let settingsJsonStr =
@@ -201,6 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   if (sidebarShowCustomizeCheckbox) {
     sidebarShowCustomizeCheckbox.checked = !!settings["sidebarShowCustomize"];
+  }
+
+  // Initialize keyboard navigation setting
+  if (settings["enableKeyboardNav"]) {
+    document.getElementById("enable-keyboard-nav").checked = true;
   }
 
   function updateCustomizeDependency() {
@@ -591,6 +597,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sanitize: remove </style> tags to prevent breaking out of style block
         const rawCSS = document.getElementById("custom-css").value;
         settings_obj[key] = rawCSS.replace(/<\/style>/gi, "");
+      } else if (key === "enableKeyboardNav") {
+        settings_obj[key] = document.getElementById("enable-keyboard-nav").checked;
       } else if (key === "clockFormat") {
         const radio = document.querySelector('input[name="clock-format"]:checked');
         settings_obj[key] = radio ? radio.value : "24h";
