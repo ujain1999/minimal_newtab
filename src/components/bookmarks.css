@@ -42,23 +42,64 @@
 }
 
 .shortcut {
-    display: block;
+    display: flex;
+    align-items: center;
     margin: 0.2rem 0 0.4rem 0;
-    text-decoration: underline dotted;
-    text-underline-offset: 2px;
     color: inherit;
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
     word-break: break-word;
     overflow-wrap: anywhere;
+    position: relative;
+    text-decoration: none;
     width: 100%;
-    max-width: 100%;
     box-sizing: border-box;
 }
 
-.shortcut:hover {
-    color: #0077cc;
+.shortcut > span:not(.number-hint) {
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration-color: inherit;
+    flex: 1;
+    min-width: 0;
+}
+
+.shortcut > .number-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    margin-left: 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+    flex-shrink: 0;
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.shortcut:hover,
+.shortcut.selected {
     transform: translateX(2px);
+}
+
+.shortcut:hover::before,
+.shortcut.selected::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -4px;
+    right: -4px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    z-index: -1;
 }
 
 .bookmark-folder {
@@ -77,6 +118,7 @@
     text-align: left;
     padding: 0.2rem 0;
     font: inherit;
+    position: relative;
 }
 
 .bookmark-folder .chevron,
@@ -91,8 +133,17 @@
     overflow-wrap: anywhere;
 }
 
-.bookmark-folder:hover {
-    color: #0077cc;
+.bookmark-folder:hover::before,
+.bookmark-folder.selected::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -4px;
+    right: -4px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    z-index: -1;
 }
 
 .bookmark-children {

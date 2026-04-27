@@ -54,7 +54,9 @@ function processBookmarks(settings, nodes, container, level = 0, path = "") {
             const a = document.createElement('a');
             a.href = node.url;
             a.className = 'shortcut';
-            a.textContent = node.title || node.url;
+            const text = document.createElement('span');
+            text.textContent = node.title || node.url;
+            a.appendChild(text);
 
             listItem.appendChild(a);
             container.appendChild(listItem);
