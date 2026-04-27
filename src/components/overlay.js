@@ -111,13 +111,13 @@
     return items;
   }
 
-function updateSelection() {
+  function updateSelection() {
     const navItems = getNavigationItems();
     navItems.forEach((item, index) => {
-      const shortcut = item.classList.contains(SEARCH_RESULT_CLASS) 
-        ? item.querySelector(".shortcut") 
+      const shortcut = item.classList.contains(SEARCH_RESULT_CLASS)
+        ? item.querySelector(".shortcut")
         : item;
-      
+
       if (index === currentIndex) {
         if (shortcut) shortcut.classList.add(SELECTED_CLASS);
         item.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -131,7 +131,9 @@ function updateSelection() {
   function clearSelection() {
     currentIndex = -1;
     currentItem = null;
-    document.querySelectorAll("." + SELECTED_CLASS).forEach(el => el.classList.remove(SELECTED_CLASS));
+    document
+      .querySelectorAll("." + SELECTED_CLASS)
+      .forEach((el) => el.classList.remove(SELECTED_CLASS));
   }
 
   function renderNumberHints() {
@@ -157,7 +159,9 @@ function updateSelection() {
     const shortcuts = document.getElementById("shortcuts");
     if (!shortcuts) return;
 
-    const resultsContainer = document.getElementById("search-results-container");
+    const resultsContainer = document.getElementById(
+      "search-results-container",
+    );
     if (!resultsContainer) return;
 
     const settings = JSON.parse(localStorage.getItem("settings") || "{}");
@@ -277,7 +281,10 @@ function updateSelection() {
     clearTimeout(debounceTimer);
 
     const shortcuts = document.getElementById("shortcuts");
-    if (!shortcuts) { originalShortcutsContent = null; return; }
+    if (!shortcuts) {
+      originalShortcutsContent = null;
+      return;
+    }
 
     shortcuts.classList.remove(SEARCH_MODE_CLASS);
 
@@ -291,12 +298,16 @@ function updateSelection() {
       if (bookmarkList) {
         bookmarkList.style.opacity = "0";
         requestAnimationFrame(() => {
-          bookmarkList.style.transition = "opacity 0.2s ease";
+          bookmarkList.style.transition = "opacity 0.15s ease";
           bookmarkList.style.opacity = "1";
-          bookmarkList.addEventListener("transitionend", () => {
-            bookmarkList.style.transition = "";
-            bookmarkList.style.opacity = "";
-          }, { once: true });
+          bookmarkList.addEventListener(
+            "transitionend",
+            () => {
+              bookmarkList.style.transition = "";
+              bookmarkList.style.opacity = "";
+            },
+            { once: true },
+          );
         });
       }
 
@@ -534,7 +545,13 @@ function updateSelection() {
           item.click();
         }
       }
-    } else if (e.key === "Enter" && isSearchMode && inputElement && inputElement.value.length > 0 && searchResults.length > 0) {
+    } else if (
+      e.key === "Enter" &&
+      isSearchMode &&
+      inputElement &&
+      inputElement.value.length > 0 &&
+      searchResults.length > 0
+    ) {
       e.preventDefault();
       const firstResult = searchResults[0];
       if (firstResult && firstResult.url) {
@@ -567,11 +584,12 @@ function updateSelection() {
 
   function moveSelection(direction) {
     const navItems = getNavigationItems();
-    
+
     if (navItems.length === 0) return;
 
     if (isSearchMode && currentItem) {
-      const currentLi = currentItem.closest(`.${SEARCH_RESULT_CLASS}`) || currentItem;
+      const currentLi =
+        currentItem.closest(`.${SEARCH_RESULT_CLASS}`) || currentItem;
       if (navItems.includes(currentLi)) {
         currentIndex = navItems.indexOf(currentLi);
       }
