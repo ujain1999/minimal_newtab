@@ -192,13 +192,11 @@ function updateSelection() {
 
       const resultsContainer = document.createElement("div");
       resultsContainer.className = "search-results-container";
-      resultsContainer.style.cssText =
-        "margin-top: 8px; width: 100%; box-sizing: border-box;";
 
       if (searchResults.length === 0) {
         const noResults = document.createElement("div");
+        noResults.className = "no-results";
         noResults.textContent = "No results found";
-        noResults.style.cssText = "color: rgba(255,255,255,0.5); padding: 8px;";
         resultsContainer.appendChild(noResults);
         shortcuts.appendChild(resultsContainer);
         requestAnimationFrame(() => focusInput());
@@ -207,75 +205,39 @@ function updateSelection() {
 
       const list = document.createElement("ul");
       list.className = "bookmark-list search-results-list";
-      list.style.cssText =
-        "padding-left: 0; width: 100%; box-sizing: border-box;";
 
       searchResults.slice(0, 10).forEach((result, index) => {
         const li = document.createElement("li");
         li.className = `bookmark-link-item ${SEARCH_RESULT_CLASS}`;
-        li.style.cssText = "margin: 0.2rem 0 0.4rem 0;";
 
         const a = document.createElement("a");
         a.href = result.url;
         a.className = "shortcut";
-        a.style.cssText = `
-          display: flex;
-          align-items: center;
-          flex-wrap: nowrap;
-          color: inherit;
-          cursor: pointer;
-          position: relative;
-          width: 100%;
-          box-sizing: border-box;
-        `;
 
         const contentSpan = document.createElement("span");
-        contentSpan.style.cssText =
-          "display: inline-flex; flex: 1; min-width: 0; align-items: center; margin-right: 60px; white-space: nowrap;";
+        contentSpan.className = "content";
 
         if (result.path) {
           const pathSpan = document.createElement("span");
+          pathSpan.className = "path";
           pathSpan.textContent = result.path + " ";
-          pathSpan.style.cssText =
-            "color: rgba(255,255,255,0.6);padding-right:0.5rem;";
           contentSpan.appendChild(pathSpan);
 
           const arrowSpan = document.createElement("span");
+          arrowSpan.className = "arrow";
           arrowSpan.textContent = " > ";
-          arrowSpan.style.cssText = "flex-shrink: 0;padding-right:0.5rem;";
           contentSpan.appendChild(arrowSpan);
         }
 
         const titleSpan = document.createElement("span");
+        titleSpan.className = "title";
         titleSpan.textContent = result.title;
-        titleSpan.style.cssText = `
-          text-decoration: underline dotted;
-          text-underline-offset: 2px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          text-decoration-color: inherit;
-        `;
         contentSpan.appendChild(titleSpan);
         a.appendChild(contentSpan);
 
         const hint = document.createElement("span");
         hint.className = NUMBER_HINT_CLASS;
         hint.textContent = index === 9 ? "0" : (index + 1).toString();
-        hint.style.cssText = `
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 20px;
-          height: 20px;
-          padding: 0 6px;
-          background-color: rgba(255, 255, 255, 0.2);
-          border-radius: 4px;
-          font-size: 12px;
-          font-family: monospace;
-          flex-shrink: 0;
-          text-decoration: none !important;
-        `;
         a.appendChild(hint);
 
         li.appendChild(a);
