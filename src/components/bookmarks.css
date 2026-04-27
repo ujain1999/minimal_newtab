@@ -90,6 +90,10 @@
     color: inherit;
 }
 
+body.light .shortcut > .number-hint {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
 .shortcut:hover,
 .shortcut.selected {
 }
@@ -105,6 +109,11 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     z-index: -1;
+}
+
+body.light .shortcut:hover::before,
+body.light .shortcut.selected::before {
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
 .bookmark-folder {
@@ -149,6 +158,11 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     z-index: -1;
+}
+
+body.light .bookmark-folder:hover::before,
+body.light .bookmark-folder.selected::before {
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
 .bookmark-children {
@@ -206,4 +220,9 @@
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     z-index: -1;
+}
+
+body.light .search-mode .shortcut:hover::before,
+body.light .search-mode .shortcut.selected::before {
+    background-color: rgba(0, 0, 0, 0.15);
 }

@@ -7,11 +7,14 @@
     overflow: hidden;
 }
 
+body.light .shortcuts.command-mode {
+    outline: 2px solid #333;
+}
+
 .shortcuts.command-mode.search-mode {
     max-height: none;
     overflow-y: auto;
     transition: max-height 0.2s ease;
-    /*padding-bottom: 12rem;*/
 }
 
 #quick-command-input {
@@ -30,8 +33,18 @@
     margin-bottom: 0.4rem;
 }
 
+body.light #quick-command-input {
+    border-color: #333;
+    color: #333;
+    caret-color: #333;
+}
+
 #quick-command-input::placeholder {
     color: rgba(255, 255, 255, 0.5);
+}
+
+body.light #quick-command-input::placeholder {
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .search-results-container {
@@ -42,6 +55,10 @@
 .search-results-container .no-results {
     color: rgba(255, 255, 255, 0.5);
     padding: 8px;
+}
+
+body.light .search-results-container .no-results {
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .search-results-list {
@@ -65,6 +82,10 @@
     box-sizing: border-box;
 }
 
+body.light .search-result .shortcut {
+    color: #333;
+}
+
 .search-result .shortcut .content {
     display: inline-flex;
     flex: 1;
@@ -77,6 +98,10 @@
 .search-result .shortcut .path {
     color: rgba(255, 255, 255, 0.6);
     padding-right: 0.5rem;
+}
+
+body.light .search-result .shortcut .path {
+    color: rgba(0, 0, 0, 0.6);
 }
 
 .search-result .shortcut .arrow {
@@ -106,4 +131,8 @@
     font-family: monospace;
     flex-shrink: 0;
     text-decoration: none !important;
+}
+
+body.light .search-result .shortcut .number-hint {
+    background-color: rgba(0, 0, 0, 0.2);
 }
