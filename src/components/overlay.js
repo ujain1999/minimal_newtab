@@ -110,15 +110,19 @@
     return items;
   }
 
-  function updateSelection() {
+function updateSelection() {
     const navItems = getNavigationItems();
     navItems.forEach((item, index) => {
+      const shortcut = item.classList.contains(SEARCH_RESULT_CLASS) 
+        ? item.querySelector(".shortcut") 
+        : item;
+      
       if (index === currentIndex) {
-        item.classList.add(SELECTED_CLASS);
+        if (shortcut) shortcut.classList.add(SELECTED_CLASS);
         item.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        currentItem = item;
+        currentItem = navItems[currentIndex];
       } else {
-        item.classList.remove(SELECTED_CLASS);
+        if (shortcut) shortcut.classList.remove(SELECTED_CLASS);
       }
     });
   }
@@ -126,7 +130,7 @@
   function clearSelection() {
     currentIndex = -1;
     currentItem = null;
-    allItems.forEach((item) => item.classList.remove(SELECTED_CLASS));
+    document.querySelectorAll("." + SELECTED_CLASS).forEach(el => el.classList.remove(SELECTED_CLASS));
   }
 
   function renderNumberHints() {
@@ -534,6 +538,12 @@
       numberBuffer = "";
       if (inputElement) inputElement.value = "";
       exitSearchMode();
+    } else if (e.key === "Enter" && isSearchMode && inputElement && inputElement.value.length > 0 && searchResults.length > 0) {
+      e.preventDefault();
+      const firstResult = searchResults[0];
+      if (firstResult && firstResult.url) {
+        window.location.href = firstResult.url;
+      }
     } else if (e.key === "Enter" && currentIndex >= 0) {
       const navItems = getNavigationItems();
       e.preventDefault();
@@ -575,9 +585,18 @@
 
   function moveSelection(direction) {
     const navItems = getNavigationItems();
+    
+    if (navItems.length === 0) return;
 
-    if (currentItem && navItems.includes(currentItem)) {
-      currentIndex = navItems.indexOf(currentItem);
+    if (isSearchMode && currentItem) {
+      const currentLi = currentItem.closest(`.${SEARCH_RESULT_CLASS}`) || currentItem;
+      if (navItems.includes(currentLi)) {
+        currentIndex = navItems.indexOf(currentLi);
+      }
+    } else if (!isSearchMode && currentItem) {
+      if (navItems.includes(currentItem)) {
+        currentIndex = navItems.indexOf(currentItem);
+      }
     }
 
     if (currentIndex === -1) {

@@ -92,7 +92,6 @@
 
 .shortcut:hover,
 .shortcut.selected {
-    transform: translateX(2px);
 }
 
 .shortcut:hover::before,
@@ -194,7 +193,6 @@
 
 .search-mode .shortcut:hover,
 .search-mode .shortcut.selected {
-    transform: translateX(2px);
 }
 
 .search-mode .shortcut:hover::before,
