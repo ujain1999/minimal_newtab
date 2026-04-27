@@ -800,6 +800,11 @@ document.getElementById("restore-defaults").addEventListener("click", () => {
   );
 });
 
+document.getElementById("open-shortcuts").addEventListener("click", (e) => {
+  e.preventDefault();
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+});
+
 document.getElementById("show-bookmarks").onchange = (e) => {
   document
     .querySelector("#bookmark-folder-selector-span")
