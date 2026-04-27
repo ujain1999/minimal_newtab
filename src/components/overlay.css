@@ -93,11 +93,13 @@ body.light .search-result .shortcut {
     align-items: center;
     margin-right: 60px;
     white-space: nowrap;
+    text-decoration: none;
 }
 
 .search-result .shortcut .path {
     color: rgba(255, 255, 255, 0.6);
     padding-right: 0.5rem;
+    text-decoration: none;
 }
 
 body.light .search-result .shortcut .path {
@@ -107,6 +109,7 @@ body.light .search-result .shortcut .path {
 .search-result .shortcut .arrow {
     flex-shrink: 0;
     padding-right: 0.5rem;
+    text-decoration: none;
 }
 
 .search-result .shortcut .title {
