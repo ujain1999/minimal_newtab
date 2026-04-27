@@ -21,9 +21,9 @@
   function fuzzyMatch(text, query) {
     text = text.toLowerCase();
     query = query.toLowerCase();
-    
+
     if (query === "") return true;
-    
+
     let queryIndex = 0;
     for (let i = 0; i < text.length && queryIndex < query.length; i++) {
       if (text[i] === query[queryIndex]) {
@@ -35,8 +35,8 @@
 
   function flattenBookmarks(nodes, path = []) {
     const results = [];
-    
-    nodes.forEach(node => {
+
+    nodes.forEach((node) => {
       if (node.children && node.children.length > 0) {
         const newPath = [...path, node.title || "Untitled"];
         results.push(...flattenBookmarks(node.children, newPath));
@@ -45,33 +45,35 @@
         results.push({
           title: node.title || node.url,
           url: node.url,
-          path: fullPath
+          path: fullPath,
         });
       }
     });
-    
+
     return results;
   }
 
   function getAllItems() {
     const shortcuts = document.getElementById("shortcuts");
     if (!shortcuts) return [];
-    return Array.from(shortcuts.querySelectorAll("a.shortcut")).filter((item) => {
-      let parent = item.parentElement;
-      while (parent && parent !== shortcuts) {
-        if (parent.classList.contains("collapsed")) {
-          return false;
+    return Array.from(shortcuts.querySelectorAll("a.shortcut")).filter(
+      (item) => {
+        let parent = item.parentElement;
+        while (parent && parent !== shortcuts) {
+          if (parent.classList.contains("collapsed")) {
+            return false;
+          }
+          parent = parent.parentElement;
         }
-        parent = parent.parentElement;
-      }
-      return true;
-    });
+        return true;
+      },
+    );
   }
 
   function getNavigationItems() {
     const shortcuts = document.getElementById("shortcuts");
     if (!shortcuts) return [];
-    
+
     if (isSearchMode) {
       return Array.from(shortcuts.querySelectorAll(`.${SEARCH_RESULT_CLASS}`));
     }
@@ -82,8 +84,11 @@
     function walk(node) {
       if (!node) return;
       if (node.classList?.contains("collapsed")) return;
-      
-      if (node.tagName === "BUTTON" && node.classList.contains("bookmark-folder")) {
+
+      if (
+        node.tagName === "BUTTON" &&
+        node.classList.contains("bookmark-folder")
+      ) {
         if (!seen.has(node)) {
           items.push(node);
           seen.add(node);
@@ -94,7 +99,7 @@
           seen.add(node);
         }
       }
-      
+
       const children = node.children || [];
       for (let i = 0; i < children.length; i++) {
         walk(children[i]);
@@ -136,7 +141,9 @@
   }
 
   function clearNumberHints() {
-    document.querySelectorAll(`.${NUMBER_HINT_CLASS}`).forEach((el) => el.remove());
+    document
+      .querySelectorAll(`.${NUMBER_HINT_CLASS}`)
+      .forEach((el) => el.remove());
   }
 
   function renderSearchResults(query) {
@@ -144,7 +151,7 @@
     if (!shortcuts) return;
 
     shortcuts.innerHTML = "";
-    
+
     if (!query || query.length === 0) {
       return;
     }
@@ -154,22 +161,25 @@
 
     searchPending = true;
 
-    chrome.bookmarks.getTree(tree => {
+    chrome.bookmarks.getTree((tree) => {
       if (!searchPending) return;
-      
+
       let bookmarkNodes = tree[0].children;
-      
+
       if (bookmarkFolder) {
-        const folder = tree[0].children.find(f => f.title.toLowerCase() === bookmarkFolder.toLowerCase());
+        const folder = tree[0].children.find(
+          (f) => f.title.toLowerCase() === bookmarkFolder.toLowerCase(),
+        );
         if (folder) {
           bookmarkNodes = folder.children;
         }
       }
 
       const flattened = flattenBookmarks(bookmarkNodes);
-      
-      searchResults = flattened.filter(item => 
-        fuzzyMatch(item.title, query) || fuzzyMatch(item.path || "", query)
+
+      searchResults = flattened.filter(
+        (item) =>
+          fuzzyMatch(item.title, query) || fuzzyMatch(item.path || "", query),
       );
 
       if (inputElement) {
@@ -178,7 +188,8 @@
 
       const resultsContainer = document.createElement("div");
       resultsContainer.className = "search-results-container";
-      resultsContainer.style.cssText = "margin-top: 8px; width: 100%; box-sizing: border-box;";
+      resultsContainer.style.cssText =
+        "margin-top: 8px; width: 100%; box-sizing: border-box;";
 
       if (searchResults.length === 0) {
         const noResults = document.createElement("div");
@@ -192,7 +203,8 @@
 
       const list = document.createElement("ul");
       list.className = "bookmark-list search-results-list";
-      list.style.cssText = "padding-left: 0; width: 100%; box-sizing: border-box;";
+      list.style.cssText =
+        "padding-left: 0; width: 100%; box-sizing: border-box;";
 
       searchResults.slice(0, 10).forEach((result, index) => {
         const li = document.createElement("li");
@@ -214,17 +226,19 @@
         `;
 
         const contentSpan = document.createElement("span");
-        contentSpan.style.cssText = "display: inline-flex; flex: 1; min-width: 0; align-items: center; margin-right: 60px; white-space: nowrap;";
+        contentSpan.style.cssText =
+          "display: inline-flex; flex: 1; min-width: 0; align-items: center; margin-right: 60px; white-space: nowrap;";
 
         if (result.path) {
           const pathSpan = document.createElement("span");
-          pathSpan.textContent = result.path;
-          pathSpan.style.cssText = "color: rgba(255,255,255,0.6); flex-shrink: 0;";
+          pathSpan.textContent = result.path + " ";
+          pathSpan.style.cssText =
+            "color: rgba(255,255,255,0.6);padding-right:0.5rem;";
           contentSpan.appendChild(pathSpan);
-          
+
           const arrowSpan = document.createElement("span");
           arrowSpan.textContent = " > ";
-          arrowSpan.style.cssText = "flex-shrink: 0;";
+          arrowSpan.style.cssText = "flex-shrink: 0;padding-right:0.5rem;";
           contentSpan.appendChild(arrowSpan);
         }
 
@@ -273,7 +287,7 @@
   function enterSearchMode() {
     if (isSearchMode) return;
     isSearchMode = true;
-    
+
     const shortcuts = document.getElementById("shortcuts");
     if (shortcuts && !originalShortcutsContent) {
       const tempDiv = document.createElement("div");
@@ -287,20 +301,20 @@
     }
   }
 
-function exitSearchMode() {
+  function exitSearchMode() {
     if (!isSearchMode) return;
     isSearchMode = false;
     searchResults = [];
     originalShortcutsContent = null;
-    
+
     const shortcuts = document.getElementById("shortcuts");
     if (shortcuts) {
       shortcuts.classList.remove(SEARCH_MODE_CLASS);
     }
-    
+
     if (window.renderBookmarks) {
       window.renderBookmarks();
-      
+
       setTimeout(() => {
         if (inputElement && !shortcuts.contains(inputElement)) {
           shortcuts.insertBefore(inputElement, shortcuts.firstChild);
@@ -316,66 +330,68 @@ function exitSearchMode() {
   function renderBookmarks() {
     const shortcuts = document.getElementById("shortcuts");
     if (!shortcuts) return;
-    
+
     shortcuts.innerHTML = "";
-    
+
     const settings = JSON.parse(localStorage.getItem("settings") || "{}");
     const bookmarkFolder = settings.bookmarkFolder?.trim();
 
-    chrome.bookmarks.getTree(tree => {
+    chrome.bookmarks.getTree((tree) => {
       let bookmarkNodes = tree[0].children;
-      
+
       if (bookmarkFolder) {
-        const folder = tree[0].children.find(f => f.title.toLowerCase() === bookmarkFolder.toLowerCase());
+        const folder = tree[0].children.find(
+          (f) => f.title.toLowerCase() === bookmarkFolder.toLowerCase(),
+        );
         if (folder) {
           bookmarkNodes = folder.children;
         }
       }
 
-      const listRoot = document.createElement('ul');
-      listRoot.className = 'bookmark-list';
-      
+      const listRoot = document.createElement("ul");
+      listRoot.className = "bookmark-list";
+
       function processBookmarks(nodes, container, path = []) {
-        nodes.forEach(node => {
+        nodes.forEach((node) => {
           if (node.children && node.children.length > 0) {
-            const listItem = document.createElement('li');
-            listItem.className = 'bookmark-folder-item';
+            const listItem = document.createElement("li");
+            listItem.className = "bookmark-folder-item";
 
-            const folderButton = document.createElement('button');
-            folderButton.type = 'button';
-            folderButton.className = 'bookmark-folder';
-            const chevron = document.createElement('span');
-            chevron.className = 'chevron';
-            chevron.textContent = '▶';
+            const folderButton = document.createElement("button");
+            folderButton.type = "button";
+            folderButton.className = "bookmark-folder";
+            const chevron = document.createElement("span");
+            chevron.className = "chevron";
+            chevron.textContent = "▶";
 
-            const title = document.createElement('span');
+            const title = document.createElement("span");
             title.textContent = ` ${node.title || "Untitled folder"}`;
 
             folderButton.appendChild(chevron);
             folderButton.appendChild(title);
 
-            const childrenList = document.createElement('ul');
-            childrenList.className = 'bookmark-children';
+            const childrenList = document.createElement("ul");
+            childrenList.className = "bookmark-children";
 
             const newPath = [...path, node.title || "Untitled"];
-            const isOpen = localStorage.getItem(newPath.join('/')) === "true";
+            const isOpen = localStorage.getItem(newPath.join("/")) === "true";
 
             if (isOpen) {
-              chevron.textContent = '▼';
+              chevron.textContent = "▼";
             } else {
-              childrenList.classList.add('collapsed');
+              childrenList.classList.add("collapsed");
             }
 
-            folderButton.addEventListener('click', () => {
-              const isCollapsed = childrenList.classList.contains('collapsed');
+            folderButton.addEventListener("click", () => {
+              const isCollapsed = childrenList.classList.contains("collapsed");
               if (isCollapsed) {
-                childrenList.classList.remove('collapsed');
-                chevron.textContent = '▼';
-                localStorage.setItem(newPath.join('/'), "true");
+                childrenList.classList.remove("collapsed");
+                chevron.textContent = "▼";
+                localStorage.setItem(newPath.join("/"), "true");
               } else {
-                childrenList.classList.add('collapsed');
-                chevron.textContent = '▶';
-                localStorage.setItem(newPath.join('/'), "false");
+                childrenList.classList.add("collapsed");
+                chevron.textContent = "▶";
+                localStorage.setItem(newPath.join("/"), "false");
               }
               if (isActive) {
                 allItems = getAllItems();
@@ -389,13 +405,13 @@ function exitSearchMode() {
 
             processBookmarks(node.children, childrenList, newPath);
           } else if (node.url) {
-            const listItem = document.createElement('li');
-            listItem.className = 'bookmark-link-item';
+            const listItem = document.createElement("li");
+            listItem.className = "bookmark-link-item";
 
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             a.href = node.url;
-            a.className = 'shortcut';
-            const text = document.createElement('span');
+            a.className = "shortcut";
+            const text = document.createElement("span");
             text.textContent = node.title || node.url;
             a.appendChild(text);
 
@@ -407,11 +423,11 @@ function exitSearchMode() {
 
       processBookmarks(bookmarkNodes, listRoot);
       shortcuts.appendChild(listRoot);
-      
+
       if (inputElement && !shortcuts.contains(inputElement)) {
         shortcuts.insertBefore(inputElement, shortcuts.firstChild);
       }
-      
+
       if (isActive) {
         setupFolderListeners();
         allItems = getAllItems();
@@ -433,7 +449,10 @@ function exitSearchMode() {
           }
           if (currentItem) {
             currentItem.classList.add(SELECTED_CLASS);
-            currentItem.scrollIntoView({ block: "nearest", behavior: "smooth" });
+            currentItem.scrollIntoView({
+              block: "nearest",
+              behavior: "smooth",
+            });
           }
         }, 10);
       });
@@ -482,7 +501,7 @@ function exitSearchMode() {
     inputElement.addEventListener("input", (e) => {
       const query = e.target.value;
       numberBuffer = "";
-      
+
       if (query.length > 0) {
         enterSearchMode();
         renderSearchResults(query);
@@ -529,7 +548,13 @@ function exitSearchMode() {
           item.click();
         }
       }
-    } else if (e.key >= "0" && e.key <= "9" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    } else if (
+      e.key >= "0" &&
+      e.key <= "9" &&
+      !e.ctrlKey &&
+      !e.metaKey &&
+      !e.altKey
+    ) {
       if (document.activeElement === inputElement) {
         const query = inputElement.value;
         if (query.length > 0) {
@@ -610,7 +635,7 @@ function exitSearchMode() {
       shortcuts.querySelectorAll("." + SELECTED_CLASS).forEach((el) => {
         el.classList.remove(SELECTED_CLASS);
       });
-      
+
       if (window.renderBookmarks) {
         shortcuts.innerHTML = "";
         window.renderBookmarks();
