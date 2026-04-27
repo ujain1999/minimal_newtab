@@ -4,6 +4,14 @@
     padding: 12px;
     margin-left: 3.5rem;
     max-height: calc(100vh - 20rem);
+    overflow: hidden;
+}
+
+.shortcuts.command-mode.search-mode {
+    max-height: none;
+    overflow-y: auto;
+    transition: max-height 0.2s ease;
+    /*padding-bottom: 12rem;*/
 }
 
 #quick-command-input {
@@ -19,7 +27,7 @@
     max-width: 800px;
     box-sizing: border-box;
     caret-color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
 }
 
 #quick-command-input::placeholder {
@@ -27,7 +35,6 @@
 }
 
 .search-results-container {
-    margin-top: 8px;
     width: 100%;
     box-sizing: border-box;
 }

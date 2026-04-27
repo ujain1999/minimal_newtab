@@ -67,6 +67,8 @@ function processBookmarks(settings, nodes, container, level = 0, path = "") {
 function renderBookmarks(settings) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
+        const existingInput = document.getElementById('quick-command-input');
+
         let bookmarksBar = settings.bookmarkFolder?.trim()
             ? tree[0].children.find(f => f.title.toLowerCase() === settings.bookmarkFolder.toLowerCase())
             : tree[0].children[0];
@@ -79,6 +81,10 @@ function renderBookmarks(settings) {
         const listRoot = document.createElement('ul');
         listRoot.className = 'bookmark-list';
         shortcuts.innerHTML = '';
+
+        if (existingInput) {
+            shortcuts.appendChild(existingInput);
+        }
 
         processBookmarks(
             settings,

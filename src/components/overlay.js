@@ -17,6 +17,7 @@
   let originalShortcutsContent = null;
   let searchResults = [];
   let searchPending = false;
+  let debounceTimer = null;
 
   function fuzzyMatch(text, query) {
     text = text.toLowerCase();
@@ -151,14 +152,13 @@ function updateSelection() {
   }
 
   function renderSearchResults(query) {
+    if (!query || query.length === 0) return;
+
     const shortcuts = document.getElementById("shortcuts");
     if (!shortcuts) return;
 
-    shortcuts.innerHTML = "";
-
-    if (!query || query.length === 0) {
-      return;
-    }
+    const resultsContainer = document.getElementById("search-results-container");
+    if (!resultsContainer) return;
 
     const settings = JSON.parse(localStorage.getItem("settings") || "{}");
     const bookmarkFolder = settings.bookmarkFolder?.trim();
@@ -186,19 +186,13 @@ function updateSelection() {
           fuzzyMatch(item.title, query) || fuzzyMatch(item.path || "", query),
       );
 
-      if (inputElement) {
-        shortcuts.appendChild(inputElement);
-      }
-
-      const resultsContainer = document.createElement("div");
-      resultsContainer.className = "search-results-container";
+      resultsContainer.innerHTML = "";
 
       if (searchResults.length === 0) {
         const noResults = document.createElement("div");
         noResults.className = "no-results";
         noResults.textContent = "No results found";
         resultsContainer.appendChild(noResults);
-        shortcuts.appendChild(resultsContainer);
         requestAnimationFrame(() => focusInput());
         return;
       }
@@ -245,7 +239,6 @@ function updateSelection() {
       });
 
       resultsContainer.appendChild(list);
-      shortcuts.appendChild(resultsContainer);
       requestAnimationFrame(() => focusInput());
     });
   }
@@ -264,6 +257,16 @@ function updateSelection() {
       }
       originalShortcutsContent = tempDiv.innerHTML;
       shortcuts.classList.add(SEARCH_MODE_CLASS);
+      shortcuts.innerHTML = "";
+
+      if (inputElement) {
+        shortcuts.appendChild(inputElement);
+      }
+
+      const resultsContainer = document.createElement("div");
+      resultsContainer.className = "search-results-container";
+      resultsContainer.id = "search-results-container";
+      shortcuts.appendChild(resultsContainer);
     }
   }
 
@@ -271,26 +274,39 @@ function updateSelection() {
     if (!isSearchMode) return;
     isSearchMode = false;
     searchResults = [];
-    originalShortcutsContent = null;
+    clearTimeout(debounceTimer);
 
     const shortcuts = document.getElementById("shortcuts");
-    if (shortcuts) {
-      shortcuts.classList.remove(SEARCH_MODE_CLASS);
-    }
+    if (!shortcuts) { originalShortcutsContent = null; return; }
+
+    shortcuts.classList.remove(SEARCH_MODE_CLASS);
 
     if (window.renderBookmarks) {
       window.renderBookmarks();
-
-      setTimeout(() => {
-        if (inputElement && !shortcuts.contains(inputElement)) {
-          shortcuts.insertBefore(inputElement, shortcuts.firstChild);
-        }
-        setupFolderListeners();
-        allItems = getAllItems();
-        renderNumberHints();
-        requestAnimationFrame(() => focusInput());
-      }, 50);
     }
+
+    // renderBookmarks is async — wait for it to finish
+    setTimeout(() => {
+      const bookmarkList = shortcuts.querySelector(".bookmark-list");
+      if (bookmarkList) {
+        bookmarkList.style.opacity = "0";
+        requestAnimationFrame(() => {
+          bookmarkList.style.transition = "opacity 0.2s ease";
+          bookmarkList.style.opacity = "1";
+          bookmarkList.addEventListener("transitionend", () => {
+            bookmarkList.style.transition = "";
+            bookmarkList.style.opacity = "";
+          }, { once: true });
+        });
+      }
+
+      setupFolderListeners();
+      allItems = getAllItems();
+      renderNumberHints();
+      focusInput();
+    }, 50);
+
+    originalShortcutsContent = null;
   }
 
   function renderBookmarks() {
@@ -470,10 +486,14 @@ function updateSelection() {
 
       if (query.length > 0) {
         enterSearchMode();
-        renderSearchResults(query);
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          renderSearchResults(query);
+        }, 100);
         currentIndex = -1;
         currentItem = null;
       } else {
+        clearTimeout(debounceTimer);
         exitSearchMode();
         currentIndex = -1;
         currentItem = null;
@@ -500,12 +520,6 @@ function updateSelection() {
       numberBuffer = "";
       if (inputElement) inputElement.value = "";
       exitSearchMode();
-    } else if (e.key === "Enter" && isSearchMode && inputElement && inputElement.value.length > 0 && searchResults.length > 0) {
-      e.preventDefault();
-      const firstResult = searchResults[0];
-      if (firstResult && firstResult.url) {
-        window.location.href = firstResult.url;
-      }
     } else if (e.key === "Enter" && currentIndex >= 0) {
       const navItems = getNavigationItems();
       e.preventDefault();
@@ -519,6 +533,12 @@ function updateSelection() {
         } else {
           item.click();
         }
+      }
+    } else if (e.key === "Enter" && isSearchMode && inputElement && inputElement.value.length > 0 && searchResults.length > 0) {
+      e.preventDefault();
+      const firstResult = searchResults[0];
+      if (firstResult && firstResult.url) {
+        window.location.href = firstResult.url;
       }
     } else if (
       e.key >= "0" &&
@@ -608,6 +628,8 @@ function updateSelection() {
     searchPending = false;
     originalShortcutsContent = null;
     searchResults = [];
+    clearTimeout(debounceTimer);
+    debounceTimer = null;
 
     const shortcuts = document.getElementById("shortcuts");
     if (shortcuts) {
