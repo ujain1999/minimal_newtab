@@ -41,6 +41,11 @@
     box-sizing: border-box;
 }
 
+.search-mode .bookmark-link-item {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .shortcut {
     display: flex;
     align-items: center;
@@ -54,6 +59,7 @@
     text-decoration: none;
     width: 100%;
     box-sizing: border-box;
+    justify-content: flex-start;
 }
 
 .shortcut > span:not(.number-hint) {
@@ -74,7 +80,7 @@
     min-width: 20px;
     height: 20px;
     padding: 0 6px;
-    margin-left: 8px;
+    margin-left: auto;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     font-size: 12px;
@@ -156,4 +162,50 @@
 
 .bookmark-children.collapsed {
     display: none;
+}
+
+.search-mode .bookmark-link-item {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-mode .shortcut {
+    display: block;
+    position: relative;
+    margin: 0.2rem 0 0.4rem 0;
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-mode .shortcut > span:not(.number-hint) {
+    display: inline;
+}
+
+.search-mode .shortcut > .number-hint {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search-mode .shortcut:hover,
+.search-mode .shortcut.selected {
+    transform: translateX(2px);
+}
+
+.search-mode .shortcut:hover::before,
+.search-mode .shortcut.selected::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -4px;
+    right: -4px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    z-index: -1;
 }

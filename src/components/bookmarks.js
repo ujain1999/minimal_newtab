@@ -72,7 +72,7 @@ function renderBookmarks(settings) {
             : tree[0].children[0];
 
         if (settings.bookmarkFolder?.trim() && !bookmarksBar) {
-            shortcuts.textContent = "Bookmark folder not found.";
+            shortcuts.innerHTML = "Bookmark folder not found.";
             return;
         }
 
