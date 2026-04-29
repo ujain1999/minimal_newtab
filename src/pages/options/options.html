@@ -23,6 +23,7 @@
                     <a href="#shortcuts">Shortcuts</a>
                     <a href="#appearance">Appearance</a>
                     <a href="#sidebar-settings">Sidebar</a>
+                    <a href="#keyboard-nav">Keyboard navigation</a>
                     <a href="#preset">Backup</a>
                     <a href="#about">About</a>
                 </nav>
@@ -540,6 +541,94 @@ body { font-family: 'Comic Sans MS'; }
                                 sidebar expanded</label
                             >
                         </div>
+                    </div>
+                </div>
+
+                <div id="keyboard-nav" class="options-panel">
+                    <h2>Keyboard navigation</h2>
+                    <label class="checkbox-label"
+                        ><input type="checkbox" id="enable-keyboard-nav" /><span
+                            class="custom-checkbox"
+                        ></span>
+                        Enable Keyboard Navigation</label
+                    >
+                    <p
+                        id="shortcut-instruction-paragraph"
+                        style="
+                            font-size: 0.9em;
+                            opacity: 0.8;
+                            margin-top: 0.5em;
+                        "
+                    >
+                        When enabled, press <strong id="shortcut-instruction">Alt+K</strong> to open the
+                        quick command overlay.
+                    </p>
+                    <label
+                        class="checkbox-label"
+                        style="margin-top: 1em;"
+                    >
+                        <input type="checkbox" id="open-in-new-tab" />
+                        <span class="custom-checkbox"></span>
+                        Open links in new tab
+                    </label>
+                    <p
+                        style="
+                            font-size: 0.85em;
+                            opacity: 0.6;
+                            margin-top: 0.3em;
+                        "
+                    >
+                        When enabled, selected bookmarks will open in a new tab.
+                        Default is same tab.
+                    </p>
+                    <p
+                        style="
+                            font-size: 0.85em;
+                            opacity: 0.6;
+                            margin-top: 0.5em;
+                        "
+                    >
+                        To customize the keyboard shortcut, visit
+                        <a
+                            href="#"
+                            id="open-shortcuts"
+                            style="color: inherit;"
+                            >chrome://extensions/shortcuts</a
+                        >.
+                    </p>
+                    <div
+                        id="how-to-use"
+                        style="
+                            font-size: 0.85em;
+                            opacity: 0.8;
+                            margin-top: 1em;
+                            background: rgba(255,255,255,0.1);
+                            padding: 1em;
+                            border-radius: 6px;
+                        "
+                    >
+                        <strong style="display:block;margin-bottom:0.5em;">How to use:</strong>
+                        <ul style="margin:0;padding-left:1.2em;">
+                            <li style="margin:0.3em 0;">
+                                <strong id="shortcut-usage">Alt+K</strong> — Open command mode
+                            </li>
+                            <li style="margin:0.3em 0;">
+                                <strong>Type to search</strong> — Search bookmarks by title
+                            </li>
+                            <li style="margin:0.3em 0;">
+                                <strong>Arrow Up/Down</strong> — Navigate through items
+                            </li>
+                            <li style="margin:0.3em 0;">
+                                <strong>Enter</strong> — Open selected bookmark or
+                                expand/collapse folder
+                            </li>
+                            <li style="margin:0.3em 0;">
+                                <strong>0-9</strong> — Quick jump to first 10 items
+                            </li>
+                            <li style="margin:0.3em 0;">
+                                <strong>Esc</strong> — Close overlay
+                            </li>
+                        </ul>
                     </div>
                 </div>
 

@@ -59,6 +59,7 @@ if (settings.weather) {
 }
 
 if (settings.bookmarks) {
+  window.renderBookmarks = () => renderBookmarks(settings);
   renderBookmarks(settings);
 } else {
   document.getElementById("shortcuts").style.display = "none";

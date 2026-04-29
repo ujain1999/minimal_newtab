@@ -81,6 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "unsplashUpdateFrequency",
     "showUnsplashRefresh",
     "customCSS",
+    "enableKeyboardNav",
+    "openInNewTab",
   ];
 
   let settingsJsonStr =
@@ -93,7 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // Initialize clock format (12h/24h)
   if (settings["clockFormat"]) {
-    const clockFormatRadio = document.querySelector(`input[name="clock-format"][value="${settings.clockFormat}"]`);
+    const clockFormatRadio = document.querySelector(
+      `input[name="clock-format"][value="${settings.clockFormat}"]`,
+    );
     if (clockFormatRadio) clockFormatRadio.checked = true;
   }
 
@@ -105,7 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show/hide clock format options depending on clock toggle
   const clockFormatContainer = document.getElementById("clock-format");
-  if (clockFormatContainer) clockFormatContainer.style.display = settings["clock"] ? "block" : "none";
+  if (clockFormatContainer)
+    clockFormatContainer.style.display = settings["clock"] ? "block" : "none";
   const showClockCheckbox = document.getElementById("show-clock");
   if (showClockCheckbox && clockFormatContainer) {
     showClockCheckbox.addEventListener("change", (e) => {
@@ -201,6 +206,54 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   if (sidebarShowCustomizeCheckbox) {
     sidebarShowCustomizeCheckbox.checked = !!settings["sidebarShowCustomize"];
+  }
+
+  // Initialize keyboard navigation setting
+  if (settings["enableKeyboardNav"]) {
+    document.getElementById("enable-keyboard-nav").checked = true;
+  }
+
+  // Dynamically display the current keyboard shortcut for toggle-overlay
+  function updateShortcutDisplay() {
+    const instructionParagraph = document.getElementById("shortcut-instruction-paragraph");
+    const howToUseEl = document.getElementById("how-to-use");
+
+    if (typeof chrome !== "undefined" && chrome.commands && chrome.commands.getAll) {
+      chrome.commands.getAll((commands) => {
+        const toggleCommand = commands.find((cmd) => cmd.name === "toggle-overlay");
+        if (toggleCommand && toggleCommand.shortcut) {
+          let shortcut = toggleCommand.shortcut;
+          const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+          if (isMac) {
+            shortcut = shortcut.replace(/Option/g, "⌥").replace(/Alt/g, "⌥");
+          }
+          shortcut = shortcut.replace(/([⌥])(\w)/g, "$1+$2");
+          if (instructionParagraph) {
+            instructionParagraph.innerHTML = `When enabled, press <strong id="shortcut-instruction">${shortcut}</strong> to open the quick command overlay.`;
+          }
+          if (howToUseEl) {
+            howToUseEl.style.display = "block";
+            const usageEl = document.getElementById("shortcut-usage");
+            if (usageEl) usageEl.textContent = shortcut;
+          }
+        } else {
+          if (instructionParagraph) {
+            instructionParagraph.innerHTML = `Set a shortcut at <a href="#" id="open-shortcuts-inline" style="color:inherit;">chrome://extensions/shortcuts</a> to use keyboard navigation.`;
+            document.getElementById("open-shortcuts-inline").addEventListener("click", (e) => {
+              e.preventDefault();
+              chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+            });
+          }
+          if (howToUseEl) howToUseEl.style.display = "none";
+        }
+      });
+    }
+  }
+  updateShortcutDisplay();
+
+  const openInNewTabCheckbox = document.getElementById("open-in-new-tab");
+  if (openInNewTabCheckbox) {
+    openInNewTabCheckbox.checked = !!settings["openInNewTab"];
   }
 
   function updateCustomizeDependency() {
@@ -591,8 +644,16 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sanitize: remove </style> tags to prevent breaking out of style block
         const rawCSS = document.getElementById("custom-css").value;
         settings_obj[key] = rawCSS.replace(/<\/style>/gi, "");
+      } else if (key === "enableKeyboardNav") {
+        settings_obj[key] = document.getElementById(
+          "enable-keyboard-nav",
+        ).checked;
+      } else if (key === "openInNewTab") {
+        settings_obj[key] = document.getElementById("open-in-new-tab").checked;
       } else if (key === "clockFormat") {
-        const radio = document.querySelector('input[name="clock-format"]:checked');
+        const radio = document.querySelector(
+          'input[name="clock-format"]:checked',
+        );
         settings_obj[key] = radio ? radio.value : "24h";
       } else {
         settings_obj[key] = document.getElementById("show-" + key).checked;
@@ -790,6 +851,11 @@ document.getElementById("restore-defaults").addEventListener("click", () => {
     "restore",
     true,
   );
+});
+
+document.getElementById("open-shortcuts").addEventListener("click", (e) => {
+  e.preventDefault();
+  chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
 });
 
 document.getElementById("show-bookmarks").onchange = (e) => {

@@ -35,7 +35,9 @@ const defaultSettings = {
     "sidebarWidgets": [], 
     "sidebarExpanded": false, 
     "sidebarShowCustomize": true,
-    "customCSS": ""
+    "customCSS": "",
+    "enableKeyboardNav": false,
+    "openInNewTab": false
 }
 
 const icons = {

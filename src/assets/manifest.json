@@ -7,7 +7,20 @@
     "newtab": "pages/newtab/index.html"
   },
   "options_page": "pages/options/options.html",
-  "permissions": ["bookmarks", "geolocation"],
+  "permissions": ["bookmarks", "geolocation", "commands"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "pages/background.js"
+  },
+  "commands": {
+    "toggle-overlay": {
+      "suggested_key": {
+        "default": "Alt+K",
+        "mac": "Option+K"
+      },
+      "description": "Toggle overlay"
+    }
+  },
   "icons": {
     "16": "assets/favicons/favicon-16x16.png",
     "32": "assets/favicons/favicon-32x32.png",

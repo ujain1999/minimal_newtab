@@ -1,0 +1,141 @@
+.shortcuts.command-mode {
+    outline: 2px solid white;
+    border-radius: 6px;
+    padding: 12px;
+    margin-left: 3.5rem;
+    max-height: calc(100vh - 20rem);
+    overflow: hidden;
+}
+
+body.light .shortcuts.command-mode {
+    outline: 2px solid #333;
+}
+
+.shortcuts.command-mode.search-mode {
+    max-height: none;
+    overflow-y: auto;
+    transition: max-height 0.2s ease;
+}
+
+#quick-command-input {
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 18px;
+    color: white;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+    caret-color: white;
+    margin-bottom: 0.4rem;
+}
+
+body.light #quick-command-input {
+    border-color: #333;
+    color: #333;
+    caret-color: #333;
+}
+
+#quick-command-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+body.light #quick-command-input::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.search-results-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-results-container .no-results {
+    color: rgba(255, 255, 255, 0.5);
+    padding: 8px;
+}
+
+body.light .search-results-container .no-results {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.search-results-list {
+    padding-left: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.bookmark-link-item.search-result {
+    margin: 0.2rem 0 0.4rem 0;
+}
+
+.search-result .shortcut {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body.light .search-result .shortcut {
+    color: #333;
+}
+
+.search-result .shortcut .content {
+    display: inline-flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    margin-right: 60px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.search-result .shortcut .path {
+    color: rgba(255, 255, 255, 0.6);
+    padding-right: 0.5rem;
+    text-decoration: none;
+}
+
+body.light .search-result .shortcut .path {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.search-result .shortcut .arrow {
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+    text-decoration: none;
+}
+
+.search-result .shortcut .title {
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration-color: inherit;
+}
+
+.search-result .shortcut .number-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+    flex-shrink: 0;
+    text-decoration: none !important;
+}
+
+body.light .search-result .shortcut .number-hint {
+    background-color: rgba(0, 0, 0, 0.2);
+}
