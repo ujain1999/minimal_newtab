@@ -36,7 +36,8 @@ const defaultSettings = {
     "sidebarExpanded": false, 
     "sidebarShowCustomize": true,
     "customCSS": "",
-    "enableKeyboardNav": false
+    "enableKeyboardNav": false,
+    "openInNewTab": false
 }
 
 const icons = {

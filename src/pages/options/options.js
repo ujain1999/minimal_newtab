@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "showUnsplashRefresh",
     "customCSS",
     "enableKeyboardNav",
+    "openInNewTab",
   ];
 
   let settingsJsonStr =
@@ -94,7 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // Initialize clock format (12h/24h)
   if (settings["clockFormat"]) {
-    const clockFormatRadio = document.querySelector(`input[name="clock-format"][value="${settings.clockFormat}"]`);
+    const clockFormatRadio = document.querySelector(
+      `input[name="clock-format"][value="${settings.clockFormat}"]`,
+    );
     if (clockFormatRadio) clockFormatRadio.checked = true;
   }
 
@@ -106,7 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show/hide clock format options depending on clock toggle
   const clockFormatContainer = document.getElementById("clock-format");
-  if (clockFormatContainer) clockFormatContainer.style.display = settings["clock"] ? "block" : "none";
+  if (clockFormatContainer)
+    clockFormatContainer.style.display = settings["clock"] ? "block" : "none";
   const showClockCheckbox = document.getElementById("show-clock");
   if (showClockCheckbox && clockFormatContainer) {
     showClockCheckbox.addEventListener("change", (e) => {
@@ -207,6 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize keyboard navigation setting
   if (settings["enableKeyboardNav"]) {
     document.getElementById("enable-keyboard-nav").checked = true;
+  }
+
+  const openInNewTabCheckbox = document.getElementById("open-in-new-tab");
+  if (openInNewTabCheckbox) {
+    openInNewTabCheckbox.checked = !!settings["openInNewTab"];
   }
 
   function updateCustomizeDependency() {
@@ -598,9 +607,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const rawCSS = document.getElementById("custom-css").value;
         settings_obj[key] = rawCSS.replace(/<\/style>/gi, "");
       } else if (key === "enableKeyboardNav") {
-        settings_obj[key] = document.getElementById("enable-keyboard-nav").checked;
+        settings_obj[key] = document.getElementById(
+          "enable-keyboard-nav",
+        ).checked;
+      } else if (key === "openInNewTab") {
+        settings_obj[key] = document.getElementById("open-in-new-tab").checked;
       } else if (key === "clockFormat") {
-        const radio = document.querySelector('input[name="clock-format"]:checked');
+        const radio = document.querySelector(
+          'input[name="clock-format"]:checked',
+        );
         settings_obj[key] = radio ? radio.value : "24h";
       } else {
         settings_obj[key] = document.getElementById("show-" + key).checked;

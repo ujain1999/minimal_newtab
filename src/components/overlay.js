@@ -452,15 +452,30 @@
     });
   }
 
+  function openLink(url) {
+    const settings = JSON.parse(localStorage.getItem("settings") || "{}");
+    debugger;
+    if (settings.openInNewTab) {
+      chrome.tabs.create({ url: url });
+    } else {
+      window.location.href = url;
+    }
+  }
+
   function navigateByNumber(num) {
     const index = num === "0" ? 9 : parseInt(num, 10) - 1;
     if (isSearchMode) {
       if (index >= 0 && index < searchResults.length) {
-        window.location.href = searchResults[index].url;
+        openLink(searchResults[index].url);
       }
     } else {
       if (index >= 0 && index < allItems.length && allItems[index]) {
-        allItems[index].click();
+        const link = allItems[index].querySelector("a") || allItems[index];
+        if (link.href) {
+          openLink(link.href);
+        } else {
+          allItems[index].click();
+        }
       }
     }
   }
@@ -539,10 +554,15 @@
         if (isSearchMode) {
           const link = item.querySelector("a");
           if (link) {
-            window.location.href = link.href;
+            openLink(link.href);
           }
         } else {
-          item.click();
+          const link = item.querySelector("a") || (item.tagName === "A" ? item : null);
+          if (link && link.href) {
+            openLink(link.href);
+          } else {
+            item.click();
+          }
         }
       }
     } else if (
@@ -555,7 +575,7 @@
       e.preventDefault();
       const firstResult = searchResults[0];
       if (firstResult && firstResult.url) {
-        window.location.href = firstResult.url;
+        openLink(firstResult.url);
       }
     } else if (
       e.key >= "0" &&
