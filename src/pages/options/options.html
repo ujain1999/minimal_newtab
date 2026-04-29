@@ -553,13 +553,14 @@ body { font-family: 'Comic Sans MS'; }
                         Enable Keyboard Navigation</label
                     >
                     <p
+                        id="shortcut-instruction-paragraph"
                         style="
                             font-size: 0.9em;
                             opacity: 0.8;
                             margin-top: 0.5em;
                         "
                     >
-                        When enabled, press <strong>Alt+K</strong> to open the
+                        When enabled, press <strong id="shortcut-instruction">Alt+K</strong> to open the
                         quick command overlay.
                     </p>
                     <label
@@ -596,6 +597,7 @@ body { font-family: 'Comic Sans MS'; }
                         >.
                     </p>
                     <div
+                        id="how-to-use"
                         style="
                             font-size: 0.85em;
                             opacity: 0.8;
@@ -608,7 +610,7 @@ body { font-family: 'Comic Sans MS'; }
                         <strong style="display:block;margin-bottom:0.5em;">How to use:</strong>
                         <ul style="margin:0;padding-left:1.2em;">
                             <li style="margin:0.3em 0;">
-                                <strong>Alt+K</strong> — Open command mode
+                                <strong id="shortcut-usage">Alt+K</strong> — Open command mode
                             </li>
                             <li style="margin:0.3em 0;">
                                 <strong>Type to search</strong> — Search bookmarks by title
