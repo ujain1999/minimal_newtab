@@ -498,7 +498,7 @@
     inputElement = document.createElement("input");
     inputElement.type = "text";
     inputElement.id = INPUT_ID;
-    inputElement.placeholder = "Type a command...";
+    inputElement.placeholder = "Search your bookmarks...";
     inputElement.autofocus = true;
 
     const shortcuts = document.getElementById("shortcuts");
@@ -557,7 +557,8 @@
             openLink(link.href);
           }
         } else {
-          const link = item.querySelector("a") || (item.tagName === "A" ? item : null);
+          const link =
+            item.querySelector("a") || (item.tagName === "A" ? item : null);
           if (link && link.href) {
             openLink(link.href);
           } else {
