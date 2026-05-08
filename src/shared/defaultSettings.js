@@ -1,6 +1,6 @@
 const defaultSettings = {
     "clock": true,
-    "clockFormat": "24h",
+    "clockFormat": "12h",
     "weather": true,
     "customCity": "",
     "useCustomCity": false,
@@ -35,6 +35,7 @@ const defaultSettings = {
     "sidebarWidgets": [], 
     "sidebarExpanded": false, 
     "sidebarShowCustomize": true,
+    "icalUrl": "",
     "customCSS": ""
 }
 

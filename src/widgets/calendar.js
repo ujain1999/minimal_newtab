@@ -1,6 +1,35 @@
 let currentDate = new Date();
+let cachedEvents = [];
 
-export function renderCalendar() {
+function parseICS(icsText) {
+    const events = [];
+    const lines = icsText.split(/\r\n|\n|\r/);
+    let currentEvent = null;
+
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        if (line.startsWith('BEGIN:VEVENT')) {
+            currentEvent = {};
+        } else if (line.startsWith('END:VEVENT')) {
+            if (currentEvent && currentEvent.start) {
+                events.push(currentEvent);
+            }
+            currentEvent = null;
+        } else if (currentEvent) {
+            if (line.startsWith('DTSTART')) {
+                const parts = line.split(':');
+                if (parts.length > 1) {
+                    currentEvent.start = parts[1];
+                }
+            } else if (line.startsWith('SUMMARY:')) {
+                currentEvent.summary = line.substring(8);
+            }
+        }
+    }
+    return events;
+}
+
+export function renderCalendar(settings) {
     const widgetWrapper = document.createElement('div');
     widgetWrapper.style.cursor = 'pointer';
 
@@ -83,6 +112,16 @@ export function renderCalendar() {
                 dayCell.classList.add('today');
             }
 
+            const monthStr = String(month + 1).padStart(2, '0');
+            const dayStr = String(day).padStart(2, '0');
+            const prefix = `${year}${monthStr}${dayStr}`;
+            const dayEvents = cachedEvents.filter(e => e.start && e.start.startsWith(prefix));
+            
+            if (dayEvents.length > 0) {
+                dayCell.classList.add('has-event');
+                dayCell.title = dayEvents.map(e => e.summary).join('\n');
+            }
+
             dayCell.addEventListener('click', (e) => {
                 e.stopPropagation(); // Prevent widget-level click
                 const y = year;
@@ -99,6 +138,20 @@ export function renderCalendar() {
     };
 
     widgetWrapper.appendChild(calendarContainer);
-    updateCalendar(); // Initial render
+    
+    if (settings && settings.icalUrl) {
+        fetch(settings.icalUrl)
+            .then(r => r.text())
+            .then(text => {
+                cachedEvents = parseICS(text);
+                updateCalendar();
+            }).catch(e => {
+                console.error("Error fetching ICS:", e);
+                updateCalendar();
+            });
+    } else {
+        updateCalendar(); // Initial render
+    }
+    
     return widgetWrapper;
 }

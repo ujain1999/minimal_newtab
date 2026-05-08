@@ -80,6 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "unsplashApiKey",
     "unsplashUpdateFrequency",
     "showUnsplashRefresh",
+    "icalUrl",
     "customCSS",
   ];
 
@@ -179,6 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   if (settings["customCSS"]) {
     document.getElementById("custom-css").value = settings["customCSS"];
+  }
+  if (settings["icalUrl"]) {
+    document.getElementById("ical-url").value = settings["icalUrl"];
   }
   if (settings["sidebar"]) {
     document.getElementById("show-sidebar").checked = true;
@@ -591,6 +595,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sanitize: remove </style> tags to prevent breaking out of style block
         const rawCSS = document.getElementById("custom-css").value;
         settings_obj[key] = rawCSS.replace(/<\/style>/gi, "");
+      } else if (key === "icalUrl") {
+        settings_obj[key] = document.getElementById("ical-url").value.trim();
       } else if (key === "clockFormat") {
         const radio = document.querySelector('input[name="clock-format"]:checked');
         settings_obj[key] = radio ? radio.value : "24h";

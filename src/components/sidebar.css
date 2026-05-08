@@ -258,6 +258,13 @@ body.light .widget {
     font-weight: bold;
 }
 
+.calendar-day.has-event {
+    background-color: rgba(128, 128, 128, 0.4);
+    border-bottom: 2px solid var(--color-accent);
+    border-radius: 4px;
+    font-weight: bold;
+}
+
 /* Todo Widget Styles */
 .todo-widget .todo-list {
     list-style: none;

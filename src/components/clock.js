@@ -1,16 +1,16 @@
 function updateClock() {
   const now = new Date();
   const mins = String(now.getMinutes()).padStart(2, '0');
-  // Read clock format from settings; default to 24h if missing
-  let clockFormat = "24h";
+  // Read clock format from settings; default to 12h if missing
+  let clockFormat = "12h";
   try {
     const settingsStr = localStorage.getItem("settings");
     if (settingsStr) {
       const settings = JSON.parse(settingsStr);
-      clockFormat = settings.clockFormat || "24h";
+      clockFormat = settings.clockFormat || "12h";
     }
   } catch {
-    clockFormat = "24h";
+    clockFormat = "12h";
   }
 
   if (clockFormat === "12h") {
