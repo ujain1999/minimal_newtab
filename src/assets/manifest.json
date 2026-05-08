@@ -8,6 +8,7 @@
   },
   "options_page": "pages/options/options.html",
   "permissions": ["bookmarks", "geolocation"],
+  "host_permissions": ["*://calendar.google.com/*"],
   "icons": {
     "16": "assets/favicons/favicon-16x16.png",
     "32": "assets/favicons/favicon-32x32.png",

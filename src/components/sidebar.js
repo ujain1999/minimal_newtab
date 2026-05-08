@@ -56,7 +56,7 @@ function renderSidebar(settings) {
                 widgetContainer.id = `widget-${widgetId}`;
 
                 const widgetContent = widgetRenderers[widgetId];
-                widgetContainer.append(widgetContent());
+                widgetContainer.append(widgetContent(settings));
                 sidebarContent.appendChild(widgetContainer);
             }
         });
