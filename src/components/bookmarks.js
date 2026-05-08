@@ -54,7 +54,19 @@ function processBookmarks(settings, nodes, container, level = 0, path = "") {
             const a = document.createElement('a');
             a.href = node.url;
             a.className = 'shortcut';
-            a.textContent = node.title || node.url;
+
+            const img = document.createElement('img');
+            img.className = 'bookmark-favicon';
+            img.src = `chrome-extension://${chrome.runtime.id}/_favicon/?pageUrl=${encodeURIComponent(node.url)}&size=16`;
+            img.width = 16;
+            img.height = 16;
+            img.alt = '';
+
+            const text = document.createElement('span');
+            text.textContent = node.title || node.url;
+
+            a.appendChild(img);
+            a.appendChild(text);
 
             listItem.appendChild(a);
             container.appendChild(listItem);
