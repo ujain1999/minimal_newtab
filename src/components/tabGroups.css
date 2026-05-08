@@ -1,0 +1,65 @@
+#tab-groups {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.tab-group-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+.tab-group-item {
+    margin: 0;
+}
+
+.tab-group-btn {
+    border: none;
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #fff;
+    opacity: 0.9;
+    transition: opacity 0.2s, transform 0.1s;
+    background-color: #5f6368; /* default grey */
+}
+
+.tab-group-btn:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+/* Light mode colors (similar to Chrome native) */
+.tab-group-color-grey { background-color: #5f6368; }
+.tab-group-color-blue { background-color: #1a73e8; }
+.tab-group-color-red { background-color: #d93025; }
+.tab-group-color-yellow { background-color: #e37400; color: #fff; }
+.tab-group-color-green { background-color: #1e8e3e; }
+.tab-group-color-pink { background-color: #d01884; }
+.tab-group-color-purple { background-color: #a142f4; }
+.tab-group-color-cyan { background-color: #007b83; }
+.tab-group-color-orange { background-color: #e8710a; }
+
+/* Dark mode adjustments */
+body.dark-theme .tab-group-btn,
+body[data-theme='dark'] .tab-group-btn,
+.dark .tab-group-btn {
+    color: #000;
+}
+body.dark-theme .tab-group-color-grey, body[data-theme='dark'] .tab-group-color-grey, .dark .tab-group-color-grey { background-color: #dadce0; }
+body.dark-theme .tab-group-color-blue, body[data-theme='dark'] .tab-group-color-blue, .dark .tab-group-color-blue { background-color: #8ab4f8; }
+body.dark-theme .tab-group-color-red, body[data-theme='dark'] .tab-group-color-red, .dark .tab-group-color-red { background-color: #f28b82; }
+body.dark-theme .tab-group-color-yellow, body[data-theme='dark'] .tab-group-color-yellow, .dark .tab-group-color-yellow { background-color: #fdd663; }
+body.dark-theme .tab-group-color-green, body[data-theme='dark'] .tab-group-color-green, .dark .tab-group-color-green { background-color: #81c995; }
+body.dark-theme .tab-group-color-pink, body[data-theme='dark'] .tab-group-color-pink, .dark .tab-group-color-pink { background-color: #ff8bcb; }
+body.dark-theme .tab-group-color-purple, body[data-theme='dark'] .tab-group-color-purple, .dark .tab-group-color-purple { background-color: #c58af9; }
+body.dark-theme .tab-group-color-cyan, body[data-theme='dark'] .tab-group-color-cyan, .dark .tab-group-color-cyan { background-color: #78d9ec; }
+body.dark-theme .tab-group-color-orange, body[data-theme='dark'] .tab-group-color-orange, .dark .tab-group-color-orange { background-color: #fcad70; }

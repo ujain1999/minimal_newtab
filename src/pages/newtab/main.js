@@ -4,6 +4,7 @@ import { renderBookmarks } from "../../components/bookmarks.js";
 import { renderTopRight } from "../../components/topRight.js";
 import { renderSidebar } from "../../components/sidebar.js";
 import { renderUnsplashBackground } from "../../components/unsplash.js";
+import { renderTabGroups } from "../../components/tabGroups.js";
 
 if (localStorage.getItem("settings") === null) {
   localStorage.setItem("settings", JSON.stringify(defaultSettings));
@@ -59,9 +60,11 @@ if (settings.weather) {
 }
 
 if (settings.bookmarks) {
+  renderTabGroups();
   renderBookmarks(settings);
 } else {
   document.getElementById("shortcuts").style.display = "none";
+  document.getElementById("tab-groups").style.display = "none";
 }
 
 if (settings.sidebar) {
