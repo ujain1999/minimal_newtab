@@ -779,12 +779,31 @@ body.light .drop-zone.drag-over {
     box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
 }
 
+.beta-badge {
+    font-size: 0.6em;
+    font-weight: 700;
+    vertical-align: middle;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--beta-bg);
+    border: 1px solid var(--beta-border);
+    color: var(--beta-text);
+    letter-spacing: 0.05em;
+    margin-left: 4px;
+}
+
 :root {
     --color-accent: #ccc;
+    --beta-bg: rgba(255, 183, 77, 0.2);
+    --beta-border: rgba(255, 183, 77, 0.5);
+    --beta-text: #ffb74d;
 }
 
 body.light {
     --color-accent: #b04288;
+    --beta-bg: rgba(255, 152, 0, 0.1);
+    --beta-border: rgba(255, 152, 0, 0.4);
+    --beta-text: #e65100;
 }
 
 .art-grid {
