@@ -213,36 +213,61 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("enable-keyboard-nav").checked = true;
   }
 
-  // Dynamically display the current keyboard shortcut for toggle-overlay
+  // Dynamically display the current keyboard shortcuts
+  function formatShortcut(key) {
+    let s = key.replace(/Comma/g, ",");
+    const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+    if (isMac) {
+      s = s.replace(/Option/g, "⌥").replace(/Alt/g, "⌥");
+    }
+    return s.replace(/([⌥])(?!\+)/g, "$1+");
+  }
+
   function updateShortcutDisplay() {
-    const instructionParagraph = document.getElementById("shortcut-instruction-paragraph");
+    const instructionParagraph = document.getElementById(
+      "shortcut-instruction-paragraph",
+    );
     const howToUseEl = document.getElementById("how-to-use");
 
-    if (typeof chrome !== "undefined" && chrome.commands && chrome.commands.getAll) {
+    if (
+      typeof chrome !== "undefined" &&
+      chrome.commands &&
+      chrome.commands.getAll
+    ) {
       chrome.commands.getAll((commands) => {
-        const toggleCommand = commands.find((cmd) => cmd.name === "toggle-overlay");
+        const toggleCommand = commands.find(
+          (cmd) => cmd.name === "toggle-overlay",
+        );
+        const optionsCommand = commands.find(
+          (cmd) => cmd.name === "open-options",
+        );
         if (toggleCommand && toggleCommand.shortcut) {
-          let shortcut = toggleCommand.shortcut;
-          const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
-          if (isMac) {
-            shortcut = shortcut.replace(/Option/g, "⌥").replace(/Alt/g, "⌥");
-          }
-          shortcut = shortcut.replace(/([⌥])(\w)/g, "$1+$2");
+          const shortcut = formatShortcut(toggleCommand.shortcut);
           if (instructionParagraph) {
-            instructionParagraph.innerHTML = `When enabled, press <strong id="shortcut-instruction">${shortcut}</strong> to open the quick command overlay.`;
+            let html = `<strong id="shortcut-instruction">${shortcut}</strong> — Open command overlay`;
+            if (optionsCommand && optionsCommand.shortcut) {
+              html += `<br><strong>${formatShortcut(optionsCommand.shortcut)}</strong> — Open options`;
+            }
+            instructionParagraph.innerHTML = html;
           }
           if (howToUseEl) {
             howToUseEl.style.display = "block";
             const usageEl = document.getElementById("shortcut-usage");
             if (usageEl) usageEl.textContent = shortcut;
+            const optionsUsageEl = document.getElementById("shortcut-options");
+            if (optionsUsageEl && optionsCommand && optionsCommand.shortcut) {
+              optionsUsageEl.textContent = formatShortcut(optionsCommand.shortcut);
+            }
           }
         } else {
           if (instructionParagraph) {
             instructionParagraph.innerHTML = `Set a shortcut at <a href="#" id="open-shortcuts-inline" style="color:inherit;">chrome://extensions/shortcuts</a> to use keyboard navigation.`;
-            document.getElementById("open-shortcuts-inline").addEventListener("click", (e) => {
-              e.preventDefault();
-              chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
-            });
+            document
+              .getElementById("open-shortcuts-inline")
+              .addEventListener("click", (e) => {
+                e.preventDefault();
+                chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
+              });
           }
           if (howToUseEl) howToUseEl.style.display = "none";
         }

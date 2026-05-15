@@ -19,6 +19,13 @@
         "mac": "Option+K"
       },
       "description": "Toggle overlay"
+    },
+    "open-options": {
+      "suggested_key": {
+        "default": "Alt+Comma",
+        "mac": "Option+Comma"
+      },
+      "description": "Open options page"
     }
   },
   "icons": {

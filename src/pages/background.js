@@ -3,6 +3,8 @@ let overlayVisible = false;
 chrome.commands.onCommand.addListener((command) => {
   if (command === "toggle-overlay") {
     toggleOverlay();
+  } else if (command === "open-options") {
+    chrome.tabs.create({ url: "pages/options/options.html" });
   }
 });
 
