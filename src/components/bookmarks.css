@@ -81,7 +81,7 @@
     height: 20px;
     padding: 0 6px;
     margin-left: auto;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--number-hint-bg);
     border-radius: 4px;
     font-size: 12px;
     font-family: monospace;
@@ -90,23 +90,16 @@
     color: inherit;
 }
 
-body.light .shortcut > .number-hint {
-    background-color: rgba(0, 0, 0, 0.2);
-}
 
 body.keyboard-hints .shortcut > .number-hint {
     position: absolute;
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background-color: var(--number-hint-subtle-bg);
+    border: 1px solid var(--number-hint-subtle-border);
 }
 
-body.light.keyboard-hints .shortcut > .number-hint {
-    background-color: rgba(0, 0, 0, 0.04);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
 
 .shortcut:hover,
 .shortcut.selected {
@@ -120,14 +113,9 @@ body.light.keyboard-hints .shortcut > .number-hint {
     bottom: 0;
     left: -4px;
     right: -4px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--hover-bg);
     border-radius: 4px;
     z-index: -1;
-}
-
-body.light .shortcut:hover::before,
-body.light .shortcut.selected::before {
-    background-color: rgba(0, 0, 0, 0.15);
 }
 
 .bookmark-folder {
@@ -169,14 +157,9 @@ body.light .shortcut.selected::before {
     bottom: 0;
     left: -4px;
     right: -4px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--hover-bg);
     border-radius: 4px;
     z-index: -1;
-}
-
-body.light .bookmark-folder:hover::before,
-body.light .bookmark-folder.selected::before {
-    background-color: rgba(0, 0, 0, 0.15);
 }
 
 .bookmark-children {
@@ -231,12 +214,7 @@ body.light .bookmark-folder.selected::before {
     bottom: 0;
     left: -4px;
     right: -4px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--hover-bg);
     border-radius: 4px;
     z-index: -1;
-}
-
-body.light .search-mode .shortcut:hover::before,
-body.light .search-mode .shortcut.selected::before {
-    background-color: rgba(0, 0, 0, 0.15);
 }
