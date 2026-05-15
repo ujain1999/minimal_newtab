@@ -54,7 +54,9 @@ function processBookmarks(settings, nodes, container, level = 0, path = "") {
             const a = document.createElement('a');
             a.href = node.url;
             a.className = 'shortcut';
-            a.textContent = node.title || node.url;
+            const text = document.createElement('span');
+            text.textContent = node.title || node.url;
+            a.appendChild(text);
 
             listItem.appendChild(a);
             container.appendChild(listItem);
@@ -65,18 +67,24 @@ function processBookmarks(settings, nodes, container, level = 0, path = "") {
 function renderBookmarks(settings) {
     chrome.bookmarks.getTree(tree => {
         const shortcuts = document.getElementById('shortcuts');
+        const existingInput = document.getElementById('quick-command-input');
+
         let bookmarksBar = settings.bookmarkFolder?.trim()
             ? tree[0].children.find(f => f.title.toLowerCase() === settings.bookmarkFolder.toLowerCase())
             : tree[0].children[0];
 
         if (settings.bookmarkFolder?.trim() && !bookmarksBar) {
-            shortcuts.textContent = "Bookmark folder not found.";
+            shortcuts.innerHTML = "Bookmark folder not found.";
             return;
         }
 
         const listRoot = document.createElement('ul');
         listRoot.className = 'bookmark-list';
         shortcuts.innerHTML = '';
+
+        if (existingInput) {
+            shortcuts.appendChild(existingInput);
+        }
 
         processBookmarks(
             settings,
