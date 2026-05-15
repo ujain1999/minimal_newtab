@@ -1,0 +1,163 @@
+.shortcuts.command-mode {
+    --command-surface: rgba(18, 18, 18, 0.68);
+    --command-surface-muted: rgba(255, 255, 255, 0.06);
+    --command-border: rgba(255, 255, 255, 0.12);
+    --command-border-strong: rgba(255, 255, 255, 0.18);
+    --command-placeholder: rgba(255, 255, 255, 0.46);
+    --command-muted-text: rgba(255, 255, 255, 0.58);
+    --command-selection: rgba(255, 255, 255, 0.12);
+
+    background: var(--command-surface);
+    border: 1px solid var(--command-border);
+    border-radius: 8px;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 12px;
+    margin-left: 3.5rem;
+    max-height: calc(100vh - 20rem);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+body.light .shortcuts.command-mode {
+    --command-surface: rgba(255, 255, 255, 0.74);
+    --command-surface-muted: rgba(0, 0, 0, 0.035);
+    --command-border: rgba(0, 0, 0, 0.1);
+    --command-border-strong: rgba(0, 0, 0, 0.16);
+    --command-placeholder: rgba(0, 0, 0, 0.42);
+    --command-muted-text: rgba(0, 0, 0, 0.56);
+    --command-selection: rgba(0, 0, 0, 0.08);
+
+    box-shadow: 0 16px 42px rgba(0, 0, 0, 0.1);
+}
+
+.shortcuts.command-mode.search-mode {
+    max-height: none;
+    overflow-y: auto;
+    transition: max-height 0.2s ease;
+}
+
+#quick-command-input {
+    background: var(--command-surface-muted);
+    border: 1px solid var(--command-border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 18px;
+    color: inherit;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+    caret-color: currentColor;
+    margin-bottom: 0.55rem;
+    transition:
+        background-color 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+#quick-command-input:focus {
+    border-color: var(--command-border-strong);
+    box-shadow: inset 0 0 0 1px var(--command-border);
+}
+
+#quick-command-input::placeholder {
+    color: var(--command-placeholder);
+}
+
+.search-results-container {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.search-results-container .no-results {
+    color: var(--command-muted-text);
+    padding: 8px;
+}
+
+.search-results-list {
+    padding-left: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.bookmark-link-item.search-result {
+    margin: 0.2rem 0 0.4rem 0;
+}
+
+.search-result .shortcut {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+body.light .search-result .shortcut {
+    color: #333;
+}
+
+.search-result .shortcut .content {
+    display: inline-flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    margin-right: 60px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.search-result .shortcut .path {
+    color: var(--command-muted-text);
+    padding-right: 0.5rem;
+    text-decoration: none;
+}
+
+.search-result .shortcut .arrow {
+    flex-shrink: 0;
+    padding-right: 0.5rem;
+    text-decoration: none;
+    color: var(--command-muted-text);
+}
+
+.search-result .shortcut .title {
+    text-decoration: underline dotted;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration-color: inherit;
+}
+
+.search-result .shortcut .number-hint {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background-color: var(--command-surface-muted);
+    border: 1px solid var(--command-border);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: monospace;
+    flex-shrink: 0;
+    text-decoration: none !important;
+}
+
+.shortcuts.command-mode .shortcut > .number-hint {
+    background-color: var(--command-surface-muted);
+    border: 1px solid var(--command-border);
+}
+
+.shortcuts.command-mode .shortcut:hover::before,
+.shortcuts.command-mode .shortcut.selected::before,
+.shortcuts.command-mode .bookmark-folder:hover::before,
+.shortcuts.command-mode .bookmark-folder.selected::before {
+    background-color: var(--command-selection);
+}

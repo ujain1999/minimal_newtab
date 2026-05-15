@@ -277,10 +277,18 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
 
 :root {
     --color-accent: #ccc;
+    --number-hint-bg: rgba(255, 255, 255, 0.2);
+    --number-hint-subtle-bg: rgba(255, 255, 255, 0.08);
+    --number-hint-subtle-border: rgba(255, 255, 255, 0.15);
+    --hover-bg: rgba(255, 255, 255, 0.2);
 }
 
 body.light {
     --color-accent: #b04288;
+    --number-hint-bg: rgba(0, 0, 0, 0.2);
+    --number-hint-subtle-bg: rgba(0, 0, 0, 0.04);
+    --number-hint-subtle-border: rgba(0, 0, 0, 0.1);
+    --hover-bg: rgba(0, 0, 0, 0.15);
 }
 
 .art-grid {
