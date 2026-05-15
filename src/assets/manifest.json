@@ -7,7 +7,7 @@
     "newtab": "pages/newtab/index.html"
   },
   "options_page": "pages/options/options.html",
-  "permissions": ["bookmarks", "geolocation", "commands", "activeTab"],
+  "permissions": ["bookmarks", "geolocation", "commands"],
   "background": {
     "service_worker": "pages/background.js"
   },
