@@ -11,13 +11,33 @@
   let currentIndex = -1;
   let currentItem = null;
   let allItems = [];
-  let numberBuffer = "";
   let isActive = false;
   let isSearchMode = false;
   let originalShortcutsContent = null;
   let searchResults = [];
   let searchPending = false;
   let debounceTimer = null;
+  let modifierKey = null;
+
+  (function initModifierKey() {
+    if (typeof chrome !== 'undefined' && chrome.commands && chrome.commands.getAll) {
+      chrome.commands.getAll((commands) => {
+        const cmd = commands.find(c => c.name === "toggle-overlay");
+        if (cmd && cmd.shortcut) {
+          if (cmd.shortcut.includes("Alt") || cmd.shortcut.includes("⌥")) {
+            modifierKey = "Alt";
+          } else if (cmd.shortcut.includes("Ctrl") || cmd.shortcut.includes("⌃")) {
+            modifierKey = "Control";
+          } else if (cmd.shortcut.includes("Meta") || cmd.shortcut.includes("⌘") || cmd.shortcut.includes("Command")) {
+            modifierKey = "Meta";
+          }
+        }
+        if (!modifierKey) modifierKey = "Alt";
+      });
+    } else {
+      modifierKey = "Alt";
+    }
+  })();
 
   function fuzzyMatch(text, query) {
     text = text.toLowerCase();
@@ -508,7 +528,6 @@
 
     inputElement.addEventListener("input", (e) => {
       const query = e.target.value;
-      numberBuffer = "";
 
       if (query.length > 0) {
         enterSearchMode();
@@ -532,6 +551,18 @@
   }
 
   function handleKeydown(e) {
+    if (modifierKey && e.code.startsWith("Digit")) {
+      const modPressed =
+        (modifierKey === "Alt" && e.altKey) ||
+        (modifierKey === "Control" && e.ctrlKey) ||
+        (modifierKey === "Meta" && e.metaKey);
+      if (modPressed) {
+        e.preventDefault();
+        navigateByNumber(e.code.replace("Digit", ""));
+        return;
+      }
+    }
+
     if (e.key === "Escape") {
       hideOverlay();
     } else if (e.key === "ArrowDown") {
@@ -540,12 +571,6 @@
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       moveSelection(-1);
-    } else if (e.key === "Enter" && numberBuffer.length > 0) {
-      e.preventDefault();
-      navigateByNumber(numberBuffer);
-      numberBuffer = "";
-      if (inputElement) inputElement.value = "";
-      exitSearchMode();
     } else if (e.key === "Enter" && currentIndex >= 0) {
       const navItems = getNavigationItems();
       e.preventDefault();
@@ -577,28 +602,6 @@
       const firstResult = searchResults[0];
       if (firstResult && firstResult.url) {
         openLink(firstResult.url);
-      }
-    } else if (
-      e.key >= "0" &&
-      e.key <= "9" &&
-      !e.ctrlKey &&
-      !e.metaKey &&
-      !e.altKey
-    ) {
-      if (document.activeElement === inputElement) {
-        const query = inputElement.value;
-        if (query.length > 0) {
-          e.preventDefault();
-          numberBuffer += e.key;
-          navigateByNumber(numberBuffer);
-          numberBuffer = "";
-          if (inputElement) inputElement.value = "";
-          exitSearchMode();
-        } else {
-          e.preventDefault();
-          numberBuffer += e.key;
-          if (inputElement) inputElement.value = numberBuffer;
-        }
       }
     }
   }
@@ -663,7 +666,6 @@
     isSearchMode = false;
     clearSelection();
     clearNumberHints();
-    numberBuffer = "";
     searchPending = false;
     originalShortcutsContent = null;
     searchResults = [];

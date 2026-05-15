@@ -139,6 +139,8 @@ function setupQuickNav() {
     }
 
     document.addEventListener("keydown", (e) => {
+      if (shortcutsContainer && shortcutsContainer.classList.contains("command-mode")) return;
+
       if (e.key === modifierKey && !e.repeat) {
         e.preventDefault();
         modifierHeld = true;
