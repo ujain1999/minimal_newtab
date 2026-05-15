@@ -65,6 +65,121 @@ if (settings.bookmarks) {
   document.getElementById("shortcuts").style.display = "none";
 }
 
+// Quick nav: show number hints when modifier key is held
+function setupQuickNav() {
+  if (typeof chrome === "undefined" || !chrome.commands || !chrome.commands.getAll) return;
+  if (!settings.enableKeyboardNav) return;
+
+  chrome.commands.getAll((commands) => {
+    const toggleCommand = commands.find((cmd) => cmd.name === "toggle-overlay");
+    if (!toggleCommand || !toggleCommand.shortcut) return;
+
+    const shortcut = toggleCommand.shortcut;
+    let modifierKey = null;
+
+    if (shortcut.includes("Alt") || shortcut.includes("⌥")) {
+      modifierKey = "Alt";
+    } else if (shortcut.includes("Ctrl") || shortcut.includes("⌃")) {
+      modifierKey = "Control";
+    } else if (shortcut.includes("Meta") || shortcut.includes("⌘") || shortcut.includes("Command")) {
+      modifierKey = "Meta";
+    }
+
+    if (!modifierKey) return;
+
+    let modifierHeld = false;
+    let modifierTimeout = null;
+    const shortcutsContainer = document.getElementById("shortcuts");
+
+    function getVisibleLinks() {
+      if (!shortcutsContainer) return [];
+      return Array.from(shortcutsContainer.querySelectorAll("a.shortcut")).filter((item) => {
+        let parent = item.parentElement;
+        while (parent && parent !== shortcutsContainer) {
+          if (parent.classList.contains("collapsed")) return false;
+          parent = parent.parentElement;
+        }
+        return true;
+      });
+    }
+
+    function showHints() {
+      if (shortcutsContainer && shortcutsContainer.classList.contains("command-mode")) return;
+      const links = getVisibleLinks();
+      links.slice(0, 10).forEach((link, index) => {
+        const hint = document.createElement("span");
+        hint.className = "number-hint";
+        hint.textContent = index === 9 ? "0" : (index + 1).toString();
+        link.appendChild(hint);
+      });
+      document.body.classList.add("keyboard-hints");
+    }
+
+    function hideHints() {
+      if (!shortcutsContainer || !shortcutsContainer.classList.contains("command-mode")) {
+        document.querySelectorAll(".shortcut > .number-hint").forEach((el) => el.remove());
+      }
+      document.body.classList.remove("keyboard-hints");
+    }
+
+    function navigateByNumber(num) {
+      if (shortcutsContainer && shortcutsContainer.classList.contains("command-mode")) return;
+      const index = num === "0" ? 9 : parseInt(num, 10) - 1;
+      const links = getVisibleLinks();
+      if (index >= 0 && index < links.length && links[index]) {
+        const url = links[index].href;
+        if (url) {
+          if (settings.openInNewTab) {
+            window.open(url, "_blank");
+          } else {
+            window.location.href = url;
+          }
+        }
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === modifierKey && !e.repeat) {
+        e.preventDefault();
+        modifierHeld = true;
+        modifierTimeout = setTimeout(() => {
+          if (modifierHeld) showHints();
+        }, 400);
+        return;
+      }
+
+      if (modifierHeld && e.code.startsWith("Digit")) {
+        e.preventDefault();
+        navigateByNumber(e.code.replace("Digit", ""));
+      }
+    });
+
+    document.addEventListener("keyup", (e) => {
+      if (e.key === modifierKey) {
+        modifierHeld = false;
+        if (modifierTimeout) {
+          clearTimeout(modifierTimeout);
+          modifierTimeout = null;
+        }
+        hideHints();
+      }
+    });
+
+    window.addEventListener("blur", () => {
+      if (modifierHeld) {
+        modifierHeld = false;
+        if (modifierTimeout) {
+          clearTimeout(modifierTimeout);
+          modifierTimeout = null;
+        }
+        hideHints();
+      }
+    });
+  });
+}
+
+setupQuickNav();
+
 if (settings.sidebar) {
   renderSidebar(settings);
 }
