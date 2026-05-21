@@ -1,0 +1,34 @@
+.settings-data-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.settings-data-container .button-row {
+    display: flex;
+    gap: 0.5em;
+}
+
+.drop-zone {
+    margin-top: 0.8em;
+    padding: 1em;
+    border: 1px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    text-align: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.drop-zone-text {
+    opacity: 0.6;
+    font-size: 0.9em;
+}
+
+.drop-zone.drag-over {
+    background: rgba(128, 128, 128, 0.15);
+    border-color: #f0f0f0;
+}
+
+.drop-zone.drag-over .drop-zone-text { opacity: 1; }
+
+body.light .drop-zone.drag-over { border-color: #222; }

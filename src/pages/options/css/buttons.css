@@ -1,0 +1,91 @@
+#save {
+    background: #4caf50;
+    color: white;
+}
+
+#save:hover {
+    background: #3d8b40;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+#restore-defaults {
+    background: #f44336;
+    color: white;
+}
+
+#restore-defaults:hover {
+    background: #d32f2f;
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
+}
+
+#options-wrapper button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95em;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+#options-wrapper button:hover { transform: translateY(-1px); }
+#options-wrapper button:active { transform: translateY(0); }
+
+#options-wrapper button.ghost-button {
+    background: transparent;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    color: inherit;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+#options-wrapper button.ghost-button:hover {
+    background: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #222;
+}
+
+#options-wrapper button.ghost-button.drag-over {
+    background: #f0f0f0;
+    border-color: #f0f0f0;
+    color: #222;
+    border-style: dashed;
+}
+
+body.light #options-wrapper button.ghost-button:hover {
+    background: #222;
+    border-color: #222;
+    color: #f0f0f0;
+}
+
+body.light #options-wrapper button.ghost-button.drag-over {
+    background: #222;
+    border-color: #222;
+    color: #f0f0f0;
+    border-style: dashed;
+}
+
+.button-group {
+    margin-top: auto;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+    padding: 1.2em 0;
+    padding-bottom: 1.2em;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(30, 30, 30, 1) 80%, rgba(30, 30, 30, 0));
+    padding-top: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+}
+
+body.light .button-group {
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 80%, rgba(255, 255, 255, 0));
+    border-top-color: rgba(0, 0, 0, 0.08);
+}

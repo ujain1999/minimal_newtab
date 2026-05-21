@@ -1,0 +1,17 @@
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#notification.success { background-color: #4caf50; }
+#notification.error { background-color: #f44336; }
+#notification.restore { background-color: #f44336; }
+#notification.show { opacity: 1; }
+#notification.hidden { display: none; }

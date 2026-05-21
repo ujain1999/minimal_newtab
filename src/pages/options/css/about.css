@@ -1,0 +1,36 @@
+.about-links { gap: 12px; }
+
+.about-links .icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 6px;
+    transition: transform 0.08s ease, opacity 0.12s ease;
+}
+
+.about-links .icon-link img {
+    height: 36px;
+    width: auto;
+    display: block;
+}
+
+.about-links .icon-link:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+body.light .about-links .icon-link {
+    border: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+.webstore-badge {
+    height: 36px;
+    width: auto;
+    display: block;
+    border-radius: 6px;
+}
