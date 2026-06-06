@@ -24,6 +24,7 @@
                     <a href="#appearance">Appearance</a>
                     <a href="#sidebar-settings">Sidebar</a>
                     <a href="#keyboard-nav">Keyboard navigation</a>
+                    <a href="#bangs">Bangs</a>
                     <a href="#preset">Backup</a>
                     <a href="#about">About</a>
                 </nav>
@@ -668,6 +669,98 @@ body { font-family: 'Comic Sans MS'; }
                             </li>
                         </ul>
                     </div>
+                </div>
+
+                <div id="bangs" class="options-panel">
+                    <h2>Bang Search</h2>
+                    <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 1.5em;">
+                        Customize which bangs are available and add your own. Bangs let you search directly on a site using
+                        <code>!trigger query</code> (e.g. <code>!g react hooks</code>).
+                    </p>
+
+                    <h3>Built-in Bangs</h3>
+                    <p style="font-size: 0.85em; opacity: 0.6; margin-bottom: 1em;">
+                        Uncheck a bang to disable it.
+                    </p>
+                    <table class="options-table" id="builtin-bangs-table">
+                        <thead>
+                            <tr>
+                                <th>Use</th>
+                                <th>Trigger</th>
+                                <th>Site</th>
+                                <th>Domain</th>
+                                <th style="width:60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="builtin-bangs-tbody"></tbody>
+                    </table>
+
+                    <div id="edit-bang-modal" class="modal-overlay hidden">
+                        <div class="modal-content">
+                            <h3>Edit Bang: <span id="edit-bang-modal-trigger"></span></h3>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Domain:</label>
+                                <input class="text-input" type="text" id="edit-bang-domain" placeholder="e.g. google.com" style="flex:1;" />
+                            </div>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Search URL:</label>
+                                <input class="text-input" type="text" id="edit-bang-search-url" placeholder="https://..." style="flex:1;" />
+                            </div>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Home URL:</label>
+                                <input class="text-input" type="text" id="edit-bang-home-url" placeholder="https://..." style="flex:1;" />
+                            </div>
+                            <div class="setting-row" style="justify-content:flex-end; gap:0.5em; margin-top:1em;">
+                                <button id="edit-bang-cancel" class="ghost-button">Cancel</button>
+                                <button id="edit-bang-save" class="ghost-button">Save</button>
+                            </div>
+                            <span id="edit-bang-error" style="color:#f44336; font-size:0.9em; display:none;"></span>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 2em;">Custom Bangs</h3>
+                    <p style="font-size: 0.85em; opacity: 0.6; margin-bottom: 1em;">
+                        Add your own bang shortcuts. Use <code>{query}</code> in the search URL where the search term should go.
+                    </p>
+
+                    <div id="custom-bangs-list">
+                        <table class="options-table" id="custom-bangs-table">
+                            <thead>
+                                <tr>
+                                    <th>Trigger</th>
+                                    <th>Name</th>
+                                    <th>Domain</th>
+                                    <th style="width:60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="custom-bangs-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <div style="margin-top: 1.5em; padding: 1em; background: rgba(128,128,128,0.08); border-radius: 8px;">
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Trigger:</label>
+                                <input class="text-input" type="text" id="custom-bang-trigger" placeholder="e.g. rd" style="width:150px;" />
+                            </div>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Name:</label>
+                                <input class="text-input" type="text" id="custom-bang-name" placeholder="e.g. Reddit" style="width:250px;" />
+                            </div>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Domain:</label>
+                                <input class="text-input" type="text" id="custom-bang-domain" placeholder="e.g. reddit.com" style="width:250px;" />
+                            </div>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Search URL:</label>
+                                <input class="text-input" type="text" id="custom-bang-search-url" placeholder="e.g. https://www.reddit.com/search?q={query}" style="flex:1;" />
+                            </div>
+                            <div class="setting-row">
+                                <label style="min-width:100px;">Home URL:</label>
+                                <input class="text-input" type="text" id="custom-bang-home-url" placeholder="e.g. https://www.reddit.com" style="flex:1;" />
+                            </div>
+                            <button id="add-custom-bang-btn" class="ghost-button" style="margin-top:0.5em;">Add Bang</button>
+                            <span id="custom-bang-error" style="color:#f44336; margin-left:1em; font-size:0.9em; display:none;"></span>
+                        </div>
                 </div>
 
                 <div id="preset" class="options-panel">

@@ -837,6 +837,103 @@ body.light {
     border-left: 2px solid rgba(128, 128, 128, 0.2);
 }
 
+#builtin-bangs-table,
+#custom-bangs-table,
+#builtin-bangs-table th,
+#custom-bangs-table th,
+#builtin-bangs-table td,
+#custom-bangs-table td {
+    text-transform: none;
+}
+
+#builtin-bangs-table th,
+#custom-bangs-table th {
+    letter-spacing: 0.02em;
+}
+
+#builtin-bangs-table td,
+#custom-bangs-table td {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.edit-bang-btn {
+    background: none;
+    border: 1px solid rgba(128,128,128,0.3);
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.85em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    opacity: 0.5;
+    transition: all 0.15s ease;
+}
+
+.edit-bang-btn:hover {
+    opacity: 1;
+    background: rgba(128,128,128,0.15);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--modal-bg, #1e1e1e);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 1.5em;
+    min-width: 400px;
+    max-width: 500px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+body.light .modal-content {
+    background: #fff;
+    border-color: rgba(0,0,0,0.08);
+}
+
+.modal-content h3 {
+    margin: 0 0 1em 0;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+#custom-bang-error {
+    display: none;
+}
+
+.remove-bang-btn {
+    background: rgba(128, 128, 128, 0.1);
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    color: inherit;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    opacity: 0.6;
+    transition: all 0.15s ease;
+    line-height: 1;
+}
+
+.remove-bang-btn:hover {
+    opacity: 1;
+    background: rgba(128, 128, 128, 0.2);
+    border-color: rgba(128, 128, 128, 0.4);
+    transform: translateY(-1px);
+}
+
 /* Disabled state for sub-settings - only target specific container IDs */
 .sub-settings.disabled,
 #sidebar-options.disabled,

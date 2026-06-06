@@ -38,6 +38,9 @@ const defaultSettings = {
     "customCSS": "",
     "enableKeyboardNav": false,
     "enableBangs": true,
+    "selectedBangs": ["g", "yt", "w", "gh", "r", "tw", "a", "so", "mdn", "npm", "pypi", "maps", "imdb", "duck", "b"],
+    "customBangs": [],
+    "editedBangs": {},
     "openInNewTab": false,
     "defaultSearchEngine": "google"
 }

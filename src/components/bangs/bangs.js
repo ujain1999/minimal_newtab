@@ -1,5 +1,31 @@
 import { state, focusInput } from "../overlay/overlay-state.js";
 
+function getSettings() {
+  try {
+    return JSON.parse(localStorage.getItem("settings") || "{}");
+  } catch {
+    return {};
+  }
+}
+
+export function getEffectiveBangs() {
+  const settings = getSettings();
+  const selectedTriggers = settings.selectedBangs;
+  const customBangs = settings.customBangs || [];
+  const editedBangs = settings.editedBangs || {};
+
+  const builtin = Array.isArray(selectedTriggers)
+    ? BANGS.filter((b) => selectedTriggers.includes(b.trigger))
+    : [...BANGS];
+
+  const result = builtin.map((b) => {
+    const edits = editedBangs[b.trigger];
+    return edits ? { ...b, ...edits } : b;
+  });
+
+  return [...result, ...customBangs];
+}
+
 export const BANGS = [
   { trigger: "g", name: "Google", domain: "google.com", searchUrl: "https://www.google.com/search?q={query}", homeUrl: "https://www.google.com" },
   { trigger: "yt", name: "YouTube", domain: "youtube.com", searchUrl: "https://www.youtube.com/results?search_query={query}", homeUrl: "https://www.youtube.com" },
@@ -27,28 +53,46 @@ export const DEFAULT_SEARCH_ENGINES = {
 };
 
 export function parseBangInput(value) {
-  if (!value.startsWith("!")) return null;
+  const effectiveBangs = getEffectiveBangs();
 
-  const spaceIndex = value.indexOf(" ");
-  let trigger, query, hasSpace, bang;
+  if (value.startsWith("!")) {
+    const spaceIndex = value.indexOf(" ");
+    let trigger, query, hasSpace, bang;
 
-  if (spaceIndex === -1) {
-    trigger = value.slice(1);
-    query = "";
-    hasSpace = false;
-  } else {
-    trigger = value.slice(1, spaceIndex);
-    query = value.slice(spaceIndex + 1);
-    hasSpace = true;
+    if (spaceIndex === -1) {
+      trigger = value.slice(1);
+      query = "";
+      hasSpace = false;
+    } else {
+      trigger = value.slice(1, spaceIndex);
+      query = value.slice(spaceIndex + 1);
+      hasSpace = true;
+    }
+
+    if (trigger) {
+      bang = effectiveBangs.find((b) => b.trigger === trigger) || null;
+    } else {
+      bang = null;
+    }
+
+    return { bang, trigger, query: query.trim(), hasSpace };
   }
 
-  if (trigger) {
-    bang = BANGS.find((b) => b.trigger === trigger) || null;
-  } else {
-    bang = null;
+  const trimmed = value.trimEnd();
+  const lastSpaceIndex = trimmed.lastIndexOf(" ");
+  if (lastSpaceIndex !== -1) {
+    const lastToken = trimmed.slice(lastSpaceIndex + 1);
+    if (lastToken.startsWith("!")) {
+      const trigger = lastToken.slice(1);
+      if (trigger) {
+        const bang = effectiveBangs.find((b) => b.trigger === trigger) || null;
+        const query = trimmed.slice(0, lastSpaceIndex);
+        return { bang, trigger, query: query.trim(), hasSpace: true };
+      }
+    }
   }
 
-  return { bang, trigger, query: query.trim(), hasSpace };
+  return null;
 }
 
 export function getBangSearchUrl(bang, query) {
@@ -80,13 +124,15 @@ export function renderBangSuggestions(trigger) {
 
   resultsContainer.innerHTML = "";
 
+  const effectiveBangs = getEffectiveBangs();
+
   const matchingBangs = trigger
-    ? BANGS.filter(
+    ? effectiveBangs.filter(
         (b) =>
           b.trigger.includes(trigger) ||
           b.name.toLowerCase().includes(trigger),
       )
-    : BANGS;
+    : effectiveBangs;
 
   if (matchingBangs.length === 0) {
     const noResults = document.createElement("div");

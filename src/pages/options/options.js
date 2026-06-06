@@ -83,6 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
     "customCSS",
     "enableKeyboardNav",
     "enableBangs",
+    "selectedBangs",
+    "customBangs",
+    "editedBangs",
     "openInNewTab",
     "defaultSearchEngine",
   ];
@@ -292,6 +295,182 @@ document.addEventListener("DOMContentLoaded", () => {
   if (defaultSearchEngineSelect && settings["defaultSearchEngine"]) {
     defaultSearchEngineSelect.value = settings["defaultSearchEngine"];
   }
+
+  // --- Bangs panel ---
+  const ALL_BANG_TRIGGERS = ["g", "yt", "w", "gh", "r", "tw", "a", "so", "mdn", "npm", "pypi", "maps", "imdb", "duck", "b"];
+  const ALL_BANGS = [
+    { trigger: "g", name: "Google", domain: "google.com", searchUrl: "https://www.google.com/search?q={query}", homeUrl: "https://www.google.com" },
+    { trigger: "yt", name: "YouTube", domain: "youtube.com", searchUrl: "https://www.youtube.com/results?search_query={query}", homeUrl: "https://www.youtube.com" },
+    { trigger: "w", name: "Wikipedia", domain: "en.wikipedia.org", searchUrl: "https://en.wikipedia.org/w/index.php?search={query}", homeUrl: "https://en.wikipedia.org" },
+    { trigger: "gh", name: "GitHub", domain: "github.com", searchUrl: "https://github.com/search?q={query}", homeUrl: "https://github.com" },
+    { trigger: "r", name: "Reddit", domain: "reddit.com", searchUrl: "https://www.reddit.com/search/?q={query}", homeUrl: "https://www.reddit.com" },
+    { trigger: "tw", name: "X / Twitter", domain: "x.com", searchUrl: "https://x.com/search?q={query}", homeUrl: "https://x.com" },
+    { trigger: "a", name: "Amazon", domain: "amazon.com", searchUrl: "https://www.amazon.com/s?k={query}", homeUrl: "https://www.amazon.com" },
+    { trigger: "so", name: "Stack Overflow", domain: "stackoverflow.com", searchUrl: "https://stackoverflow.com/search?q={query}", homeUrl: "https://stackoverflow.com" },
+    { trigger: "mdn", name: "MDN Web Docs", domain: "developer.mozilla.org", searchUrl: "https://developer.mozilla.org/en-US/search?q={query}", homeUrl: "https://developer.mozilla.org" },
+    { trigger: "npm", name: "npm", domain: "npmjs.com", searchUrl: "https://www.npmjs.com/search?q={query}", homeUrl: "https://www.npmjs.com" },
+    { trigger: "pypi", name: "PyPI", domain: "pypi.org", searchUrl: "https://pypi.org/search/?q={query}", homeUrl: "https://pypi.org" },
+    { trigger: "maps", name: "Google Maps", domain: "google.com/maps", searchUrl: "https://www.google.com/maps?q={query}", homeUrl: "https://www.google.com/maps" },
+    { trigger: "imdb", name: "IMDb", domain: "imdb.com", searchUrl: "https://www.imdb.com/find?q={query}", homeUrl: "https://www.imdb.com" },
+    { trigger: "duck", name: "DuckDuckGo", domain: "duckduckgo.com", searchUrl: "https://duckduckgo.com/?q={query}", homeUrl: "https://duckduckgo.com" },
+    { trigger: "b", name: "Bing", domain: "bing.com", searchUrl: "https://www.bing.com/search?q={query}", homeUrl: "https://www.bing.com" },
+  ];
+
+  const selectedBangs = settings.selectedBangs || [...ALL_BANG_TRIGGERS];
+  const customBangs = settings.customBangs || [];
+  const editedBangs = settings.editedBangs || {};
+
+  function renderBuiltinBangs() {
+    const tbody = document.getElementById("builtin-bangs-tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    ALL_BANGS.forEach((b) => {
+      const edits = editedBangs[b.trigger] || {};
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      const label = document.createElement("label");
+      label.className = "checkbox-label";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.dataset.bangTrigger = b.trigger;
+      cb.checked = selectedBangs.includes(b.trigger);
+      label.innerHTML = '<span class="custom-checkbox"></span>';
+      label.prepend(cb);
+      td1.appendChild(label);
+      const td2 = document.createElement("td");
+      td2.textContent = "!" + b.trigger;
+      const td3 = document.createElement("td");
+      td3.textContent = b.name;
+      const td4 = document.createElement("td");
+      const domainText = edits.domain || b.domain;
+      td4.textContent = domainText;
+      td4.title = "Search: " + (edits.searchUrl || b.searchUrl) + "\nHome: " + (edits.homeUrl || b.homeUrl);
+      const td5 = document.createElement("td");
+      const editBtn = document.createElement("button");
+      editBtn.className = "edit-bang-btn";
+      editBtn.title = "Edit this bang";
+      editBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`;
+      editBtn.addEventListener("click", () => openEditModal(b, edits));
+      td5.appendChild(editBtn);
+      tr.append(td1, td2, td3, td4, td5);
+      tbody.appendChild(tr);
+    });
+  }
+
+  let editingBangTrigger = null;
+
+  function openEditModal(bang, edits) {
+    editingBangTrigger = bang.trigger;
+    document.getElementById("edit-bang-modal-trigger").textContent = "!" + bang.trigger;
+    document.getElementById("edit-bang-domain").value = edits.domain || bang.domain;
+    document.getElementById("edit-bang-search-url").value = edits.searchUrl || bang.searchUrl;
+    document.getElementById("edit-bang-home-url").value = edits.homeUrl || bang.homeUrl;
+    document.getElementById("edit-bang-error").style.display = "none";
+    document.getElementById("edit-bang-modal").classList.remove("hidden");
+  }
+
+  function closeEditModal() {
+    document.getElementById("edit-bang-modal").classList.add("hidden");
+    editingBangTrigger = null;
+  }
+
+  document.getElementById("edit-bang-cancel")?.addEventListener("click", closeEditModal);
+  document.getElementById("edit-bang-modal")?.addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeEditModal();
+  });
+
+  document.getElementById("edit-bang-save")?.addEventListener("click", () => {
+    const trigger = editingBangTrigger;
+    if (!trigger) return;
+
+    const domain = document.getElementById("edit-bang-domain").value.trim();
+    const searchUrl = document.getElementById("edit-bang-search-url").value.trim();
+    const homeUrl = document.getElementById("edit-bang-home-url").value.trim();
+    const errorEl = document.getElementById("edit-bang-error");
+
+    if (!domain || !searchUrl || !homeUrl) {
+      errorEl.textContent = "All fields are required.";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    if (!searchUrl.includes("{query}")) {
+      errorEl.textContent = "Search URL must contain {query}.";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    errorEl.style.display = "none";
+    editedBangs[trigger] = { domain, searchUrl, homeUrl };
+    closeEditModal();
+    renderBuiltinBangs();
+  });
+
+  function renderCustomBangs() {
+    const tbody = document.getElementById("custom-bangs-tbody");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    customBangs.forEach((b, i) => {
+      const tr = document.createElement("tr");
+      const td1 = document.createElement("td");
+      td1.textContent = "!" + b.trigger;
+      const td2 = document.createElement("td");
+      td2.textContent = b.name;
+      const td3 = document.createElement("td");
+      td3.textContent = b.domain;
+      const td4 = document.createElement("td");
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "remove-bang-btn";
+      removeBtn.textContent = "×";
+      removeBtn.title = "Remove this bang";
+      removeBtn.addEventListener("click", () => {
+        customBangs.splice(i, 1);
+        renderCustomBangs();
+      });
+      td4.appendChild(removeBtn);
+      tr.append(td1, td2, td3, td4);
+      tbody.appendChild(tr);
+    });
+  }
+
+  renderBuiltinBangs();
+  renderCustomBangs();
+
+  document.getElementById("add-custom-bang-btn")?.addEventListener("click", () => {
+    const trigger = document.getElementById("custom-bang-trigger").value.trim();
+    const name = document.getElementById("custom-bang-name").value.trim();
+    const domain = document.getElementById("custom-bang-domain").value.trim();
+    const searchUrl = document.getElementById("custom-bang-search-url").value.trim();
+    const homeUrl = document.getElementById("custom-bang-home-url").value.trim();
+    const errorEl = document.getElementById("custom-bang-error");
+
+    if (!trigger || !name || !domain || !searchUrl || !homeUrl) {
+      errorEl.textContent = "All fields are required.";
+      errorEl.style.display = "inline";
+      return;
+    }
+
+    if (ALL_BANG_TRIGGERS.includes(trigger) || customBangs.some((b) => b.trigger === trigger)) {
+      errorEl.textContent = "A bang with this trigger already exists.";
+      errorEl.style.display = "inline";
+      return;
+    }
+
+    if (!searchUrl.includes("{query}")) {
+      errorEl.textContent = "Search URL must contain {query}.";
+      errorEl.style.display = "inline";
+      return;
+    }
+
+    errorEl.style.display = "none";
+    customBangs.push({ trigger, name, domain, searchUrl, homeUrl });
+    document.getElementById("custom-bang-trigger").value = "";
+    document.getElementById("custom-bang-name").value = "";
+    document.getElementById("custom-bang-domain").value = "";
+    document.getElementById("custom-bang-search-url").value = "";
+    document.getElementById("custom-bang-home-url").value = "";
+    renderCustomBangs();
+  });
 
   function updateCustomizeDependency() {
     const expanded = document.getElementById("sidebar-expanded-check").checked;
@@ -691,6 +870,19 @@ document.addEventListener("DOMContentLoaded", () => {
         settings_obj[key] = document.getElementById("open-in-new-tab").checked;
       } else if (key === "defaultSearchEngine") {
         settings_obj[key] = document.getElementById("default-search-engine").value;
+      } else if (key === "selectedBangs") {
+        const tbody = document.getElementById("builtin-bangs-tbody");
+        const triggers = [];
+        if (tbody) {
+          tbody.querySelectorAll("input[type=checkbox]").forEach((cb) => {
+            if (cb.checked) triggers.push(cb.dataset.bangTrigger);
+          });
+        }
+        settings_obj[key] = triggers;
+      } else if (key === "customBangs") {
+        settings_obj[key] = customBangs;
+      } else if (key === "editedBangs") {
+        settings_obj[key] = editedBangs;
       } else if (key === "clockFormat") {
         const radio = document.querySelector(
           'input[name="clock-format"]:checked',
