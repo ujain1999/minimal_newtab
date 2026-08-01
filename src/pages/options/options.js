@@ -828,15 +828,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          settings.backgroundImage = event.target.result;
-          localStorage.setItem("settings", JSON.stringify(settings));
+          try {
+            settings.backgroundImage = event.target.result;
+            localStorage.setItem("settings", JSON.stringify(settings)); // this errors on images that are too large
+          } catch {
+            // couldn't set the image, let the user know and exit the logic
+            showNotification(
+              "Error processing the provided image. The file size is likely too large. Please try again with a smaller file.",
+              6000,
+              "restore",
+              false,
+            );
+
+            return
+          }
           bgPreview.src = event.target.result;
           imagePresentContainer.classList.remove("hidden");
           bgPreview.classList.remove("hidden");
           bgAddLabel.classList.add("hidden");
           clearBgButton.classList.remove("hidden");
           showNotification(
-            "Background image saved. It will appear on the new tab page.",
             3000,
             "success",
             false,
