@@ -1,59 +1,20 @@
-const defaultSettings = {
-    "clock": true,
-    "clockFormat": "24h",
-    "weather": true,
-    "customCity": "",
-    "useCustomCity": false,
-    "tempUnit": "celsius",
-    "bookmarks": true,
-    "bookmarkFolder": "Bookmarks Bar",
-    "expandBookmarks": false,
-    "topRight": true,
-    "topRightOrder": [
-        { "id": "bookmarks", "displayBool": true, "url": "chrome://bookmarks" },
-        { "id": "downloads", "displayBool": true, "url": "chrome://downloads" },
-        { "id": "history", "displayBool": true, "url": "chrome://history" },
-        { "id": "extensions", "displayBool": true, "url": "chrome://extensions" },
-        { "id": "passwords", "displayBool": true, "url": "chrome://password-manager/passwords" },
-        { "id": "settings", "displayBool": true, "url": "chrome://settings" }
-    ],
-    "pixelArt": true,
-    "selectedPixelArt": "flowers",
-    "customSVG": "",
-    "pixelArtOpacity": 40,
-    "pixelArtDensity": 20,
-    "pixelArtColorDark": "#cccccc",
-    "pixelArtColorLight": "#b04288",
-    "availableWidgets": ["calendar", "todo"],
-    "useUnsplash": false,
-    "unsplashApiKey": "",
-    "unsplashUpdateFrequency": "daily",
-    "showUnsplashRefresh": false,
-    "backgroundImage": "",
-    "sidebar": false,
-    "sidebarPosition": "right",
-    "sidebarWidgets": [],
-    "sidebarExpanded": false,
-    "sidebarShowCustomize": true,
-    "customCSS": "",
-    "enableKeyboardNav": false,
-    "openInNewTab": false
-};
+// `defaultSettings` is the global defined by ../../shared/defaultSettings.js (loaded as a
+// classic script in options.html) so the options page and the new tab page share one source.
 
 export function getDefaults() {
-    return { ...defaultSettings };
+    return structuredClone(defaultSettings);
 }
 
 export function getSettings() {
-    const raw = localStorage.getItem("settings");
-    if (!raw) return { ...defaultSettings };
+    let stored = {};
     try {
-        const stored = JSON.parse(raw);
-        const merged = { ...defaultSettings, ...stored };
-        return merged;
-    } catch {
-        return { ...defaultSettings };
-    }
+        stored = JSON.parse(localStorage.getItem("settings")) || {};
+    } catch {}
+    return { ...getDefaults(), ...stored };
+}
+
+export function getTheme() {
+    return localStorage.getItem("theme") || "system";
 }
 
 export function saveSettings(obj) {
@@ -63,7 +24,13 @@ export function saveSettings(obj) {
     }
 }
 
+// Persists a single key immediately (used by actions that take effect without pressing Save).
+export function saveSetting(key, value) {
+    const settings = getSettings();
+    settings[key] = value;
+    localStorage.setItem("settings", JSON.stringify(settings));
+}
+
 export function restoreDefaults() {
-    localStorage.removeItem("settings");
-    return { ...defaultSettings };
+    localStorage.setItem("settings", JSON.stringify(defaultSettings));
 }

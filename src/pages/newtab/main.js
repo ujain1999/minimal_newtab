@@ -1,9 +1,9 @@
-import { renderClock } from "../../components/clock.js";
-import { renderWeather } from "../../components/weather.js";
-import { renderBookmarks } from "../../components/bookmarks.js";
-import { renderTopRight } from "../../components/topRight.js";
-import { renderSidebar } from "../../components/sidebar.js";
-import { renderUnsplashBackground } from "../../components/unsplash.js";
+import { renderClock } from "../../components/clock/clock.js";
+import { renderWeather } from "../../components/weather/weather.js";
+import { renderBookmarks } from "../../components/bookmarks/bookmarks.js";
+import { renderTopRight } from "../../components/topRight/topRight.js";
+import { renderSidebar } from "../../components/sidebar/sidebar.js";
+import { renderUnsplashBackground } from "../../components/unsplash/unsplash.js";
 
 if (localStorage.getItem("settings") === null) {
   localStorage.setItem("settings", JSON.stringify(defaultSettings));

@@ -1,0 +1,47 @@
+/* Segmented Control for Radio Buttons */
+.segmented-control-container {
+    justify-content: space-between;
+}
+
+.segmented-control {
+    display: flex;
+    background: rgba(128, 128, 128, 0.15);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+}
+
+body.light .segmented-control {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.segmented-control label {
+    display: inline-block;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    border-radius: 6px;
+    font-size: 0.95em;
+}
+
+.segmented-control label:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+
+.segmented-control input[type="radio"] {
+    display: none;
+}
+
+.segmented-control input[type="radio"]:checked + span {
+    color: #121212;
+}
+
+.segmented-control label:has(input:checked) {
+    background-color: var(--color-accent);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+body.light .segmented-control label:has(input:checked) {
+    color: #f0f0f0;
+}

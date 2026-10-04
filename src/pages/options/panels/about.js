@@ -2,9 +2,9 @@ export function render(container, settings) {
     container.innerHTML = `
         <h2>About</h2>
         <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
-            <img id="about-logo" src="../../assets/favicons/android-chrome-512x512.png" alt="Logo" style="width:72px;height:72px;border-radius:12px;box-shadow:0 4px 8px rgba(0,0,0,0.12);cursor:pointer;">
+            <img id="about-logo" src="../../assets/favicons/android-chrome-512x512.png" alt="Logo" style="width:72px;height:72px;border-radius:12px;box-shadow:0 4px 8px rgba(0,0,0,0.12);">
             <div>
-                <div id="about-title" role="button" tabindex="0" style="font-weight:bold;font-size:1.1rem;cursor:pointer;">Minimal New Tab</div>
+                <div id="about-title" role="button" tabindex="0" style="font-weight:bold;font-size:1.1rem;">Minimal New Tab</div>
                 <div style="opacity:0.8;margin-top:0.25rem;">Version <span id="extension-version">-</span></div>
             </div>
         </div>

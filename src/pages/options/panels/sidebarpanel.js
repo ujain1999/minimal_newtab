@@ -1,8 +1,13 @@
+import { escapeHtml } from "../lib/html.js";
+
+let availableWidgets = [];
+
 export function render(container, settings) {
     const allWidgets = Array.isArray(settings.availableWidgets) ? settings.availableWidgets : ["calendar", "todo"];
     const enabledWidgets = Array.isArray(settings.sidebarWidgets) ? settings.sidebarWidgets : [];
     const enabledSet = new Set(enabledWidgets);
     const sorted = [...enabledWidgets, ...allWidgets.filter((w) => !enabledSet.has(w))];
+    availableWidgets = allWidgets;
 
     container.innerHTML = `
         <h2>Sidebar</h2>
@@ -33,11 +38,11 @@ export function render(container, settings) {
                             <tr draggable="true">
                                 <td>
                                     <label class="checkbox-label">
-                                        <input type="checkbox" data-widget="${w}" ${enabledSet.has(w) ? "checked" : ""}>
+                                        <input type="checkbox" data-widget="${escapeHtml(w)}" ${enabledSet.has(w) ? "checked" : ""}>
                                         <span class="custom-checkbox"></span>
                                     </label>
                                 </td>
-                                <td>${w.charAt(0).toUpperCase() + w.slice(1)}</td>
+                                <td>${escapeHtml(w.charAt(0).toUpperCase() + w.slice(1))}</td>
                                 <td class="drag-handle"><span>☰</span></td>
                             </tr>
                         `).join("")}
@@ -132,11 +137,6 @@ export function collect() {
     const expanded = document.getElementById("sidebar-expanded-check").checked;
 
     const widgetRows = document.querySelectorAll("#sidebar-widgets tr");
-    const selectedWidgets = [];
-    widgetRows.forEach((row) => {
-        selectedWidgets.push(row.querySelector("input").getAttribute("data-widget"));
-    });
-
     const sortedWidgets = [];
     widgetRows.forEach((row) => {
         const cb = row.querySelector("input");
@@ -151,7 +151,7 @@ export function collect() {
         sidebarWidgets: sortedWidgets,
         sidebarExpanded: expanded,
         sidebarShowCustomize: expanded ? true : document.getElementById("sidebar-show-customize").checked,
-        availableWidgets: selectedWidgets,
+        availableWidgets,
     };
 }
 

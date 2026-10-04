@@ -8,3 +8,6 @@ __pycache__/
 
 # Build output
 dist/
+
+# Legacy backup files
+*_legacy.*

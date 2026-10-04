@@ -4,11 +4,42 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>New Tab Settings</title>
-        <link rel="stylesheet" href="options.css" />
+        <link rel="stylesheet" href="css/base.css" />
+        <link rel="stylesheet" href="css/controls.css" />
+        <link rel="stylesheet" href="css/layout.css" />
+        <link rel="stylesheet" href="css/background.css" />
+        <link rel="stylesheet" href="css/buttons.css" />
+        <link rel="stylesheet" href="css/panels.css" />
+        <link rel="stylesheet" href="css/bangs.css" />
+        <link rel="stylesheet" href="css/state.css" />
+        <link rel="stylesheet" href="css/segmented.css" />
+        <link rel="stylesheet" href="css/about.css" />
+        <link rel="stylesheet" href="css/tooltips.css" />
+        <link rel="stylesheet" href="css/search.css" />
+        <link rel="stylesheet" href="css/responsive.css" />
+        <link rel="modulepreload" href="options.js" />
+        <link rel="modulepreload" href="lib/storage.js" />
+        <link rel="modulepreload" href="lib/router.js" />
+        <link rel="modulepreload" href="lib/notification.js" />
+        <link rel="modulepreload" href="lib/html.js" />
+        <link rel="modulepreload" href="lib/theme.js" />
+        <link rel="modulepreload" href="settings/registry.js" />
+        <link rel="modulepreload" href="components/search.js" />
+        <link rel="modulepreload" href="panels/general.js" />
+        <link rel="modulepreload" href="panels/shortcuts.js" />
+        <link rel="modulepreload" href="panels/appearance.js" />
+        <link rel="modulepreload" href="panels/sidebarpanel.js" />
+        <link rel="modulepreload" href="panels/keyboard.js" />
+        <link rel="modulepreload" href="panels/bangs.js" />
+        <link rel="modulepreload" href="panels/backup.js" />
+        <link rel="modulepreload" href="panels/about.js" />
+        <link rel="modulepreload" href="../../components/bangs/bangs.js" />
+        <link rel="modulepreload" href="../../components/overlay/overlay-state.js" />
+        <script src="../../shared/defaultSettings.js"></script>
+        <!-- Applies the saved theme before first paint (external file: extension CSP blocks inline scripts). -->
+        <script src="lib/theme-init.js"></script>
     </head>
     <body class="options">
-        <script>document.body.style.backgroundColor=window.matchMedia("(prefers-color-scheme:dark)").matches?"#121212":"#f0f0f0";</script>
-
         <div id="notification" class="hidden"></div>
 
         <div id="options-wrapper">
@@ -17,6 +48,9 @@
             </div>
             <div class="options-sidebar">
                 <h1>Settings</h1>
+                <div class="search-container">
+                    <input type="text" id="settings-search" placeholder="Search settings…" autocomplete="off" />
+                </div>
                 <nav id="options-nav"></nav>
             </div>
             <div class="options-content">
@@ -25,6 +59,7 @@
                 <div id="panel-appearance" class="options-panel"></div>
                 <div id="panel-sidebar" class="options-panel"></div>
                 <div id="panel-keyboard" class="options-panel"></div>
+                <div id="panel-bangs" class="options-panel"></div>
                 <div id="panel-backup" class="options-panel"></div>
                 <div id="panel-about" class="options-panel"></div>
 

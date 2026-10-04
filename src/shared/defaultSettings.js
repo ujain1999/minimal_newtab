@@ -37,7 +37,12 @@ const defaultSettings = {
     "sidebarShowCustomize": true,
     "customCSS": "",
     "enableKeyboardNav": false,
-    "openInNewTab": false
+    "enableBangs": true,
+    "selectedBangs": ["g", "yt", "w", "gh", "r", "tw", "a", "so", "mdn", "npm", "pypi", "maps", "imdb", "duck", "b"],
+    "customBangs": [],
+    "editedBangs": {},
+    "openInNewTab": false,
+    "defaultSearchEngine": "google"
 }
 
 const icons = {

@@ -3,6 +3,7 @@
 Build script to copy necessary components to dist folder.
 """
 
+import fnmatch
 import json
 import shutil
 import sys
@@ -27,12 +28,18 @@ from watchdog.observers import Observer
 
 class BuildAsset:
     def __init__(
-        self, src: str, dst_name: Any = None, is_dir: bool = False, minify: bool = False
+        self,
+        src: str,
+        dst_name: Any = None,
+        is_dir: bool = False,
+        minify: bool = False,
+        ignore_patterns: tuple = (),
     ):
         self.src = Path(src)
         self.dst_name = dst_name or src
         self.is_dir = is_dir
         self.minify = minify
+        self.ignore_patterns = ignore_patterns
 
     def _minify_content(self, content: str) -> Any:
         """Minify content based on file type."""
@@ -58,7 +65,11 @@ class BuildAsset:
                 if self.minify:
                     self._copy_dir_with_minify(self.src, dst, log_fn)
                 else:
-                    shutil.copytree(self.src, dst)
+                    shutil.copytree(
+                        self.src,
+                        dst,
+                        ignore=shutil.ignore_patterns(*self.ignore_patterns),
+                    )
                 log_fn(f"-  Copied {self.src} to {dst}")
             else:
                 dst.parent.mkdir(parents=True, exist_ok=True)
@@ -82,6 +93,8 @@ class BuildAsset:
     ) -> None:
         dst.mkdir(parents=True, exist_ok=True)
         for item in src.iterdir():
+            if any(fnmatch.fnmatch(item.name, p) for p in self.ignore_patterns):
+                continue
             dst_item = dst / item.name
             if item.is_dir():
                 self._copy_dir_with_minify(item, dst_item, log_fn)
@@ -129,7 +142,7 @@ class FileChangeHandler(FileSystemEventHandler):
         self.last_update = time.time()
 
     def _should_rebuild(self, path: Path) -> bool:
-        path = Path(path).resolve()
+        path = path.resolve()
         for asset in self.build_config.assets:
             asset_src = asset.src.resolve()
             try:
@@ -142,7 +155,7 @@ class FileChangeHandler(FileSystemEventHandler):
         return False
 
     def on_modified(self, event):
-        if not self._should_rebuild(event.src_path):
+        if not self._should_rebuild(Path(str(event.src_path))):
             return
         current_time = time.time()
         if current_time - self.last_update < 0.5:
@@ -158,7 +171,13 @@ def get_build_configs() -> Dict[str, BuildConfig]:
         BuildAsset("src/pages/background.js", "pages/background.js"),
         BuildAsset("src/assets/favicons", dst_name="assets/favicons", is_dir=True),
         BuildAsset("src/pages/newtab", "pages/newtab", is_dir=True, minify=True),
-        BuildAsset("src/pages/options", "pages/options", is_dir=True, minify=True),
+        BuildAsset(
+            "src/pages/options",
+            "pages/options",
+            is_dir=True,
+            minify=True,
+            ignore_patterns=("*_legacy.*",),
+        ),
         BuildAsset("src/components", "components", is_dir=True, minify=True),
         BuildAsset("src/widgets", "widgets", is_dir=True, minify=True),
         BuildAsset("src/shared", "shared", is_dir=True, minify=True),
@@ -180,18 +199,18 @@ def get_version() -> str:
     try:
         with open("src/assets/manifest.json", "r") as f:
             return json.load(f).get("version", "1.0.0")
-    except:
+    except (FileNotFoundError, json.JSONDecodeError, KeyError):
         return "1.0.0"
 
 
 def zip_build(mode: str, log_fn: Callable[[str], None]) -> None:
     if mode != "prod":
-        log_fn(f"[red]Zipping is only available for prod mode[/]")
+        log_fn("[red]Zipping is only available for prod mode[/]")
         sys.exit(1)
     dist_dir = Path("dist")
     build_dir = dist_dir / mode
     if not build_dir.exists():
-        log_fn(f"[red]Build directory not found. Run build first.[/]")
+        log_fn("[red]Build directory not found. Run build first.[/]")
         sys.exit(1)
     version = get_version()
     zip_path = dist_dir / f"minimal_newtab_v{version}.zip"

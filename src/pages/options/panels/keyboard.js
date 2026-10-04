@@ -1,3 +1,5 @@
+import { DEFAULT_SEARCH_ENGINES } from "../../../components/bangs/bangs.js";
+
 export function render(container, settings) {
     container.innerHTML = `
         <h2>Keyboard navigation <span class="beta-badge">BETA</span></h2>
@@ -15,6 +17,24 @@ export function render(container, settings) {
         <p style="font-size:0.85em;opacity:0.6;margin-top:0.3em;">
             When enabled, selected bookmarks will open in a new tab. Default is same tab.
         </p>
+        <label class="checkbox-label" style="margin-top:1.5em;" data-setting="enableBangs">
+            <input type="checkbox" id="enable-bangs" ${settings.enableBangs !== false ? "checked" : ""}>
+            <span class="custom-checkbox"></span> Enable bang search (!g, !w, !yt, etc.)
+        </label>
+        <p style="font-size:0.85em;opacity:0.6;margin-top:0.3em;margin-bottom:1.5em;">
+            When enabled, type <code>!</code> followed by a trigger (e.g. <code>!g react</code>) to search directly on that site.
+        </p>
+        <div class="setting-row" style="margin-top:1.5em;" data-setting="defaultSearchEngine">
+            <label for="default-search-engine">Default Search Engine:</label>
+            <select id="default-search-engine" name="default-search-engine">
+                ${Object.entries(DEFAULT_SEARCH_ENGINES).map(([value, engine]) => `
+                    <option value="${value}" ${settings.defaultSearchEngine === value ? "selected" : ""}>${engine.name}</option>
+                `).join("")}
+            </select>
+            <p style="font-size:0.85em;opacity:0.6;margin-top:0.3em;">
+                Used when no bang is specified and no bookmarks match your query.
+            </p>
+        </div>
         <p style="font-size:0.85em;opacity:0.6;margin-top:0.5em;">
             To customize the keyboard shortcut, visit
             <a href="#" id="open-shortcuts" style="color:inherit;">chrome://extensions/shortcuts</a>.
@@ -25,8 +45,9 @@ export function render(container, settings) {
                 <li style="margin:0.3em 0;"><strong id="shortcut-usage">Alt+K</strong> — Open command mode</li>
                 <li style="margin:0.3em 0;"><strong id="shortcut-options">Alt+,</strong> — Open options page</li>
                 <li style="margin:0.3em 0;"><strong>Type to search</strong> — Search bookmarks by title</li>
+                <li style="margin:0.3em 0;"><strong>!bang</strong> — Type <code>!g</code>, <code>!w</code>, <code>!yt</code> etc. followed by your query to search directly on that site (e.g., <code>!g react hooks</code>)</li>
                 <li style="margin:0.3em 0;"><strong>Arrow Up/Down</strong> — Navigate through items</li>
-                <li style="margin:0.3em 0;"><strong>Enter</strong> — Open selected bookmark or expand/collapse folder</li>
+                <li style="margin:0.3em 0;"><strong>Enter</strong> — Open selected bookmark or execute bang search</li>
                 <li style="margin:0.3em 0;"><strong>0-9</strong> — Quick jump to first 10 items</li>
                 <li style="margin:0.3em 0;"><strong>Esc</strong> — Close overlay</li>
             </ul>
@@ -103,6 +124,8 @@ export function collect() {
     return {
         enableKeyboardNav: document.getElementById("enable-keyboard-nav").checked,
         openInNewTab: document.getElementById("open-in-new-tab").checked,
+        enableBangs: document.getElementById("enable-bangs").checked,
+        defaultSearchEngine: document.getElementById("default-search-engine").value,
     };
 }
 

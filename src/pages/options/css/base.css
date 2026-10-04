@@ -1,4 +1,7 @@
-body, html {
+/* Clear default margin and padding */
+
+body,
+html {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -16,12 +19,24 @@ body {
     text-align: center;
     padding-top: calc(10vh + 3rem);
     font-size: 1.1rem;
-    transition: background-image 1s ease-in-out, color 0.3s ease;
-    background-color: transparent;
+    transition:
+        background-image 1s ease-in-out,
+        color 0.3s ease;
 }
 
-body.dark { background: #121212; color: #f0f0f0; }
-body.light { background: #ffffff; color: #222; }
+body.dark {
+    background: #121212;
+    color: #f0f0f0; /* Restore default dark theme text color */
+}
+
+body.light {
+    background: #ffffff;
+    color: #222; /* Restore default light theme text color */
+}
+
+body {
+    background-color: transparent; /* Allow background image to show */
+}
 
 body.options {
     align-items: center;
@@ -34,7 +49,7 @@ body.options {
     overflow-x: hidden;
 }
 
-#back {
+div#back {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
@@ -52,7 +67,7 @@ body.options {
     border-radius: 8px;
 }
 
-#back:hover {
+div#back:hover {
     cursor: pointer;
     opacity: 1;
     background: rgba(128, 128, 128, 0.2);
@@ -70,15 +85,25 @@ body.options {
     -webkit-backdrop-filter: blur(20px);
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
     display: flex;
     overflow: hidden;
+}
+
+body.dark #options-wrapper {
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 }
 
 body.light #options-wrapper {
     background: rgba(255, 255, 255, 0.95);
     border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.03) inset;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(0, 0, 0, 0.03) inset;
 }
 
 #options-wrapper h1 {
@@ -91,7 +116,7 @@ body.light #options-wrapper {
     opacity: 0.9;
 }
 
-.options-panel h2 {
+#options-wrapper .options-panel h2 {
     margin-top: 0;
     margin-bottom: 1.2em;
     font-size: 1.1em;
@@ -102,122 +127,21 @@ body.light #options-wrapper {
     padding-bottom: 0;
 }
 
-.options-panel h2:not(:first-child) {
+#options-wrapper .options-panel h2:not(:first-child) {
     margin-top: 2em;
     padding-top: 1.5em;
     border-top: 1px solid rgba(128, 128, 128, 0.15);
 }
 
-:root {
-    --color-accent: #ccc;
-    --beta-bg: rgba(255, 183, 77, 0.2);
-    --beta-border: rgba(255, 183, 77, 0.5);
-    --beta-text: #ffb74d;
+/* First paint (see lib/theme-init.js): themed background straight away, the shell hidden until
+   options.js has rendered the panels, and no colour transitions while the theme is being applied. */
+html.dark { background: #121212; }
+html.light { background: #ffffff; }
+
+body.options:not(.ready) {
+    transition: none;
 }
 
-body.light {
-    --color-accent: #b04288;
-    --beta-bg: rgba(255, 152, 0, 0.1);
-    --beta-border: rgba(255, 152, 0, 0.4);
-    --beta-text: #e65100;
-}
-
-.beta-badge {
-    font-size: 0.6em;
-    font-weight: 700;
-    vertical-align: middle;
-    padding: 2px 6px;
-    border-radius: 4px;
-    background: var(--beta-bg);
-    border: 1px solid var(--beta-border);
-    color: var(--beta-text);
-    letter-spacing: 0.05em;
-    margin-left: 4px;
-}
-
-.setting-row {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.8em;
-    flex-wrap: wrap;
-}
-
-.options-sidebar {
-    padding: 1.5rem;
-    background: rgba(0, 0, 0, 0.15);
-    border-right: 1px solid rgba(128, 128, 128, 0.1);
-    flex-shrink: 0;
-}
-
-body.light .options-sidebar {
-    background: rgba(0, 0, 0, 0.03);
-}
-
-.options-sidebar nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-}
-
-.options-sidebar nav a {
-    text-decoration: none;
-    color: inherit;
-    padding: 0.6em 0.9em;
-    border-radius: 8px;
-    transition: all 0.15s ease;
-    font-size: 0.95em;
-    opacity: 0.7;
-    cursor: pointer;
-}
-
-.options-sidebar nav a:hover {
-    background-color: rgba(128, 128, 128, 0.15);
-    opacity: 1;
-}
-
-.options-sidebar nav a.active {
-    background-color: rgba(128, 128, 128, 0.25);
-    font-weight: 500;
-    opacity: 1;
-}
-
-body.light .options-sidebar nav a.active {
-    background-color: rgba(0, 0, 0, 0.08);
-}
-
-.options-content {
-    flex-grow: 1;
-    padding: 1.5rem 2rem;
-    padding-bottom: 0;
-    overflow-y: auto;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-.options-content a {
-    color: inherit;
-    text-decoration: underline dotted;
-    text-underline-offset: 3px;
-    transition: color 0.2s ease;
-}
-
-.options-content a:hover { color: #0077cc; }
-
-.options-panel {
-    display: none;
-}
-
-.options-panel.active {
-    display: block;
-}
-
-.options-content::-webkit-scrollbar { width: 8px; }
-.options-content::-webkit-scrollbar-track { background: transparent; }
-.options-content::-webkit-scrollbar-thumb {
-    background: rgba(128, 128, 128, 0.3);
-    border-radius: 4px;
-}
-.options-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(128, 128, 128, 0.5);
+body.options:not(.ready) #options-wrapper {
+    visibility: hidden;
 }

@@ -1,0 +1,41 @@
+.bang-suggestion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.12s ease;
+}
+
+.bang-suggestion:hover,
+.bang-suggestion.selected {
+    background: var(--command-selection);
+}
+
+.bang-trigger {
+    font-family: monospace;
+    font-weight: 600;
+    min-width: 36px;
+    color: inherit;
+}
+
+.bang-name {
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bang-domain {
+    font-size: 12px;
+    color: var(--command-muted-text);
+    flex-shrink: 0;
+}
+
+.bang-search-result,
+.default-search-result {
+    list-style: none;
+}

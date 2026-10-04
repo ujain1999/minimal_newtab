@@ -1,0 +1,142 @@
+/* Custom scrollbar for options content */
+.options-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.options-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.options-content::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.3);
+    border-radius: 4px;
+}
+
+.options-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.5);
+}
+
+.options-table {
+    width: 100%;
+    text-transform: capitalize;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+    margin-top: 1em;
+    table-layout: fixed;
+}
+
+.options-table th,
+.options-table td {
+    padding: 10px 12px;
+    text-align: left;
+}
+
+.options-table th {
+    font-size: 0.85em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    padding-bottom: 8px;
+}
+
+.options-table tbody tr {
+    background: rgba(128, 128, 128, 0.08);
+    border-radius: 8px;
+}
+
+.options-table tbody tr:hover {
+    background: rgba(128, 128, 128, 0.15);
+}
+
+.options-table tbody td:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.options-table tbody td:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.options-table th:first-child {
+    width: 50px;
+}
+
+.options-table th.drag-handle-header {
+    width: 80px;
+    text-align: center;
+}
+
+.options-table .drag-handle {
+    cursor: grab;
+    text-align: center;
+    user-select: none;
+}
+
+.options-table tr.dragging {
+    opacity: 0.5;
+    background: rgba(128, 128, 128, 0.2);
+}
+
+.options-sidebar {
+    /*width: 200px;*/
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.15);
+    border-right: 1px solid rgba(128, 128, 128, 0.1);
+    flex-shrink: 0;
+}
+
+body.light .options-sidebar {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.options-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+.options-sidebar nav a {
+    text-decoration: none;
+    color: inherit;
+    padding: 0.6em 0.9em;
+    border-radius: 8px;
+    transition: all 0.15s ease;
+    font-size: 0.95em;
+    opacity: 0.7;
+}
+
+.options-sidebar nav a:hover {
+    background-color: rgba(128, 128, 128, 0.15);
+    opacity: 1;
+}
+
+.options-sidebar nav a.active {
+    background-color: rgba(128, 128, 128, 0.25);
+    font-weight: 500;
+    opacity: 1;
+}
+
+body.light .options-sidebar nav a.active {
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.options-content {
+    flex-grow: 1;
+    padding: 1.5rem 2rem;
+    padding-bottom: 0em;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.options-content a {
+    color: inherit;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.options-content a:hover {
+    color: #0077cc;
+}

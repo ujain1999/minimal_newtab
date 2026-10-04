@@ -1,4 +1,5 @@
 import { getSettingsByPanel } from "../settings/registry.js";
+import { escapeHtml } from "../lib/html.js";
 
 function debounce(fn, ms) {
     let timer;
@@ -51,7 +52,7 @@ export function render(container, settings) {
             <div id="custom-city-container" style="display:${settings.useCustomCity ? "block" : "none"}">
                 <label for="custom-city">Custom City</label>
                 <div id="city-search-container">
-                    <input class="text-input" type="text" id="custom-city" name="custom-city" placeholder="Search for a city..." autocomplete="off" value="${settings.customCity || ""}">
+                    <input class="text-input" type="text" id="custom-city" name="custom-city" placeholder="Search for a city..." autocomplete="off" value="${escapeHtml(settings.customCity)}">
                     <div id="city-suggestions"></div>
                 </div>
             </div>

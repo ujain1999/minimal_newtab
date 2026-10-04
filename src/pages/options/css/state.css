@@ -1,0 +1,78 @@
+/* Disabled state for sub-settings - only target specific container IDs */
+.sub-settings.disabled,
+#sidebar-options.disabled,
+#shortcuts-links.disabled,
+#weather-options.disabled,
+#bookmark-folder-selector-span.disabled,
+#pixel-art-select-div.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    user-select: none;
+}
+
+#city-search-container {
+    position: relative;
+    display: inline-block;
+}
+
+#city-suggestions {
+    display: none;
+    position: absolute;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    width: 100%;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1;
+}
+
+#city-suggestions div {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #333;
+}
+
+#city-suggestions div:hover {
+    background-color: #eee;
+}
+
+#notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#notification.success {
+    background-color: #4caf50; /* Green */
+}
+
+#notification.restore {
+    background-color: #f44336; /* Red */
+}
+
+#notification.show {
+    opacity: 1;
+}
+
+#notification.hidden {
+    display: none;
+}
+
+#background-add-label.hidden,
+#background-preview.hidden,
+.clear-background-button.hidden,
+#image-present-container.hidden {
+    display: none;
+}
+
+.refresh-icon::before {
+    content: "↻";
+    font-size: 1.2rem;
+    color: white;
+}

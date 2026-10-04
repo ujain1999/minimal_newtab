@@ -1,13 +1,30 @@
+.setting-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8em;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+}
+
+.options-table .checkbox-label {
+    margin-bottom: 0; /* Override default margin for table rows */
+    justify-content: center;
+}
+
 .checkbox-label {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
     font-size: 1em;
     margin-bottom: 0.8em;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 
-.checkbox-label input { display: none; }
+.checkbox-label input {
+    display: none; /* Hide the default checkbox */
+}
 
 .checkbox-label .custom-checkbox {
     width: 18px;
@@ -45,61 +62,10 @@ body.light .checkbox-label input:checked + .custom-checkbox::after {
     border-color: white;
 }
 
-.sub-settings {
-    margin-left: 1.5em;
-    padding-left: 1em;
-    border-left: 2px solid rgba(128, 128, 128, 0.2);
-}
-
-.sub-settings.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-    user-select: none;
-}
-
-.segmented-control-container {
-    justify-content: space-between;
-}
-
-.segmented-control {
-    display: flex;
-    background: rgba(128, 128, 128, 0.15);
-    border-radius: 8px;
-    padding: 3px;
-    gap: 2px;
-}
-
-body.light .segmented-control {
-    background: rgba(0, 0, 0, 0.06);
-}
-
-.segmented-control label {
-    display: inline-block;
-    padding: 6px 16px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    position: relative;
-    border-radius: 6px;
-    font-size: 0.95em;
-}
-
-.segmented-control label:hover {
-    background: rgba(128, 128, 128, 0.15);
-}
-
-.segmented-control input[type="radio"] { display: none; }
-
-.segmented-control input[type="radio"]:checked + span {
-    color: #121212;
-}
-
-.segmented-control label:has(input:checked) {
-    background-color: var(--color-accent);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-body.light .segmented-control label:has(input:checked) {
-    color: #f0f0f0;
+.checkbox-label {
+    display: block;
+    margin-bottom: 0.8em;
+    font-size: 1em;
 }
 
 #options-wrapper input[type="text"],
@@ -116,7 +82,9 @@ body.light .segmented-control label:has(input:checked) {
     font-size: 0.95em;
     margin-top: 0.5em;
     box-sizing: border-box;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
+    transition:
+        border-color 0.15s ease,
+        background-color 0.15s ease;
 }
 
 #options-wrapper input[type="text"]:focus,
@@ -131,9 +99,14 @@ body.light .segmented-control label:has(input:checked) {
 
 #options-wrapper input[type="text"],
 #options-wrapper input.text-input,
-#options-wrapper textarea { width: 100%; }
+#options-wrapper textarea {
+    width: 100%;
+}
 
-#options-wrapper select { width: auto; min-width: 200px; }
+#options-wrapper select {
+    width: auto;
+    min-width: 200px;
+}
 
 body.light #options-wrapper input[type="text"],
 body.light #options-wrapper input.text-input,
@@ -154,6 +127,7 @@ body.light #options-wrapper textarea:focus {
     border-color: rgba(0, 0, 0, 0.25);
 }
 
+/* Slider Styles */
 #options-wrapper input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
@@ -165,7 +139,9 @@ body.light #options-wrapper textarea:focus {
     margin-left: 1em;
 }
 
-body.light #options-wrapper input[type="range"] { background: #ddd; }
+body.light #options-wrapper input[type="range"] {
+    background: #ddd;
+}
 
 #options-wrapper input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -184,13 +160,4 @@ body.light #options-wrapper input[type="range"] { background: #ddd; }
     cursor: pointer;
     border-radius: 50%;
     border: none;
-}
-
-#options-wrapper input[type="color"] {
-    margin-left: 0.5em;
-    vertical-align: middle;
-}
-
-body.light #options-wrapper input[type="color"] {
-    background: transparent;
 }

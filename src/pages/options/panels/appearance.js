@@ -1,9 +1,14 @@
 import { showNotification } from "../lib/notification.js";
+import { escapeHtml } from "../lib/html.js";
+import { getTheme, saveSetting } from "../lib/storage.js";
+import { applyTheme } from "../lib/theme.js";
 
 let currentSettings = null;
 
 export function render(container, settings) {
     currentSettings = { ...settings };
+    // The theme lives in its own localStorage key (the new tab page's theme toggle writes it too).
+    const theme = getTheme();
 
     container.innerHTML = `
         <h2>Appearance</h2>
@@ -11,9 +16,9 @@ export function render(container, settings) {
         <div class="setting-row segmented-control-container" data-setting="theme">
             <label>Theme:</label>
             <div class="segmented-control">
-                <label><input type="radio" name="theme" value="system" ${settings.theme === "system" ? "checked" : ""}><span>System</span></label>
-                <label><input type="radio" name="theme" value="dark" ${settings.theme === "dark" ? "checked" : ""}><span>Dark</span></label>
-                <label><input type="radio" name="theme" value="light" ${settings.theme === "light" ? "checked" : ""}><span>Light</span></label>
+                <label><input type="radio" name="theme" value="system" ${theme === "system" ? "checked" : ""}><span>System</span></label>
+                <label><input type="radio" name="theme" value="dark" ${theme === "dark" ? "checked" : ""}><span>Dark</span></label>
+                <label><input type="radio" name="theme" value="light" ${theme === "light" ? "checked" : ""}><span>Light</span></label>
             </div>
         </div>
 
@@ -26,7 +31,7 @@ export function render(container, settings) {
                     </div>
                 </label>
                 <div id="image-present-container" class="background-preview-container ${settings.backgroundImage ? "" : "hidden"}">
-                    <img id="background-preview" src="${settings.backgroundImage || "#"}" alt="Background preview" class="${settings.backgroundImage ? "" : "hidden"}">
+                    <img id="background-preview" src="${escapeHtml(settings.backgroundImage || "#")}" alt="Background preview" class="${settings.backgroundImage ? "" : "hidden"}">
                     <button id="clear-background-image" class="clear-background-button ${settings.backgroundImage ? "" : "hidden"}">&times;</button>
                 </div>
                 <input type="file" id="background-image-input" class="visually-hidden" accept="image/*">
@@ -43,7 +48,7 @@ export function render(container, settings) {
             </p>
             <div class="setting-row">
                 <label for="unsplash-api-key">Unsplash API Key (Required)</label>
-                <input class="text-input" type="text" id="unsplash-api-key" placeholder="Enter your Unsplash Access Key" value="${settings.unsplashApiKey || ""}">
+                <input class="text-input" type="text" id="unsplash-api-key" placeholder="Enter your Unsplash Access Key" value="${escapeHtml(settings.unsplashApiKey)}">
                 <p style="font-size:0.8em;opacity:0.7;margin-top:0.3em;">
                     An API key is required to fetch images from Unsplash. Get a free key from
                     <a href="https://unsplash.com/developers" target="_blank" rel="noopener">Unsplash Developers</a>.
@@ -88,7 +93,7 @@ export function render(container, settings) {
             <br>
             <div id="custom-svg-input-div" style="display:${settings.selectedPixelArt === "custom" ? "block" : "none"}">
                 <label for="custom-svg-input">Custom SVG</label><br>
-                <textarea id="custom-svg-input" name="custom-svg-input" rows="4" cols="50" placeholder="Paste your SVG code here...">${settings.customSVG || ""}</textarea>
+                <textarea id="custom-svg-input" name="custom-svg-input" rows="4" cols="50" placeholder="Paste your SVG code here...">${escapeHtml(settings.customSVG)}</textarea>
                 <br>
                 <ul style="text-align:left;margin-top:0.5em">
                     <li>For best results:
@@ -107,11 +112,11 @@ export function render(container, settings) {
             </div>
             <div class="setting-row">
                 <label for="pixelArtOpacity">Pixel Art Opacity</label>
-                <input type="range" id="pixelArtOpacity" min="0" max="100" step="1" value="${settings.pixelArtOpacity || 40}">
+                <input type="range" id="pixelArtOpacity" min="0" max="100" step="1" value="${settings.pixelArtOpacity ?? 40}">
             </div>
             <div class="setting-row">
                 <label for="pixelArtDensity">Pixel Art Density</label>
-                <input type="range" id="pixelArtDensity" min="0" max="100" step="1" value="${settings.pixelArtDensity || 20}">
+                <input type="range" id="pixelArtDensity" min="0" max="100" step="1" value="${settings.pixelArtDensity ?? 20}">
             </div>
             <div class="setting-row">
                 <label>Pixel Art Color (Dark Theme)<input type="color" id="pixelArtColorDark" value="${settings.pixelArtColorDark || "#cccccc"}"></label>
@@ -126,7 +131,7 @@ export function render(container, settings) {
             <p style="font-size:0.9em;opacity:0.8;margin-top:0.3em;margin-bottom:0.8em;">
                 Add your own CSS to customize the appearance of the new tab page. Changes apply after saving settings.
             </p>
-            <textarea id="custom-css" rows="10" placeholder="/* Add your custom CSS here */" style="width:100%;font-family:monospace;font-size:0.9em;">${settings.customCSS || ""}</textarea>
+            <textarea id="custom-css" rows="10" placeholder="/* Add your custom CSS here */" style="width:100%;font-family:monospace;font-size:0.9em;">${escapeHtml(settings.customCSS)}</textarea>
             <p style="font-size:0.8em;opacity:0.7;margin-top:0.5em;">
                 Note: Invalid CSS may affect page styling. Use the "Restore Defaults" button if something breaks.
             </p>
@@ -134,6 +139,7 @@ export function render(container, settings) {
     `;
 
     setupEventListeners(container, settings);
+    toggleUnsplashAdvancedOptions(container, { initial: true });
 }
 
 function setupEventListeners(container, settings) {
@@ -166,6 +172,7 @@ function setupEventListeners(container, settings) {
         const reader = new FileReader();
         reader.onload = (event) => {
             currentSettings.backgroundImage = event.target.result;
+            saveSetting("backgroundImage", currentSettings.backgroundImage);
             const preview = container.querySelector("#background-preview");
             preview.src = event.target.result;
             preview.classList.remove("hidden");
@@ -179,6 +186,7 @@ function setupEventListeners(container, settings) {
 
     container.querySelector("#clear-background-image").addEventListener("click", () => {
         currentSettings.backgroundImage = "";
+        saveSetting("backgroundImage", "");
         container.querySelector("#background-image-input").value = "";
         container.querySelector("#background-preview").src = "#";
         container.querySelector("#background-preview").classList.add("hidden");
@@ -189,7 +197,8 @@ function setupEventListeners(container, settings) {
     });
 }
 
-function toggleUnsplashAdvancedOptions(container) {
+// On first render the saved "show refresh" value is kept as-is (only user edits to the key clear it).
+function toggleUnsplashAdvancedOptions(container, { initial = false } = {}) {
     const apiKey = container.querySelector("#unsplash-api-key").value.trim();
     const tooltips = container.querySelectorAll("#unsplash-options .tooltip-wrapper");
     const freqSelect = container.querySelector("#unsplash-update-frequency");
@@ -198,23 +207,10 @@ function toggleUnsplashAdvancedOptions(container) {
     freqSelect.disabled = !apiKey;
     refreshCheck.disabled = !apiKey;
     if (!apiKey) {
-        refreshCheck.checked = false;
+        if (!initial) refreshCheck.checked = false;
         tooltips.forEach((w) => w.classList.add("disabled"));
     } else {
         tooltips.forEach((w) => w.classList.remove("disabled"));
-    }
-}
-
-function applyTheme(theme) {
-    document.body.style.backgroundColor = null;
-    document.body.classList.remove("dark", "light");
-    if (theme === "dark") {
-        document.body.classList.add("dark");
-    } else if (theme === "light") {
-        document.body.classList.add("light");
-    } else {
-        const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        document.body.classList.add(dark ? "dark" : "light");
     }
 }
 
@@ -225,7 +221,6 @@ export function collect() {
     const bg = currentSettings?.backgroundImage || "";
 
     return {
-        theme: selectedTheme,
         backgroundImage: bg,
         useUnsplash: document.getElementById("use-unsplash").checked,
         unsplashApiKey: document.getElementById("unsplash-api-key").value.trim(),

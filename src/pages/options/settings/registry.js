@@ -4,6 +4,7 @@ export const panels = [
     { id: "appearance", label: "Appearance" },
     { id: "sidebar", label: "Sidebar" },
     { id: "keyboard", label: "Keyboard navigation" },
+    { id: "bangs", label: "Bangs" },
     { id: "backup", label: "Backup" },
     { id: "about", label: "About" },
 ];
@@ -31,6 +32,10 @@ export const settings = [
     { key: "sidebarShowCustomize", label: "Show Customize button in sidebar", type: "checkbox", panel: "sidebar", dependsOn: "sidebar", searchTerms: ["sidebar", "customize"] },
     { key: "enableKeyboardNav", label: "Enable Keyboard Navigation", type: "checkbox", panel: "keyboard", searchTerms: ["keyboard", "navigation", "shortcut", "command"] },
     { key: "openInNewTab", label: "Open links in new tab", type: "checkbox", panel: "keyboard", searchTerms: ["links", "tab", "open"] },
+    { key: "enableBangs", label: "Enable bang search", type: "checkbox", panel: "keyboard", searchTerms: ["bang", "search", "!g"] },
+    { key: "defaultSearchEngine", label: "Default Search Engine", type: "select", panel: "keyboard", searchTerms: ["search engine", "google", "duckduckgo", "bing", "brave", "startpage"] },
+    { key: "selectedBangs", label: "Built-in Bangs", type: "table", panel: "bangs", searchTerms: ["bang", "trigger", "built-in"] },
+    { key: "customBangs", label: "Custom Bangs", type: "table", panel: "bangs", searchTerms: ["bang", "custom", "trigger"] },
 ];
 
 export function getSettingsByPanel(panelId) {

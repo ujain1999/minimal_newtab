@@ -1,3 +1,5 @@
+import { escapeHtml } from "../lib/html.js";
+
 export function render(container, settings) {
     const order = settings.topRightOrder || [];
 
@@ -22,11 +24,11 @@ export function render(container, settings) {
                         <tr draggable="true">
                             <td>
                                 <label class="checkbox-label">
-                                    <input type="checkbox" data-key="${item.id}" ${item.displayBool ? "checked" : ""}>
+                                    <input type="checkbox" data-key="${escapeHtml(item.id)}" ${item.displayBool ? "checked" : ""}>
                                     <span class="custom-checkbox"></span>
                                 </label>
                             </td>
-                            <td>${item.id}</td>
+                            <td>${escapeHtml(item.id)}</td>
                             <td class="drag-handle"><span>☰</span></td>
                         </tr>
                     `).join("")}

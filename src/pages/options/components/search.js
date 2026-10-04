@@ -1,14 +1,3 @@
-export function createSearchBar() {
-    const container = document.createElement("div");
-    container.className = "search-container";
-    const input = document.createElement("input");
-    input.type = "text";
-    input.id = "settings-search";
-    input.placeholder = "Search settings\u2026";
-    container.appendChild(input);
-    return container;
-}
-
 export function setupSearch() {
     const input = document.getElementById("settings-search");
     if (!input) return;
@@ -19,11 +8,27 @@ export function setupSearch() {
     });
 }
 
+function setEmptyMessage(query) {
+    let el = document.getElementById("search-empty");
+    if (!query) {
+        el?.remove();
+        return;
+    }
+    if (!el) {
+        el = document.createElement("p");
+        el.id = "search-empty";
+        el.style.opacity = "0.6";
+        document.querySelector(".options-content").prepend(el);
+    }
+    el.textContent = `No settings match "${query}".`;
+}
+
 function filterPanels(query) {
     const panels = document.querySelectorAll(".options-panel");
 
     if (!query) {
         panels.forEach((p) => (p.style.display = ""));
+        setEmptyMessage("");
         return;
     }
 
@@ -38,6 +43,8 @@ function filterPanels(query) {
             panel.style.display = "none";
         }
     });
+
+    setEmptyMessage(firstMatch ? "" : query);
 
     if (firstMatch) {
         const active = document.querySelector(".options-panel.active");
