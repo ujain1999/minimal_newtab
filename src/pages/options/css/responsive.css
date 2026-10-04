@@ -1,0 +1,148 @@
+/* Wide tables (bangs) scroll horizontally instead of overflowing the panel. */
+.table-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+}
+
+/* Bang tables: a compact trigger column and a minimum width so domains never break mid-word;
+   when the panel is narrower than that, the table scrolls sideways inside .table-scroll. */
+#builtin-bangs-table {
+    min-width: 570px;
+}
+
+#custom-bangs-table {
+    min-width: 480px;
+}
+
+#builtin-bangs-table th:nth-child(2),
+#custom-bangs-table th:first-child {
+    width: 70px;
+}
+
+#builtin-bangs-table th:nth-child(3) {
+    width: 110px;
+}
+
+#options-wrapper input.text-input {
+    max-width: 100%;
+}
+
+#options-wrapper select {
+    max-width: 100%;
+}
+
+/* Same 400–500px dialog as before on desktop, clamped to the viewport on small screens. */
+.modal-content {
+    /* content-box, like the original: subtract the 1.5em side padding when clamping. */
+    min-width: min(400px, calc(100vw - 2rem - 3em));
+    max-width: min(500px, calc(100vw - 2rem - 3em));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+}
+
+/* Tablet: narrower sidebar so the content keeps a usable width. */
+@media (max-width: 860px) {
+    .options-sidebar {
+        padding: 1.25rem 1rem;
+    }
+
+    .options-content {
+        padding: 1.25rem 1.25rem 0;
+    }
+}
+
+/* Phone: sidebar becomes a top bar with horizontally scrolling tabs, wrapper fills the screen. */
+@media (max-width: 640px) {
+    body.options {
+        padding: 0;
+    }
+
+    #options-wrapper {
+        flex-direction: column;
+        width: 100%;
+        max-width: none;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+    }
+
+    #back {
+        top: 0.6rem;
+        right: 0.6rem;
+    }
+
+    .options-sidebar {
+        padding: 0.9rem 1rem 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+    }
+
+    #options-wrapper h1 {
+        margin: 0 0 0.6em;
+        font-size: 1.2em;
+        line-height: 40px;
+    }
+
+    .search-container {
+        margin-bottom: 0.6em;
+    }
+
+    .options-sidebar nav {
+        flex-direction: row;
+        overflow-x: auto;
+        margin: 0 -1rem;
+        padding: 0 1rem 0.6rem;
+        scrollbar-width: none;
+    }
+
+    .options-sidebar nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .options-sidebar nav a {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 0.5em 0.8em;
+    }
+
+    .options-content {
+        flex: 1;
+        min-height: 0;
+        padding: 1rem 1rem 0;
+    }
+
+    .options-table th,
+    .options-table td {
+        padding: 8px;
+    }
+
+    /* Bang form/dialog: inputs share the row with their label instead of fixed widths. */
+    #custom-bang-form .setting-row,
+    #edit-bang-modal .setting-row {
+        flex-wrap: nowrap;
+    }
+
+    #custom-bang-form .setting-row > label,
+    #edit-bang-modal .setting-row > label {
+        flex: 0 0 auto;
+        min-width: 11ch !important;
+        margin-right: 0.5em;
+    }
+
+    #custom-bang-form .text-input,
+    #edit-bang-modal .text-input {
+        flex: 1;
+        width: auto !important;
+        min-width: 0;
+    }
+
+    #options-wrapper select {
+        min-width: 0;
+    }
+
+    .button-group {
+        padding: 1em 0;
+    }
+}

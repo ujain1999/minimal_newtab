@@ -1,0 +1,115 @@
+.options-panel {
+    display: none;
+}
+
+.options-panel.active {
+    display: block;
+}
+
+/* Reorderable list styles */
+.reorder-list .drag-handle,
+.options-table .drag-handle {
+    cursor: grab;
+}
+
+.options-table tbody tr {
+    cursor: grab;
+}
+
+.reorder-list tr.dragging,
+.options-table tr.dragging {
+    opacity: 0.95;
+    background: rgba(128, 128, 128, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    cursor: grabbing;
+}
+
+.reorder-list tr.dragging .drag-handle,
+.options-table tr.dragging .drag-handle {
+    cursor: grabbing;
+}
+
+.options-table tr.drag-placeholder td {
+    background: rgba(128, 128, 128, 0.15);
+    border: 2px dashed rgba(128, 128, 128, 0.4);
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.options-table tr.drag-placeholder {
+    background: none;
+    border: none;
+}
+
+#save {
+    background: #4caf50;
+    color: white;
+}
+
+#save:hover {
+    background: #3d8b40;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+#restore-defaults {
+    background: #f44336;
+    color: white;
+}
+
+#restore-defaults:hover {
+    background: #d32f2f;
+    box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.3);
+}
+
+.beta-badge {
+    font-size: 0.6em;
+    font-weight: 700;
+    vertical-align: middle;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--beta-bg);
+    border: 1px solid var(--beta-border);
+    color: var(--beta-text);
+    letter-spacing: 0.05em;
+    margin-left: 4px;
+}
+
+:root {
+    --color-accent: #ccc;
+    --beta-bg: rgba(255, 183, 77, 0.2);
+    --beta-border: rgba(255, 183, 77, 0.5);
+    --beta-text: #ffb74d;
+}
+
+body.light {
+    --color-accent: #b04288;
+    --beta-bg: rgba(255, 152, 0, 0.1);
+    --beta-border: rgba(255, 152, 0, 0.4);
+    --beta-text: #e65100;
+}
+
+.art-grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.art-cell {
+    position: relative;
+}
+
+.art-cell svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    fill: var(--color-accent);
+    opacity: 0.4;
+    transform: translate(-50%, -50%) rotate(var(--rotate, 0deg));
+}

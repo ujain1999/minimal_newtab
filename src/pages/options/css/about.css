@@ -1,0 +1,54 @@
+/* About panel icon links - default uses light border on dark backgrounds */
+
+/* Web Store badge image styling - follow branding: do not alter badge aspect ratio */
+.webstore-badge {
+    height: 36px;
+    width: auto;
+    display: block;
+    border-radius: 6px;
+}
+
+.webstore-badge-link {
+    padding: 4px;
+}
+
+.fallback-store-icon {
+    color: inherit;
+}
+
+/* Ensure both About icons (webstore + github) visually match the official badge size */
+.about-links {
+    gap: 12px;
+}
+
+/* Make both icons look like they're part of the page: no heavy borders, same size as chrome badge */
+.about-links .icon-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 8px;
+    width: auto;
+    height: auto;
+    background: transparent; /* blend with page */
+    border: 1px solid rgba(255, 255, 255, 0.14); /* white-ish border for dark mode */
+    border-radius: 6px;
+    transition:
+        transform 0.08s ease,
+        opacity 0.12s ease;
+}
+
+.about-links .icon-link img {
+    height: 36px; /* official badge height */
+    width: auto;
+    display: block;
+}
+
+.about-links .icon-link:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+/* Light theme: use darker (black) border so icons stand out */
+body.light .about-links .icon-link {
+    border: 1px solid rgba(0, 0, 0, 0.16);
+}

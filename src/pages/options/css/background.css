@@ -1,0 +1,119 @@
+.options-table button {
+    margin: 0 2px;
+    padding: 2px 6px;
+}
+
+.button-group {
+    margin-top: auto;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+    padding: 1.2em 0;
+    padding-bottom: 1.2em;
+    position: sticky;
+    bottom: 0;
+    background: linear-gradient(
+        to top,
+        rgba(30, 30, 30, 1) 80%,
+        rgba(30, 30, 30, 0)
+    );
+    padding-top: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
+}
+
+body.light .button-group {
+    background: linear-gradient(
+        to top,
+        rgba(255, 255, 255, 1) 80%,
+        rgba(255, 255, 255, 0)
+    );
+    border-top-color: rgba(0, 0, 0, 0.08);
+}
+
+.background-image-controls {
+    margin: 0.5em 0 0 2em; /* Top margin, no side margin, bottom margin, left indent */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.background-add-label {
+    cursor: pointer;
+}
+
+.background-preview-container {
+    position: relative;
+    width: 100px;
+    height: 56px; /* 16:9 aspect ratio */
+    border: 1px solid #555;
+    border-radius: 12px; /* More rounded for a squircle look */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-size: 0.8em;
+    color: #888;
+    transition: border-color 0.2s ease;
+}
+
+.background-add-label:hover .background-preview-container {
+    border-color: #888;
+}
+
+.plus-icon {
+    font-size: 3em;
+    font-weight: 100;
+    color: #555;
+    line-height: 1;
+}
+
+body.light .background-add-label {
+    color: #ccc;
+}
+
+.clear-background-button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 20px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.background-preview-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#image-present-container:hover .clear-background-button {
+    opacity: 1;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
