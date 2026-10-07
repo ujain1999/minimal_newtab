@@ -1,5 +1,52 @@
 import { renderCalendar } from '../../widgets/calendar.js';
 import { renderTodo } from '../../widgets/todo.js';
+import { renderNotes } from '../../widgets/notes.js';
+
+const SIDEBAR_WIDTH_KEY = 'sidebarWidth';
+const MIN_SIDEBAR_WIDTH = 220;
+const MAX_SIDEBAR_WIDTH = 700;
+const DEFAULT_SIDEBAR_WIDTH = 280;
+
+function getSavedSidebarWidth() {
+    const raw = parseInt(localStorage.getItem(SIDEBAR_WIDTH_KEY), 10);
+    if (!raw || Number.isNaN(raw)) return DEFAULT_SIDEBAR_WIDTH;
+    return Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, raw));
+}
+
+function persistSidebarWidth(width) {
+    localStorage.setItem(SIDEBAR_WIDTH_KEY, String(Math.round(width)));
+}
+
+function setupResize(sidebar) {
+    const handle = document.createElement('div');
+    handle.className = 'sidebar-resize-handle';
+    sidebar.appendChild(handle);
+
+    handle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const startX = e.clientX;
+        const startWidth = sidebar.offsetWidth;
+        const isLeft = sidebar.classList.contains('left');
+
+        const onMouseMove = (ev) => {
+            const dx = ev.clientX - startX;
+            const newWidth = isLeft ? startWidth + dx : startWidth - dx;
+            sidebar.style.width = Math.max(MIN_SIDEBAR_WIDTH, Math.min(MAX_SIDEBAR_WIDTH, newWidth)) + 'px';
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.body.classList.remove('sidebar-resizing');
+            persistSidebarWidth(sidebar.offsetWidth);
+        };
+
+        document.body.classList.add('sidebar-resizing');
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
+}
 
 const updateCustomizeVisibility = (settings) => {
     const customizeBtn = document.getElementById('customize');
@@ -29,7 +76,9 @@ const updateCustomizeVisibility = (settings) => {
 
 function renderSidebar(settings) {
     const sidebar = document.getElementById('sidebar');
+    const resizable = settings.sidebarResizable === true;
     sidebar.style.display = 'flex';
+    sidebar.style.width = (resizable ? getSavedSidebarWidth() : DEFAULT_SIDEBAR_WIDTH) + 'px';
     sidebar.classList.add(settings.sidebarPosition || 'right');
 
     const sidebarHandle = document.createElement('div');
@@ -45,7 +94,8 @@ function renderSidebar(settings) {
 
     const widgetRenderers = {
         calendar: renderCalendar,
-        todo: renderTodo
+        todo: renderTodo,
+        notes: renderNotes
     };
 
     if (selectedWidgets.length > 0) {
@@ -86,6 +136,25 @@ function renderSidebar(settings) {
         sidebar.classList.toggle('minimised');
         updateCustomizeVisibility(settings);
     });
+
+    if (resizable) {
+        setupResize(sidebar);
+    }
 }
+
+function toggleSidebarVisibility() {
+    const settings = JSON.parse(localStorage.getItem('settings') || '{}');
+    if (!settings.enableKeyboardNav) return;
+    const sidebar = document.getElementById('sidebar');
+    if (!sidebar || sidebar.style.display === 'none') return;
+    sidebar.classList.toggle('minimised');
+    updateCustomizeVisibility(settings);
+}
+
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === 'toggleSidebar') {
+        toggleSidebarVisibility();
+    }
+});
 
 export { renderSidebar };

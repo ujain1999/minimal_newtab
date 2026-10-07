@@ -5,8 +5,20 @@ chrome.commands.onCommand.addListener((command) => {
     toggleOverlay();
   } else if (command === "open-options") {
     chrome.tabs.create({ url: "pages/options/options.html" });
+  } else if (command === "toggle-sidebar") {
+    toggleSidebar();
   }
 });
+
+async function toggleSidebar() {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab) return;
+  try {
+    await chrome.tabs.sendMessage(tab.id, { action: "toggleSidebar" });
+  } catch {
+    // New tab page not open/active; nothing to toggle
+  }
+}
 
 async function toggleOverlay() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

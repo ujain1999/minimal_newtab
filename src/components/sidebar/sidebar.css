@@ -55,6 +55,35 @@ body.light .sidebar-handle {
     left: -45px;
 }
 
+/* Resize handle on the inner edge */
+.sidebar-resize-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    cursor: ew-resize;
+    z-index: 20;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar.right .sidebar-resize-handle {
+    left: 0;
+}
+
+.sidebar.left .sidebar-resize-handle {
+    right: 0;
+}
+
+.sidebar-resize-handle:hover {
+    background: rgba(128, 128, 128, 0.4);
+}
+
+body.sidebar-resizing,
+body.sidebar-resizing * {
+    cursor: ew-resize !important;
+    user-select: none;
+}
+
 .sidebar-caret {
     width: 0;
     height: 0;
@@ -91,6 +120,8 @@ body.light .sidebar.right .sidebar-caret {
     padding: 20px 20px 80px 20px;
     height: 100%;
     overflow-y: auto;
+    flex: 1 1 0%;
+    min-width: 0;
 }
 
 /* Sidebar footer (sticky at bottom) */
@@ -371,4 +402,29 @@ body.todo-dragging * {
     color: inherit;
     font-family: monospace;
     box-sizing: border-box; /* Prevents overflow on focus */
+}
+
+/* Notes Widget Styles */
+.notes-widget .notes-textarea {
+    width: 100%;
+    height: 200px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: inherit;
+    font-family: monospace;
+    line-height: 1.5;
+    box-sizing: border-box;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.notes-widget .notes-textarea:focus {
+    border-color: rgba(128, 128, 128, 0.5);
+}
+
+body.light .notes-widget .notes-textarea {
+    background: rgba(0, 0, 0, 0.05);
 }

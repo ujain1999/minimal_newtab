@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "sidebarWidgets",
     "sidebarExpanded",
     "sidebarShowCustomize",
+    "sidebarResizable",
     "useUnsplash",
     "unsplashApiKey",
     "unsplashUpdateFrequency",
@@ -210,6 +211,14 @@ document.addEventListener("DOMContentLoaded", () => {
     sidebarShowCustomizeCheckbox.checked = !!settings["sidebarShowCustomize"];
   }
 
+  // Initialize sidebar resizable setting
+  if (settings["sidebarResizable"] === true) {
+    const sidebarResizableCheckbox = document.getElementById(
+      "sidebar-resizable",
+    );
+    if (sidebarResizableCheckbox) sidebarResizableCheckbox.checked = true;
+  }
+
   // Initialize keyboard navigation setting
   if (settings["enableKeyboardNav"]) {
     document.getElementById("enable-keyboard-nav").checked = true;
@@ -231,9 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateShortcutDisplay() {
-    const instructionParagraph = document.getElementById(
-      "shortcut-instruction-paragraph",
-    );
     const howToUseEl = document.getElementById("how-to-use");
 
     if (
@@ -248,15 +254,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const optionsCommand = commands.find(
           (cmd) => cmd.name === "open-options",
         );
+        const sidebarCommand = commands.find(
+          (cmd) => cmd.name === "toggle-sidebar",
+        );
         if (toggleCommand && toggleCommand.shortcut) {
           const shortcut = formatShortcut(toggleCommand.shortcut);
-          if (instructionParagraph) {
-            let html = `<strong id="shortcut-instruction">${shortcut}</strong> — Open command overlay`;
-            if (optionsCommand && optionsCommand.shortcut) {
-              html += `<br><strong>${formatShortcut(optionsCommand.shortcut)}</strong> — Open options`;
-            }
-            instructionParagraph.innerHTML = html;
-          }
           if (howToUseEl) {
             howToUseEl.style.display = "block";
             const usageEl = document.getElementById("shortcut-usage");
@@ -265,17 +267,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (optionsUsageEl && optionsCommand && optionsCommand.shortcut) {
               optionsUsageEl.textContent = formatShortcut(optionsCommand.shortcut);
             }
+            const sidebarUsageEl = document.getElementById("shortcut-sidebar");
+            if (sidebarUsageEl && sidebarCommand && sidebarCommand.shortcut) {
+              sidebarUsageEl.textContent = formatShortcut(sidebarCommand.shortcut);
+            }
           }
         } else {
-          if (instructionParagraph) {
-            instructionParagraph.innerHTML = `Set a shortcut at <a href="#" id="open-shortcuts-inline" style="color:inherit;">chrome://extensions/shortcuts</a> to use keyboard navigation.`;
-            document
-              .getElementById("open-shortcuts-inline")
-              .addEventListener("click", (e) => {
-                e.preventDefault();
-                chrome.tabs.create({ url: "chrome://extensions/shortcuts" });
-              });
-          }
           if (howToUseEl) howToUseEl.style.display = "none";
         }
       });
@@ -426,13 +423,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Populate widgets
   const sidebarWidgetsTbody = document.getElementById("sidebar-widgets");
   const enabledWidgets = settings.sidebarWidgets || [];
-  let allWidgets =
-    settings.availableWidgets || defaultSettings.availableWidgets;
-
-  // Ensure allWidgets is an array to prevent errors from old settings formats
-  if (!Array.isArray(allWidgets)) {
-    allWidgets = defaultSettings.availableWidgets;
-  }
+  const defaultWidgets = defaultSettings.availableWidgets || [];
+  const storedWidgets = Array.isArray(settings.availableWidgets)
+    ? settings.availableWidgets
+    : [];
+  // Union: defaults first so newly added widgets appear, then stored extras.
+  const allWidgets = Array.from(new Set([...defaultWidgets, ...storedWidgets]));
 
   // Create a set of enabled widgets for quick lookup
   const enabledWidgetSet = new Set(enabledWidgets);
@@ -644,6 +640,8 @@ document.addEventListener("DOMContentLoaded", () => {
         settings_obj[key] = expandedVal
           ? true
           : document.getElementById("sidebar-show-customize").checked;
+      } else if (key === "sidebarResizable") {
+        settings_obj[key] = document.getElementById("sidebar-resizable").checked;
       } else if (key === "sidebarWidgets") {
         const widgetRows = document.querySelectorAll("#sidebar-widgets tr");
         const selectedWidgets = [];

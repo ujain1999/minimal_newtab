@@ -17,6 +17,7 @@
 - Current weather for your geolocation (via [Open-Meteo](https://open-meteo.com/))
 - Bookmarks with folder structure preserved, collapsible  
 - Theme switcher: dark, light, system — remembers your choice  
+- Sidebar with widgets (calendar, todo, notes) — collapsible, resizable, keyboard-toggleable  
 - Fully client-side, no analytics or tracking
 
 ---
